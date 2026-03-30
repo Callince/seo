@@ -1,0 +1,757 @@
+{% extends "base.html" %}
+{% block title %}Heading Search{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-dark">Heading Analysis Tool</h1>
+   
+    <div class="card mb-4 compact-card">
+        <div class="card-header py-2 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-dark">Search for Headings</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('h_search') }}" id="headingSearchForm">
+               <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+              <!-- Mobile search section (hidden on desktop) -->
+                <div class="mobile-search-container d-none">
+                    <div class="mb-2">
+                        <label for="mobile-url" class="text-dark mb-1">Enter URL to analyze:</label>
+                    </div>
+                    <div class="d-flex w-100">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control search-input" id="mobile-url" name="mobile-url" 
+                                   placeholder="Enter a website URL" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Desktop search section (hidden on mobile) -->
+                <div class="desktop-search-container">
+                    <div class="form-group mb-3 d-flex align-items-center">
+                        <label for="url" class="me-2 mb-0 text-dark" style="white-space: nowrap;">Enter URL to analyze:</label>
+                        <div class="search-bar input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control search-input" id="url" name="url"
+                                   placeholder="Enter a website URL (http:// or https:// will be added automatically)" value="{{ url_input }}" required>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="form-check mb-3">
+                    <input class="form-check-input green-checkbox" type="checkbox" id="respect_robots" name="respect_robots" checked disabled>
+                    <label class="form-check-label text-dark" for="respect_robots">
+                        Respect robots.txt rules (mandatory)
+                    </label>
+                    <small class="form-text text-muted d-block">
+                        This will analyze the site's robots.txt file and filter out any disallowed URLs
+                    </small>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-primary compact-btn">
+                        <i class="fas fa-search"></i> Analyze URL
+                    </button>
+                    <button type="button" class="btn btn-success compact-btn" id="analyzeThisLinkBtn">
+                        <i class="fas fa-chart-bar"></i> Analyze this link
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+   
+    <!-- Include robots.txt information -->
+    {% include '_robots_display.html' %}
+   
+    <!-- Results container -->
+    <div id="results-container">
+        {% if links_data %}
+            <div class="card mb-4 compact-card">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-dark">Home Links <span class="badge bg-primary custom-primary-badge">{{ links_data.home|length }}</span> links found</h5>
+                    <a href="{{ url_for('download_url', url=url_input, respect_robots='true' if request.form.get('respect_robots') == 'on' else 'false') }}" class="btn btn-primary compact-btn">
+                        <i class="fas fa-download"></i> Download Links CSV
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if links_data.home %}
+                        <div class="home-links-container compact">
+                            <div class="list-group" id="homeLinks">
+                                {% for link in links_data.home %}
+                                <div class="list-group-item link-item py-2">
+                                    <div class="link-text small" title="{{ link }}">{{ link|truncate(70) }}</div>
+                                    <div class="action-buttons">
+                                      <a href="{{ url_for('h_detail', url=link) }}" class="badge bg-secondary action-badge text-decoration-none" title="Analyze Headings">
+                                          <i class="fas fa-heading"></i><p class="d-inline">&nbsp;Analyze</p>
+                                      </a>
+                                      <a href="{{ link }}" class="badge bg-secondary action-badge text-decoration-none" target="_blank" title="Open link in new tab">
+                                          <i class="fas fa-external-link-alt fa-sm"></i><p class="d-inline">&nbsp;Link</p>
+                                      </a>
+
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">No home links found.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Back to Home Button - Mobile Only -->
+            <div class="text-center mt-4 mobile-only">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary compact-btn">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<style>
+  /* CSS Variables for Animation and Formal Design */
+  :root {
+    --transition-standard: 0.3s ease;
+    --shadow-formal: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --shadow-formal-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+    --color-primary: #273879;
+    --color-primary-light: #3d4a91;
+    --color-secondary: #0f74b2;
+    --color-text: #1e293b;
+    --color-text-light: #64748b;
+    --color-border: #e5e7eb;
+    --color-background: #f8fafc;
+    --radius-standard: 8px;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+  }
+  
+  /* Bootstrap Primary Color Overrides */
+  .btn-primary {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+  }
+  
+  .btn-primary:hover,
+  .btn-primary:focus,
+  .btn-primary:active {
+    background-color: var(--color-primary-light) !important;
+    border-color: var(--color-primary-light) !important;
+  }
+  
+  .btn-outline-primary {
+    color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+  }
+  
+  .btn-outline-primary:hover,
+  .btn-outline-primary:focus,
+  .btn-outline-primary:active {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: white !important;
+  }
+  
+  .bg-primary,
+  .badge.bg-primary,
+  .custom-primary-badge {
+    background-color: var(--color-primary) !important;
+  }
+  
+  .text-primary {
+    color: var(--color-primary) !important;
+  }
+  
+  .spinner-border.text-primary {
+    color: var(--color-primary) !important;
+  }
+  
+  /* Mobile-only visibility class */
+  .mobile-only {
+    display: none;
+  }
+  
+  /* Heading Colors Fix */
+  .card-header h5, 
+  .card-header .card-title,
+  h1, h2, h3, h4, h5, h6,
+  .text-dark {
+    color: var(--color-text) !important;
+  }
+  
+  /* Button Styles - More Formal, Animated */
+  .compact-btn {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    border-radius: var(--radius-standard);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.01em;
+    transition: all var(--transition-standard);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-formal);
+  }
+  
+  .compact-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+    transition: transform 0.6s ease;
+  }
+  
+  .compact-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-formal-hover);
+  }
+  
+  .compact-btn:hover::after {
+    transform: translateX(200%);
+  }
+  
+  .compact-btn:active {
+    transform: translateY(1px);
+  }
+  
+  .btn-sm.compact-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+  }
+  
+  /* Card Styles - More Formal, Animated */
+  .compact-card {
+    box-shadow: var(--shadow-formal);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-standard);
+    transition: transform var(--transition-standard), 
+                box-shadow var(--transition-standard);
+    background: white;
+  }
+  
+  .compact-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-formal-hover);
+  }
+  
+  .card-header {
+    background: linear-gradient(45deg, #f8f9fa, #ffffff);
+    border-bottom: 1px solid var(--color-border);
+    transition: background 0.3s ease;
+    color: var(--color-text);
+  }
+  
+  .compact-card:hover .card-header {
+    background: linear-gradient(45deg, #f3f4f6, #ffffff);
+  }
+  
+  /* Link Item Styling */
+  .home-links-container.compact {
+    max-height: 350px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-standard);
+    animation: fadeIn 0.5s ease backwards;
+    overflow-y: auto;
+  }
+  
+  .link-item {
+    padding: 0.7rem;
+    border-bottom: 1px solid var(--color-border);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    animation: fadeInStaggered 0.6s ease backwards;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .link-item:last-child {
+    border-bottom: none;
+  }
+  
+  .link-item:hover {
+    background-color: rgba(39, 56, 121, 0.05);
+    transform: translateX(5px);
+  }
+  
+  .action-badge {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+    margin-left: 0.3rem;
+  }
+  
+  .action-badge:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  
+  /* Form Styles */
+  .search-bar {
+    position: relative;
+    animation: fadeInUp 0.7s ease backwards;
+    animation-delay: 0.3s;
+  }
+  
+  .search-input {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-standard);
+    padding: 0.7rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+  }
+  
+  /* Form Check Styling */
+  .form-check-input.green-checkbox:checked {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  /* Label Color Fix */
+  .form-check-label {
+    color: var(--color-text);
+  }
+  
+  /* Animation Keyframes */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes fadeInStaggered {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Apply staggered animations to items */
+  .link-item:nth-child(1) { animation-delay: 0.05s; }
+  .link-item:nth-child(2) { animation-delay: 0.1s; }
+  .link-item:nth-child(3) { animation-delay: 0.15s; }
+  .link-item:nth-child(4) { animation-delay: 0.2s; }
+  .link-item:nth-child(5) { animation-delay: 0.25s; }
+  
+  /* Small text style */
+  .small {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+  }
+
+  /* Button container styling */
+  .d-flex.gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .btn-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+  }
+
+  .btn-success:hover,
+  .btn-success:focus,
+  .btn-success:active {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    /* Show mobile-only elements */
+    .mobile-only {
+      display: block !important;
+    }
+    
+    .link-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .link-text {
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+
+    .action-buttons {
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    /* Button container stacks vertically on mobile */
+    .d-flex.gap-2 {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .d-flex.gap-2 .compact-btn {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    /* Show mobile search container and hide desktop one */
+    .mobile-search-container {
+      display: block !important; 
+    }
+    
+    .desktop-search-container {
+      display: none !important;
+    }
+    
+    /* Mobile search bar styling */
+    .input-group {
+      display: flex;
+      width: 100%;
+    }
+    
+    .input-group-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      padding: 0.375rem;
+      font-size: 0.875rem;
+    }
+    
+    .form-control {
+      height: 38px;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.9rem;
+    }
+    /* Add spacing between mobile search input and button */
+    .mobile-search-container {
+        margin-bottom: 1rem;
+    }
+    
+    .compact-btn {
+        margin-top: 0.5rem;
+        /* width: 50%; */
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+  }
+</style>
+
+<!-- JavaScript to handle URL input and form submission -->
+<script>
+// Updated JavaScript section for both h_search.html and keyword_search.html
+// Replace the existing <script> section with this updated version
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('headingSearchForm');
+    const urlInput = document.getElementById('url');
+    const mobileUrlInput = document.getElementById('mobile-url');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const respectRobotsCheckbox = document.getElementById('respect_robots');
+    
+    // IMPORTANT: Hide loading overlay when page loads/becomes visible
+    function hideLoadingOverlay() {
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
+    }
+    
+    // Hide loading overlay on page load
+    hideLoadingOverlay();
+    
+    // Hide loading overlay when navigating back (pageshow event)
+    window.addEventListener('pageshow', function(event) {
+        hideLoadingOverlay();
+    });
+    
+    // Hide loading overlay when page regains focus (backup method)
+    window.addEventListener('focus', function() {
+        hideLoadingOverlay();
+    });
+    
+    // Hide loading overlay on visibility change (when tab becomes active)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            hideLoadingOverlay();
+        }
+    });
+    
+    // URL Input Modifier - Enhanced version
+    function ensureHttpsPrefix(url) {
+        // Trim whitespace
+        url = url.trim();
+        
+        // If URL is empty, return empty string
+        if (!url) return '';
+        
+        // Remove any existing http:// or https:// to prevent doubling
+        url = url.replace(/^(https?:\/\/)?(www\.)?/i, '');
+        
+        // Check if the URL is valid (contains at least one dot)
+        if (url.indexOf('.') === -1) {
+            return url; // Not a valid domain, don't modify
+        }
+        
+        // Check if user typed http:// explicitly somewhere in the input
+        const preferHttp = url.includes('http:') || url.toLowerCase().includes('http://');
+        
+        // Add proper protocol
+        return preferHttp ? 'http://' + url : 'https://' + url;
+    }
+    
+    // Check if we're on mobile to toggle the right display
+    function setFormDisplay() {
+        const isMobile = window.innerWidth <= 768;
+        const mobileContainer = document.querySelector('.mobile-search-container');
+        const desktopContainer = document.querySelector('.desktop-search-container');
+        
+        if (isMobile) {
+            mobileContainer.classList.remove('d-none');
+            desktopContainer.classList.add('d-none');
+        } else {
+            mobileContainer.classList.add('d-none');
+            desktopContainer.classList.remove('d-none');
+        }
+    }
+    
+    // Run on initial load
+    setFormDisplay();
+    
+    // Run when window is resized
+    window.addEventListener('resize', setFormDisplay);
+    
+    // Sync values between mobile and desktop inputs
+    if (urlInput && mobileUrlInput) {
+        urlInput.addEventListener('input', function() {
+            mobileUrlInput.value = this.value;
+        });
+        
+        mobileUrlInput.addEventListener('input', function() {
+            urlInput.value = this.value;
+        });
+    }
+    
+    // Apply URL formatting on input for desktop (real-time)
+    if (urlInput) {
+        urlInput.addEventListener('input', function() {
+            // Store cursor position
+            const cursorPos = this.selectionStart;
+            const originalLength = this.value.length;
+            
+            // Only format if user has typed enough characters to be a domain
+            if (this.value.length > 3 && this.value.indexOf('.') !== -1) {
+                // Don't format if user is actively typing the protocol
+                if (!this.value.startsWith('http://') && !this.value.startsWith('https://') && 
+                    !this.value.endsWith('http://') && !this.value.endsWith('https://')) {
+                    
+                    // Check if cursor is at the end
+                    const isAtEnd = cursorPos === originalLength;
+                    
+                    // Apply formatting
+                    const formattedValue = ensureHttpsPrefix(this.value);
+                    
+                    // Only update if different
+                    if (formattedValue !== this.value) {
+                        this.value = formattedValue;
+                        if (mobileUrlInput) mobileUrlInput.value = formattedValue;
+                        
+                        // Set cursor position
+                        if (isAtEnd) {
+                            // If cursor was at the end, keep it at the end
+                            this.selectionStart = this.selectionEnd = this.value.length;
+                        } else {
+                            // Adjust cursor position based on length difference
+                            const diff = this.value.length - originalLength;
+                            this.selectionStart = this.selectionEnd = cursorPos + diff;
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Apply URL formatting on input for mobile (real-time)
+    if (mobileUrlInput) {
+        mobileUrlInput.addEventListener('input', function() {
+            // Store cursor position
+            const cursorPos = this.selectionStart;
+            const originalLength = this.value.length;
+            
+            // Only format if user has typed enough characters to be a domain
+            if (this.value.length > 3 && this.value.indexOf('.') !== -1) {
+                // Don't format if user is actively typing the protocol
+                if (!this.value.startsWith('http://') && !this.value.startsWith('https://') && 
+                    !this.value.endsWith('http://') && !this.value.endsWith('https://')) {
+                    
+                    // Check if cursor is at the end
+                    const isAtEnd = cursorPos === originalLength;
+                    
+                    // Apply formatting
+                    const formattedValue = ensureHttpsPrefix(this.value);
+                    
+                    // Only update if different
+                    if (formattedValue !== this.value) {
+                        this.value = formattedValue;
+                        if (urlInput) urlInput.value = formattedValue;
+                        
+                        // Set cursor position
+                        if (isAtEnd) {
+                            // If cursor was at the end, keep it at the end
+                            this.selectionStart = this.selectionEnd = this.value.length;
+                        } else {
+                            // Adjust cursor position based on length difference
+                            const diff = this.value.length - originalLength;
+                            this.selectionStart = this.selectionEnd = cursorPos + diff;
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Always ensure proper protocol on blur
+    if (urlInput) {
+        urlInput.addEventListener('blur', function() {
+            this.value = ensureHttpsPrefix(this.value);
+            if (mobileUrlInput) mobileUrlInput.value = this.value;
+        });
+    }
+    
+    if (mobileUrlInput) {
+        mobileUrlInput.addEventListener('blur', function() {
+            this.value = ensureHttpsPrefix(this.value);
+            if (urlInput) urlInput.value = this.value;
+        });
+    }
+    
+    // Ensure robots.txt checkbox remains checked and disabled
+    if (respectRobotsCheckbox) {
+        respectRobotsCheckbox.addEventListener('change', function(e) {
+            e.preventDefault();
+            this.checked = true;
+        });
+    }
+
+    // Handle "Analyze this link" button click
+    const analyzeThisLinkBtn = document.getElementById('analyzeThisLinkBtn');
+    if (analyzeThisLinkBtn) {
+        analyzeThisLinkBtn.addEventListener('click', function() {
+            // Get the active input based on view
+            const activeInput = window.innerWidth <= 768 ? mobileUrlInput : urlInput;
+            const url = ensureHttpsPrefix(activeInput.value.trim());
+
+            if (!url) {
+                alert('Please enter a URL to analyze');
+                return;
+            }
+
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+
+            // Redirect to h_detail page with the URL
+            window.location.href = "{{ url_for('h_detail') }}?url=" + encodeURIComponent(url);
+        });
+    }
+
+    // Select all links that navigate to the URL detail page
+    var detailLinks = document.querySelectorAll('a.btn-primary, a.action-badge');
+    detailLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            // Display the loading overlay only if we're navigating to a detail page
+            if (this.href && (this.href.includes('h_detail') || this.href.includes('keyword_detail'))) {
+                loadingOverlay.style.display = 'flex';
+            }
+        });
+    });
+    
+    // Handle form submission
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+            
+            // Get the active input based on view
+            const activeInput = window.innerWidth <= 768 ? mobileUrlInput : urlInput;
+            
+            // Get form data and ensure HTTPS prefix
+            const url = ensureHttpsPrefix(activeInput.value);
+            activeInput.value = url;  // Update input with standardized URL
+            
+            // Create FormData object - always set respect_robots to true
+            const formData = new FormData();
+            formData.append('url', url);
+            formData.append('respect_robots', 'on');
+            
+            // Submit the form
+            this.submit();
+        });
+    }
+    
+    // Set up tooltips
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    }
+});
+</script>
+{% endblock %}

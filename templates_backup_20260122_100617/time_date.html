@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Current Time & Date | SEO Dada{% endblock %}
+{% block content %}
+<div class="container mx-auto py-10 text-center">
+  <h1 class="text-3xl font-bold mb-4">Current UTC Time & Date</h1>
+  <p class="text-gray-700 mb-6">This time is fetched directly from the server using a live API call.</p>
+  <div id="timeDisplay" class="text-2xl text-blue-600 font-mono">Loading...</div>
+</div>
+
+<script>
+  async function fetchTime() {
+    try {
+      const response = await fetch("/time-date");
+      const data = await response.json();
+      document.getElementById("timeDisplay").textContent = data.current_time;
+    } catch (error) {
+      document.getElementById("timeDisplay").textContent = "Error fetching time.";
+    }
+  }
+
+  fetchTime();
+</script>
+{% endblock %}

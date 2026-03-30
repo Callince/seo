@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+
+  <title>{% block title %}Fourth Dimension{% endblock %}</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+  <!-- Google Fonts - Montserrat and Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    /* Global color variables with new scheme */
+    :root {
+      --primary: #273879;
+      --primary-dark: #1f2d5f;
+      --primary-light: #0f74b2;
+      --primary-rgb: 39, 56, 121;
+      --secondary: #0f74b2;
+      --secondary-light: #0891b2;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --surface: #ffffff;
+      --surface-dark: #f9fafb;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+      --text-muted: #9ca3af;
+      --border-color: #e5e7eb;
+      --border-radius: 10px;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --transition: all 0.2s ease-in-out;
+      --gradient-primary: linear-gradient(135deg, #273879, #0f74b2);
+      --gradient-secondary: linear-gradient(135deg, #1f2d5f, #273879);
+    }
+
+    /* Toast styling with new color scheme */
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      width: 350px;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      background-color: var(--surface);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 1rem;
+      animation: slideInRight 0.3s ease forwards;
+      border: 1px solid rgba(39, 56, 121, 0.1);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .toast.toast-error, .toast.toast-danger {
+      border-left: 4px solid var(--danger);
+      background: #ffffff;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .toast.toast-success {
+      border-left: 4px solid var(--primary);
+      background: #ffffff;
+      border: 1px solid rgba(39, 56, 121, 0.2);
+    }
+
+    .toast.toast-warning, .toast.toast-info {
+      border-left: 4px solid var(--warning);
+      background: #ffffff;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .toast-icon {
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+    }
+
+    .toast-error .toast-icon, .toast-danger .toast-icon {
+      color: var(--danger);
+    }
+
+    .toast-success .toast-icon {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .toast-warning .toast-icon, .toast-info .toast-icon {
+      color: var(--warning);
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      color: var(--primary);
+    }
+
+    .toast-message {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.25rem;
+      line-height: 1;
+      padding: 0.25rem;
+      transition: var(--transition);
+      border-radius: 4px;
+    }
+
+    .toast-close:hover {
+      color: var(--primary);
+      background-color: rgba(39, 56, 121, 0.05);
+    }
+
+    /* Toast animations */
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    /* Success toast special styling */
+    .toast.toast-success .toast-icon {
+      position: relative;
+    }
+
+    .toast.toast-success .toast-icon::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: var(--gradient-primary);
+      border-radius: 50%;
+      padding: 2px;
+      z-index: -1;
+      opacity: 0.1;
+    }
+
+    /* Add subtle glow effect for success toasts */
+    .toast.toast-success {
+      box-shadow: var(--shadow-lg), 0 0 20px rgba(39, 56, 121, 0.1);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 480px) {
+      .toast-container {
+        left: 1rem;
+        right: 1rem;
+        top: 1rem;
+      }
+      
+      .toast {
+        width: 100%;
+      }
+    }
+
+    /* Additional hover effects for interactive elements */
+    .toast:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-lg), 0 8px 25px rgba(39, 56, 121, 0.15);
+    }
+
+    .toast.toast-success:hover {
+      box-shadow: var(--shadow-lg), 0 8px 30px rgba(39, 56, 121, 0.2);
+    }
+  </style>
+
+  <!-- Custom CSS -->
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  <!-- Toast container for flash messages -->
+  <div class="toast-container" id="toastContainer">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+        <div class="toast toast-{{ category }}" data-category="{{ category }}">
+          <div class="toast-icon">
+            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'danger' or category == 'error' %}exclamation-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+          </div>
+          <div class="toast-content">
+            {% if category == 'success' %}
+              <div class="toast-title">Success!</div>
+            {% elif category == 'danger' or category == 'error' %}
+              <div class="toast-title">Error</div>
+            {% elif category == 'warning' %}
+              <div class="toast-title">Warning</div>
+            {% else %}
+              <div class="toast-title">Info</div>
+            {% endif %}
+            <div class="toast-message">{{ message }}</div>
+          </div>
+          <button class="toast-close" aria-label="Close notification">&times;</button>
+        </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  {% block content %}{% endblock %}
+
+  <!-- Scroll to Top Button -->
+  <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <style>
+    /* Scroll to Top Button */
+    .scroll-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--gradient-primary);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .scroll-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-to-top:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(39, 56, 121, 0.4);
+    }
+
+    @media (max-width: 768px) {
+      .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+
+  <script>
+    // Scroll to Top Button Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const scrollToTopBtn = document.getElementById('scrollToTop');
+
+      window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+          scrollToTopBtn.classList.add('visible');
+        } else {
+          scrollToTopBtn.classList.remove('visible');
+        }
+      });
+
+      scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+
+  <script>
+    // Handle toast close button functionality with enhanced animations
+    document.addEventListener('DOMContentLoaded', function() {
+      const toastContainer = document.getElementById('toastContainer');
+      
+      if (toastContainer) {
+        // Close button functionality
+        toastContainer.addEventListener('click', function(e) {
+          if (e.target.classList.contains('toast-close')) {
+            const toast = e.target.closest('.toast');
+            closeToast(toast);
+          }
+        });
+
+        // Auto remove toasts after 5 seconds (success) or 7 seconds (others)
+        document.querySelectorAll('.toast').forEach(toast => {
+          const category = toast.dataset.category;
+          const timeout = category === 'success' ? 5000 : 7000; // Success messages shorter
+          
+          // Add entrance animation
+          setTimeout(() => {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+          }, 100);
+          
+          // Auto close
+          setTimeout(() => {
+            if (toast.parentNode === toastContainer) {
+              closeToast(toast);
+            }
+          }, timeout);
+        });
+
+        // Progress indicator for auto-close (visual feedback)
+        document.querySelectorAll('.toast').forEach(toast => {
+          const category = toast.dataset.category;
+          const timeout = category === 'success' ? 5000 : 7000;
+          
+          // Create progress bar
+          const progressBar = document.createElement('div');
+          progressBar.style.cssText = `
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: ${category === 'success' ? 'linear-gradient(135deg, #273879, #0f74b2)' : 
+                         category === 'danger' || category === 'error' ? '#ef4444' : '#f59e0b'};
+            border-radius: 0 0 ${toast.style.borderRadius || '8px'} ${toast.style.borderRadius || '8px'};
+            animation: progressShrink ${timeout}ms linear forwards;
+            opacity: 0.7;
+          `;
+          
+          toast.style.position = 'relative';
+          toast.appendChild(progressBar);
+        });
+
+        // Add CSS for progress animation
+        if (!document.querySelector('#progressStyles')) {
+          const style = document.createElement('style');
+          style.id = 'progressStyles';
+          style.textContent = `
+            @keyframes progressShrink {
+              from { width: 100%; }
+              to { width: 0%; }
+            }
+          `;
+          document.head.appendChild(style);
+        }
+      }
+
+      // Enhanced close toast function
+      function closeToast(toast) {
+        if (!toast) return;
+        
+        // Stop any running animations
+        toast.style.animation = 'slideOutRight 0.3s ease forwards';
+        
+        // Add scale effect
+        toast.style.transition = 'all 0.3s ease';
+        toast.style.transform = 'translateX(100%) scale(0.95)';
+        toast.style.opacity = '0';
+        
+        setTimeout(() => {
+          if (toast.parentNode === toastContainer) {
+            toastContainer.removeChild(toast);
+          }
+        }, 300);
+      }
+
+      // Add keyboard support (ESC to close all toasts)
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          const toasts = document.querySelectorAll('.toast');
+          toasts.forEach(toast => closeToast(toast));
+        }
+      });
+
+      // Add swipe to dismiss support for mobile
+      let startX, currentX;
+      
+      toastContainer.addEventListener('touchstart', function(e) {
+        startX = e.touches[0].clientX;
+      });
+      
+      toastContainer.addEventListener('touchmove', function(e) {
+        if (!startX) return;
+        currentX = e.touches[0].clientX;
+        const diff = currentX - startX;
+        
+        const toast = e.target.closest('.toast');
+        if (toast && diff > 0) {
+          toast.style.transform = `translateX(${diff}px)`;
+          toast.style.opacity = Math.max(0.3, 1 - diff / 300);
+        }
+      });
+      
+      toastContainer.addEventListener('touchend', function(e) {
+        if (!startX || !currentX) return;
+        const diff = currentX - startX;
+        const toast = e.target.closest('.toast');
+        
+        if (toast) {
+          if (diff > 100) { // Swipe threshold
+            closeToast(toast);
+          } else {
+            // Snap back
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+          }
+        }
+        
+        startX = null;
+        currentX = null;
+      });
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

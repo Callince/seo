@@ -1,0 +1,79 @@
+# Core Web Framework and Extensions
+Flask
+Flask-SQLAlchemy
+Flask-WTF
+Flask-Caching
+Flask-Mail
+Flask-Login
+Flask-Session
+Werkzeug
+gunicorn
+gevent
+
+# ORM and Database
+SQLAlchemy
+psycopg2-binary
+
+# Templates
+Jinja2
+MarkupSafe
+itsdangerous
+
+# Requests and Web
+requests
+beautifulsoup4
+aiohttp
+asyncio
+urllib3
+lxml
+parse
+Brotli  # For handling Brotli-compressed responses
+certifi  # For SSL certificate verification
+
+# Web Scraping and Automation
+scrapy
+selenium
+webdriver-manager
+
+# Browser Automation Enhancer
+nest_asyncio
+
+# Payment Gateway
+razorpay
+
+# Time and Date
+pytz
+python-dateutil
+uuid
+
+# Imaging
+Pillow
+
+# PDF Generation
+reportlab
+num2words  # For converting numbers to words in invoices
+
+# Environment and Deployment
+python-dotenv
+gunicorn
+cryptography
+marshmallow
+
+# Data Analysis
+numpy
+pandas
+Markdown
+
+# NLP and Keyword Extraction
+scikit-learn
+rake-nltk
+nltk
+
+# Testing
+pytest
+
+# Code Quality Tools
+black
+flake8
+APScheduler
+redis==6.4.0

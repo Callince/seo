@@ -1,0 +1,701 @@
+{% extends "base2.html" %}
+
+{% block title %}{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ request.url }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:title" content="{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA">
+<meta property="og:description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+<meta property="og:site_name" content="SEODADA">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:url" content="{{ request.url }}">
+<meta name="twitter:title" content="{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA">
+<meta name="twitter:description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+
+<!-- Schema.org structured data for Blog List -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "SEODADA Blog",
+  "description": "{% if selected_category %}{{ selected_category.name }} articles and insights{% else %}SEO, digital marketing, and technology insights{% endif %}",
+  "url": "{{ request.url }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "SEODADA",
+    "url": "{{ url_for('index', _external=True) }}"
+  }
+  {% if blogs %}
+  ,
+  "blogPost": [
+    {% for blog in blogs %}
+    {
+      "@type": "BlogPosting",
+      "headline": "{{ blog.title }}",
+      "url": "{{ url_for('blog_detail', slug=blog.slug, _external=True) }}",
+      "datePublished": "{{ (blog.publish_date.isoformat() if blog.publish_date else blog.created_at.isoformat()) }}",
+      "dateModified": "{{ blog.updated_at.isoformat() if blog.updated_at else blog.created_at.isoformat() }}",
+      {% if blog.image %}
+      "image": "{{ url_for('static', filename='uploads/blogs/' + blog.image, _external=True) }}",
+      {% endif %}
+      "author": {
+        "@type": "Organization",
+        "name": "SEODADA"
+      },
+      "description": "{{ (blog.description|striptags)[:160] }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+}
+</script>
+
+<!-- Google Fonts - Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        padding-top: 70px;
+    }
+
+    /* Main content with top padding */
+    .main-container {
+        margin-top: 4.375rem;
+        padding: 2rem;
+        max-width: 1400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Page Header - Modern Hero Style */
+    .page-header {
+        background: var(--seodada-gradient);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 0.75rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        transform: translate(30%, -30%);
+    }
+
+    .page-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+        transform: translate(-30%, 30%);
+    }
+
+    .page-header-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+    }
+
+    .page-header p {
+        opacity: 0.95;
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    /* Category Filter */
+    .category-filter {
+        background: var(--surface);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .category-filter h5 {
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .category-btn {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        margin: 0.25rem;
+        border: 2px solid #dee2e6;
+        border-radius: 25px;
+        color: var(--text);
+        text-decoration: none;
+        transition: all 0.3s;
+        font-weight: 500;
+    }
+
+    .category-btn:hover,
+    .category-btn.active {
+        background: var(--seodada-gradient);
+        border-color: transparent;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    }
+
+    /* Blog Grid - Modern Card Layout */
+    .blogs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .blog-card {
+        background: var(--surface);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        position: relative;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    }
+
+    .blog-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--seodada-gradient);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1;
+    }
+
+    .blog-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(39, 56, 121, 0.25),
+                    0 12px 24px -8px rgba(15, 116, 178, 0.15),
+                    0 0 0 1px rgba(39, 56, 121, 0.05);
+        border-color: transparent;
+    }
+
+    .blog-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .blog-card {
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .blog-card:nth-child(1) { animation-delay: 0.1s; }
+    .blog-card:nth-child(2) { animation-delay: 0.2s; }
+    .blog-card:nth-child(3) { animation-delay: 0.3s; }
+    .blog-card:nth-child(4) { animation-delay: 0.4s; }
+    .blog-card:nth-child(5) { animation-delay: 0.5s; }
+    .blog-card:nth-child(6) { animation-delay: 0.6s; }
+
+    .blog-image {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        background: var(--seodada-gradient);
+        transition: filter 0.4s ease;
+        position: relative;
+    }
+
+    .blog-card:hover .blog-image {
+        filter: brightness(1.05) contrast(1.05);
+    }
+
+    .blog-card-body {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blog-category {
+        display: inline-block;
+        padding: 0.375rem 1rem;
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.1), rgba(15, 116, 178, 0.08));
+        color: var(--primary);
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        width: fit-content;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(39, 56, 121, 0.15);
+    }
+
+    .blog-card:hover .blog-category {
+        background: var(--seodada-gradient);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
+    }
+
+    .blog-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 0.875rem;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: color 0.3s ease;
+    }
+
+    .blog-title a {
+        color: inherit;
+        text-decoration: none;
+        background: linear-gradient(to right, var(--primary), var(--primary-light)) no-repeat;
+        background-size: 0% 2px;
+        background-position: left bottom;
+        transition: background-size 0.4s ease, color 0.3s ease;
+    }
+
+    .blog-card:hover .blog-title a {
+        color: var(--primary);
+        background-size: 100% 2px;
+    }
+
+    .blog-excerpt {
+        color: var(--text-light);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .blog-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.85rem;
+        color: var(--text-light);
+        padding-top: 1rem;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .blog-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .read-more {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .read-more:hover {
+        color: var(--primary-dark);
+        gap: 0.5rem;
+    }
+
+    /* Pagination */
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        gap: 0.5rem;
+    }
+
+    .page-item {
+        margin: 0;
+    }
+
+    .page-link {
+        padding: 0.5rem 1rem;
+        border: 2px solid #dee2e6;
+        border-radius: 0.5rem;
+        color: var(--text);
+        text-decoration: none;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-link:hover {
+        background: var(--seodada-gradient);
+        border-color: transparent;
+        color: white;
+    }
+
+    .page-item.active .page-link {
+        background: var(--seodada-gradient);
+        border-color: transparent;
+        color: white;
+    }
+
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    /* Empty State */
+    .no-blogs {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-light);
+    }
+
+    .no-blogs i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    /* Scroll to Top Button */
+    .scroll-to-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 50px;
+        height: 50px;
+        background: var(--seodada-gradient);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        z-index: 999;
+    }
+
+    .scroll-to-top.visible {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .scroll-to-top:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(39, 56, 121, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .blogs-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .page-header p {
+            font-size: 0.95rem;
+        }
+
+        .page-header {
+            padding: 2.5rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .main-container {
+            padding: 1rem;
+            margin-top: 3.5rem;
+        }
+
+        .blogs-grid {
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
+
+        .blog-image {
+            height: 200px;
+        }
+
+        .scroll-to-top {
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .main-container {
+            padding: 0.75rem;
+        }
+
+        .blog-image {
+            height: 180px;
+        }
+    }
+
+    /* Touch device improvements - prevent transform on tap */
+    @media (hover: none) and (pointer: coarse) {
+        .blog-card:hover {
+            transform: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+
+        .blog-card:hover::before {
+            transform: scaleX(0);
+        }
+
+        .blog-card:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+
+        .blog-card:hover .blog-title a {
+            background-size: 0% 2px;
+        }
+
+        .blog-card:hover .blog-category {
+            background: linear-gradient(135deg, rgba(39, 56, 121, 0.1), rgba(15, 116, 178, 0.08));
+            color: var(--primary);
+            border-color: rgba(39, 56, 121, 0.15);
+            transform: none;
+        }
+
+        .blog-card:hover .blog-image {
+            filter: none;
+        }
+
+        .category-btn:hover {
+            transform: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><i class="fas fa-blog me-2"></i>Our Blog</h1>
+            <p>Discover insights, tips, and expert knowledge about SEO and digital marketing</p>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <h5><i class="fas fa-filter me-2"></i>Filter by Category</h5>
+        <div>
+            <a href="{{ url_for('public_blogs') }}"
+               class="category-btn {% if not selected_category %}active{% endif %}">
+                <i class="fas fa-th me-1"></i>Show All
+            </a>
+            {% for category in categories %}
+            <a href="{{ url_for('public_blogs', category=category.id) }}"
+               class="category-btn {% if selected_category == category.id %}active{% endif %}">
+                {{ category.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Blog Grid -->
+    {% if blogs %}
+    <div class="blogs-grid">
+        {% for blog in blogs %}
+        <div class="blog-card" onclick="window.location.href='{{ url_for('blog_detail', slug=blog.slug) }}'">
+            {% if blog.image %}
+            <img src="{{ url_for('static', filename='uploads/blogs/' + blog.image) }}"
+                 alt="{{ blog.title }}"
+                 class="blog-image">
+            {% else %}
+            <div class="blog-image d-flex align-items-center justify-content-center">
+                <i class="fas fa-blog fa-3x text-white" style="opacity: 0.3;"></i>
+            </div>
+            {% endif %}
+
+            <div class="blog-card-body">
+                {% if blog.category %}
+                <span class="blog-category">{{ blog.category.name }}</span>
+                {% endif %}
+
+                <h3 class="blog-title">
+                    <a href="{{ url_for('blog_detail', slug=blog.slug) }}">
+                        {{ blog.title }}
+                    </a>
+                </h3>
+
+                <div class="blog-excerpt">
+                    {% if blog.meta_description %}
+                        {{ blog.meta_description }}
+                    {% elif blog.description %}
+                        {{ blog.description|striptags|truncate(150, True, '...') }}
+                    {% endif %}
+                </div>
+
+                <div class="blog-meta">
+                    <span>
+                        <i class="far fa-calendar me-1"></i>
+                        {{ (blog.publish_date.strftime('%B %d, %Y') if blog.publish_date else blog.created_at.strftime('%B %d, %Y')) }}
+                    </span>
+                    <a href="{{ url_for('blog_detail', slug=blog.slug) }}" class="read-more">
+                        Read More <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination-wrapper">
+        <nav aria-label="Blog pagination">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.prev_num, category=selected_category if selected_category else '') }}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('public_blogs', page=page_num, category=selected_category if selected_category else '') }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.next_num, category=selected_category if selected_category else '') }}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="no-blogs">
+        <i class="fas fa-blog"></i>
+        <h3>No Blog Posts Yet</h3>
+        <p>Check back soon for exciting blog posts!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Scroll to Top Button Functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
+    });
+
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+{% endblock %}

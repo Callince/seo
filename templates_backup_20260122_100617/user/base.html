@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Subscription Management{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+
+    <!-- User Pages CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user-pages.css') }}">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3498db',      /* Vibrant Blue */
+                        secondary: '#2ecc71',    /* Emerald Green */
+                        accent: '#e74c3c',       /* Soft Red */
+                        textPrimary: '#2c3e50',  /* Dark Slate Blue */
+                        textSecondary: '#34495e', /* Deeper Slate Blue */
+                        bgLight: '#ecf0f1',      /* Light Gray-Pale */
+                        borderColor: '#bdc3c7',  /* Light Gray */
+                    },
+                    boxShadow: {
+                        'default': '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        'hover': '0 10px 20px rgba(0, 0, 0, 0.12)',
+                    },
+                    transitionProperty: {
+                        'height': 'height',
+                        'spacing': 'margin, padding',
+                    }
+                },
+                fontFamily: {
+                    'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                },
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style type="text/tailwindcss">
+        @layer components {
+            .nav-link {
+                @apply relative text-textSecondary font-medium hover:text-primary transition duration-300;
+            }
+            
+            .nav-link::after {
+                content: '';
+                @apply absolute w-0 h-0.5 -bottom-1 left-1/2 bg-primary transition-all duration-300;
+            }
+            
+            .nav-link:hover::after {
+                @apply w-full left-0;
+            }
+            
+            .btn-primary {
+                @apply bg-primary hover:bg-primary/80 text-white font-medium uppercase tracking-wider py-2.5 px-5 rounded transition-all duration-300 hover:-translate-y-0.5;
+            }
+            
+            .btn-outline-primary {
+                @apply border border-primary text-primary hover:bg-primary hover:text-white font-medium py-2 px-4 rounded transition-all duration-300;
+            }
+            
+            .btn-outline-danger {
+                @apply border border-accent text-accent hover:bg-accent hover:text-white font-medium py-2 px-4 rounded transition-all duration-300;
+            }
+            
+            .card {
+                @apply bg-white rounded-xl overflow-hidden shadow-default transition-all duration-300 hover:-translate-y-2 hover:shadow-hover;
+            }
+            
+            .card-header {
+                @apply p-4 border-b border-borderColor;
+            }
+            
+            .animate-fade-in {
+                animation: fadeInUp 0.6s ease-out;
+            }
+            .animate-fade-in {
+                animation: fadeInUp 0.6s ease-out forwards;
+                opacity: 0;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translate3d(0, 20px, 0);
+                }
+                to {
+                    opacity: 1;
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+        }
+   
+        @layer utilities {
+            .bg-bgLight {
+                background-color: #ecf0f1;
+            }
+            .text-textPrimary {
+                color: #2c3e50;
+            }
+            .text-textSecondary {
+                color: #34495e;
+            }
+            .border-borderColor {
+                border-color: #bdc3c7;
+            }
+        }
+    </style>
+</head>
+<body class="bg-bgLight text-textPrimary font-sans leading-relaxed min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-white sticky top-0 shadow-default z-10">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-primary text-xl font-semibold tracking-tight">
+                    <i class="fas fa-home mr-2"></i>Your Service
+                </a>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" id="menu-toggle" class="text-textSecondary hover:text-primary focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="/dashboard" class="nav-link" onclick="handleNavigation(event, '/')">
+                        <i class="fas fa-tachometer-alt mr-1"></i>
+                        <span>Dashboard</span>
+                    </a> 
+                    <a href="/subscriptions" class="nav-link" onclick="handleNavigation(event, '/subscriptions')">
+                        <i class="fas fa-shopping-cart mr-1"></i>Subscriptions
+                    </a>
+                    <a href="/profile" class="nav-link" onclick="handleNavigation(event, '/profile')">
+                        <i class="fas fa-user mr-1"></i>Profile
+                    </a>
+                    <a href="/logout" class="nav-link text-accent" onclick="handleNavigation(event, '/logout')">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div id="mobile-menu" class="md:hidden hidden pt-4 pb-2">
+                <div class="flex flex-col space-y-3">
+                    <a href="/" class="nav-link py-2" onclick="handleNavigation(event, '/')">
+                        <i class="fas fa-tachometer-alt mr-1"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/subscriptions" class="nav-link py-2" onclick="handleNavigation(event, '/subscriptions')">
+                        <i class="fas fa-shopping-cart mr-1"></i>Subscriptions
+                    </a>
+                    <a href="/profile" class="nav-link py-2" onclick="handleNavigation(event, '/profile')">
+                        <i class="fas fa-user mr-1"></i>Profile
+                    </a>
+                    <a href="/logout" class="nav-link text-accent py-2" onclick="handleNavigation(event, '/logout')">
+                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        <div class="container mx-auto px-4 py-6">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Enhanced Footer -->
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12 pt-10 pb-6 shadow-sm">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+                <!-- Brand Column -->
+                <div class="animate-fade-in">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-chart-line text-2xl text-primary mr-2"></i>
+                        <span class="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Fourth Dimension</span>
+                    </div>
+                    <p class="text-textSecondary text-sm mb-6">Powerful tools to analyze and optimize your digital presence.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white transition-transform duration-300 hover:-translate-y-1" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white transition-transform duration-300 hover:-translate-y-1" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white transition-transform duration-300 hover:-translate-y-1" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-secondary flex items-center justify-center text-white transition-transform duration-300 hover:-translate-y-1" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Quick Links Column -->
+                <div class="animate-fade-in" style="animation-delay: 0.1s;">
+                    <h3 class="text-lg font-semibold mb-6 relative after:content-[''] after:absolute after:h-1 after:w-12 after:-bottom-2 after:left-0 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded">Quick Links</h3>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="{{ url_for('index') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('url_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">URL Analysis</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('h_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Heading Analysis</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('keyword_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Keyword Analysis</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('image_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Image Analysis</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Resources Column -->
+                <div class="animate-fade-in" style="animation-delay: 0.2s;">
+                    <h3 class="text-lg font-semibold mb-6 relative after:content-[''] after:absolute after:h-1 after:w-12 after:-bottom-2 after:left-0 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded">More Tools</h3>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="{{ url_for('meta_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Meta Analysis</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('site_structure') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Sitemap Analysis</a>
+                        </li>
+                        {% if current_user.is_authenticated %}
+                        <li>
+                            <a href="{{ url_for('profile') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Profile</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('logout') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Logout</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="{{ url_for('login') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Login</a>
+                        </li>
+                        <li>
+                            <a href="{{ url_for('user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+                <!-- Newsletter Column -->
+                <div class="animate-fade-in" style="animation-delay: 0.3s;">
+                    <h3 class="text-lg font-semibold mb-6 relative after:content-[''] after:absolute after:h-1 after:w-12 after:-bottom-2 after:left-0 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded">Stay Updated</h3>
+                    <p class="text-textSecondary text-sm mb-4">Get the latest features and announcements</p>
+                    <form class="relative" action="#" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                        <input type="email" class="w-full px-4 py-3 rounded-lg border border-borderColor focus:border-primary focus:ring focus:ring-primary/20 outline-none transition-all duration-300 text-sm" name="email" placeholder="Your email address" required>
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full bg-gradient-to-r from-primary to-secondary text-white flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="pt-6 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-textSecondary text-sm mb-4 md:mb-0">
+                    &copy; <span id="currentYear"></span> Fourth Dimension. All rights reserved.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="{{url_for('privacy')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Privacy Policy</a>
+                    <a href="{{url_for('terms')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Terms of Service</a>
+                    <a href="{{url_for('contact')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Cookie Policy</a>
+                </div>
+                
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Scroll to Top Button Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('visible');
+                } else {
+                    scrollToTopBtn.classList.remove('visible');
+                }
+            });
+
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (menuToggle && mobileMenu) {
+                menuToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Animate elements on page load
+            const animateElements = document.querySelectorAll('.animate-fade-in');
+            animateElements.forEach(el => {
+                el.classList.add('animate-fade-in');
+            });
+
+            // Optional: Add smooth scrolling to anchors
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+
+        // Navigation handler function
+        function handleNavigation(event, path) {
+            // Log navigation for debugging
+            console.log('Navigating to:', path);
+            
+            // Redirect to the specified path
+            window.location.href = path;
+        }
+        // Add current year to footer copyright
+        const yearElement = document.getElementById('currentYear');
+        if (yearElement) {
+            yearElement.textContent = new Date().getFullYear();
+        }
+    </script>
+</body>
+</html>

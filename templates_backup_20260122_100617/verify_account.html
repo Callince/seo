@@ -1,0 +1,177 @@
+
+{% extends "base1.html" %}
+
+{% block title %}Verify Your Account | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+<style>
+  /* Verify account page specific styles */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 2rem;
+  }
+  .auth-card {
+    width: 100%;
+    max-width: 550px;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+  .auth-card h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--auth-text-dark);
+  }
+  .auth-card p {
+    color: var(--auth-text-light);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .auth-form {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .form-label {
+    text-align: left;
+  }
+  .feedback-text {
+    text-align: left;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- <div class="auth-logo">
+    <img src="{{ url_for('static', filename='images/logo.png', _external=True) if 'logo.png' else 'https://placeholder.pics/svg/200x50/4F46E5/FFFFFF/LOGO' }}" alt="Fourth Dimension Logo">
+  </div> -->
+
+  <div class="auth-card">
+    <!-- Initial state - Check your email -->
+    <div class="status-card active" id="initialState">
+      <div class="auth-card-icon">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <h1>Check Your Email</h1>
+      <p>We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.</p>
+      
+      <div class="verification-sent-email" id="userEmail">
+        {{ email if email else 'your email address' }}
+      </div>
+      
+      <div class="divider">or</div>
+      
+      <form id="resendForm" class="auth-form" method="post" action="{{ url_for('resend_verification') }}">
+        
+        <!-- Add CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        
+        {% if not email %}
+        <div class="form-group">
+          <label for="companyEmail" class="form-label">Email Address</label>
+          <input type="email" id="companyEmail" name="companyEmail" class="form-control" placeholder="your.email@company.com" required>
+          <div id="emailFeedback" class="feedback-text text-danger" style="display: none;"></div>
+        </div>
+        {% else %}
+        <input type="hidden" name="companyEmail" value="{{ email }}">
+        {% endif %}
+        
+        <button type="submit" class="btn btn-primary btn-block btn-with-icon" id="resendBtn">
+          <i class="fas fa-paper-plane"></i>
+          <span>Resend Verification Email</span>
+        </button>
+        
+        <div class="timer" id="resendTimer" style="display: none;">
+          You can request another email in <span class="timer-count" id="timerCount">60</span> seconds
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="back-to-login">
+    <a href="{{ url_for('login') }}">
+      <i class="fas fa-arrow-left"></i>
+      Back to Login
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const resendForm = document.getElementById('resendForm');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendTimer = document.getElementById('resendTimer');
+    const timerCount = document.getElementById('timerCount');
+    const emailInput = document.getElementById('companyEmail');
+    const emailFeedback = document.getElementById('emailFeedback');
+    
+    {% if email %}
+    // If we have an email, we can enable the resend cooldown immediately
+    startResendCooldown();
+    {% endif %}
+    
+    // Handle form validation
+    if (resendForm) {
+      resendForm.addEventListener('submit', function(e) {
+        // If we have a custom email input, validate it
+        if (emailInput) {
+          if (!validateEmail(emailInput.value)) {
+            e.preventDefault();
+            emailInput.classList.add('is-invalid');
+            emailFeedback.textContent = 'Please enter a valid email address.';
+            emailFeedback.style.display = 'block';
+            return;
+          } else {
+            emailInput.classList.remove('is-invalid');
+            emailFeedback.style.display = 'none';
+          }
+        }
+        
+        // Start cooldown timer after submission
+        startResendCooldown();
+      });
+    }
+    
+    // Start the cooldown timer for resend button
+    function startResendCooldown() {
+      if (!resendBtn || !resendTimer || !timerCount) return;
+      
+      // Disable the button and show timer
+      resendBtn.disabled = true;
+      resendTimer.style.display = 'block';
+      
+      // Start countdown
+      let counter = 60;
+      timerCount.textContent = counter;
+      
+      const countdown = setInterval(() => {
+        counter--;
+        timerCount.textContent = counter;
+        
+        if (counter <= 0) {
+          clearInterval(countdown);
+          resendBtn.disabled = false;
+          resendTimer.style.display = 'none';
+        }
+      }, 1000);
+    }
+    
+    // Validate email format
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return re.test(String(email).toLowerCase());
+    }
+  });
+</script>
+{% endblock %}

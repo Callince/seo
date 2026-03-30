@@ -1,0 +1,250 @@
+{# keyword_detail.html with breadcrumb navigation and optimized layout #}
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detail-pages.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="text-center mb-4">Keyword Analysis Results</h2>
+
+  <div class="card result-card">
+    <!-- Header with Back Button -->
+    <div class="card-header bg-dark text-white">
+      <div class="d-flex align-items-center justify-content-between w-100">
+        <div class="d-flex align-items-center flex-grow-1">
+          <i class="fas fa-key me-2"></i>
+          <span>Analyzing: <a href="{{ link }}" target="_blank" class="text-white">{{ link }}</a></span>
+        </div>
+        <div class="ms-auto">
+          <a href="{{ url_for('keyword_search') }}" class="btn btn-outline-light btn-sm">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Search
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Top 10 Keywords and Related Links Section -->
+      {% if auto_keywords %}
+      <div class="row mb-4">
+        <!-- Top 10 Keywords - Left Side -->
+        <div class="col-md-8 order-1 order-md-1">
+          <div class="stat-card">
+            <h4 class="mb-3">
+              <i class="fas fa-magic me-2"></i>
+              Top 10 Keywords
+            </h4>
+            <div class="alert alert-success">
+              <i class="fas fa-check-circle me-2"></i>
+              These <strong>10 keywords</strong> are automatically extracted from the <strong>"Extracted Text"</strong> below using TF-IDF algorithm. All keywords are actual phrases found in the displayed text - no artificial combinations.
+            </div>
+
+            <!-- Keywords Display -->
+            <div class="card">
+              <div class="card-body">
+                <h6 class="card-title mb-3">
+                  <i class="fas fa-tags me-2"></i>Top Keywords ({{ auto_keywords|length }})
+                </h6>
+                <div class="keywords-list" style="font-size: 1.05rem; line-height: 2;">
+                  {% for keyword, score in auto_keywords %}
+                    <span class="badge bg-primary text-white me-2 mb-2" style="font-size: 1rem; padding: 0.6rem 0.9rem;">
+                      {{ keyword }}
+                    </span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Related Links Section - Right Side -->
+        <div class="col-md-4 order-2 order-md-2">
+          <div class="card p-3" style="height: 100%;">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div class="stat-value">Related Links</div>
+              {% if keyword_results %}
+              <a href="{{ url_for('download_keyword_txt', link=link, keywords_input=keywords_input) }}" class="btn btn-primary btn-sm" id="downloadBtn">
+                <i class="fas fa-download me-2"></i>
+                Download TXT
+              </a>
+              {% endif %}
+            </div>
+
+            {% if home_links %}
+            <div class="list-group related-links-container" style="height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; background-color: #f8f9fa;">
+              {% for hlink in home_links %}
+              <a href="{{ url_for('keyword_detail', link=hlink|safe) }}" class="list-group-item list-group-item-action" style="border-radius: 0; border-left: none; border-right: none; border-top: none;" title="{{ hlink }}">
+                {{ hlink }}
+              </a>
+              {% endfor %}
+            </div>
+            {% else %}
+            <div style="height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; background-color: #f8f9fa;">
+              <div class="related-links-empty">
+                <div class="text-center">
+                  <i class="fas fa-info-circle mb-2 d-block" style="font-size: 1.5rem;"></i>
+                  No related links found
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Manual Keyword Analysis and Extracted Text Section - Full Width -->
+      <div class="row">
+        <div class="col-12">
+          <div class="stat-card mb-4">
+            <!-- Search Form -->
+            <div class="search-container mb-4">
+              <h5 class="mb-3">
+                <i class="fas fa-search me-2"></i>
+                Manual Keyword Analysis
+              </h5>
+              <form id="keywordAnalysisForm" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="search-bar">
+                  <input type="text" name="keywords" id="keywordsInput" class="search-input" placeholder="Enter keywords separated by commas (max 10)" value="{{ keywords_input }}">
+                  <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                    <i class="fas fa-search me-2"></i>
+                    Analyze
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Keyword Results Container -->
+            <div id="keywordResultsContainer">
+              {% if keyword_results %}
+              <div class="stats-grid mb-4">
+                {% for keyword, data in keyword_results.keywords.items() %}
+                  <div class="stat-card" style="border-left: 4px solid {{ keywords_colors[keyword] if keyword in keywords_colors else '#4f46e5' }}">
+                    <div class="stat-value">{{ keyword }}</div>
+                    <div class="stat-label">Count: {{ data.count }}</div>
+                    <div class="stat-label">Density: {{ data.density | round(2) }}%</div>
+                  </div>
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Extracted Text Section -->
+            <div class="mt-4">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-value">
+                  Extracted Text
+                  <span class="badge bg-success ms-2" style="font-size: 0.75rem; vertical-align: middle;">
+                    <i class="fas fa-arrow-up me-1"></i>Source for Top 10 Keywords
+                  </span>
+                </div>
+              </div>
+              <div class="stat-label mb-2" id="totalWordsLabel">
+                <i class="fas fa-file-alt me-1"></i>Total Words: {{ keyword_results.total_words if keyword_results else extracted_text.split()|length }}
+              </div>
+              <div class="p-3 bg-background rounded border border-success" id="extractedTextContainer" style="height: 400px; overflow-y: auto;">
+                {{ extracted_text.split()|join(' ')|highlight_keywords(keywords_colors)|safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- jQuery for AJAX -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Handle form submission with AJAX
+    $('#keywordAnalysisForm').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission and page reload
+        
+        var formData = $(this).serialize();
+        var keywords = $('#keywordsInput').val().trim();
+        
+        if (!keywords) {
+            alert('Please enter keywords to analyze');
+            return;
+        }
+        
+        // Show loading spinner
+        $('#loadingSpinner').show();
+        $('#analyzeBtn').prop('disabled', true);
+        
+        // AJAX POST request
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for("keyword_detail_ajax") }}',
+            data: formData + '&link=' + encodeURIComponent('{{ link }}'),
+            success: function(response) {
+                // Hide loading spinner
+                $('#loadingSpinner').hide();
+                $('#analyzeBtn').prop('disabled', false);
+                
+                if (response.success) {
+                    // Update keyword results
+                    updateKeywordResults(response.keyword_results, response.keywords_colors);
+                    
+                    // Update extracted text with highlights
+                    updateExtractedText(response.highlighted_text, response.total_words);
+                    
+                    // Update download button
+                    updateDownloadButton(response.keywords_input);
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#loadingSpinner').hide();
+                $('#analyzeBtn').prop('disabled', false);
+                alert('An error occurred while analyzing keywords. Please try again.');
+                console.error('Error:', error);
+            }
+        });
+    });
+    
+    function updateKeywordResults(keywordResults, keywordsColors) {
+        var html = '<div class="stats-grid mb-4">';
+        
+        for (var keyword in keywordResults.keywords) {
+            var data = keywordResults.keywords[keyword];
+            var color = keywordsColors[keyword] || '#4f46e5';
+            
+            html += '<div class="stat-card" style="border-left: 4px solid ' + color + '">';
+            html += '<div class="stat-value">' + keyword + '</div>';
+            html += '<div class="stat-label">Count: ' + data.count + '</div>';
+            html += '<div class="stat-label">Density: ' + data.density.toFixed(2) + '%</div>';
+            html += '</div>';
+        }
+        
+        html += '</div>';
+        $('#keywordResultsContainer').html(html);
+    }
+    
+    function updateExtractedText(highlightedText, totalWords) {
+        $('#totalWordsLabel').html('Total Words: ' + totalWords);
+        $('#extractedTextContainer').html(highlightedText);
+    }
+    
+    function updateDownloadButton(keywordsInput) {
+        var downloadUrl = '{{ url_for("download_keyword_txt", link=link, keywords_input="") }}';
+        downloadUrl = downloadUrl.replace('keywords_input=', 'keywords_input=' + encodeURIComponent(keywordsInput));
+        
+        if ($('#downloadBtn').length === 0) {
+            var btnHtml = '<a href="' + downloadUrl + '" class="btn btn-primary btn-sm" id="downloadBtn">' +
+                          '<i class="fas fa-download me-2"></i>Download TXT</a>';
+            $('.stat-value:contains("Related Links")').parent().append(btnHtml);
+        } else {
+            $('#downloadBtn').attr('href', downloadUrl);
+        }
+    }
+});
+</script>
+
+{% endblock %}

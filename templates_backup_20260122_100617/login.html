@@ -1,0 +1,195 @@
+
+{% extends "base1.html" %}
+
+{% block title %}Login | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Main auth content -->
+  <div class="auth-container">
+    <div class="auth-logo">
+      <a href="{{ url_for('landing') }}" class="auth-logo-link">
+        {% if website_settings.website_logo_file %}
+            <!-- Admin uploaded logo -->
+            <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                alt="{{ website_settings.website_name }} Logo"
+                id="websiteLogo"
+                onerror="handleLogoError(this)" />
+
+        {% elif website_settings.website_icon %}
+            <!-- FontAwesome icon -->
+            <div class="auth-logo-icon">
+                <i class="{{ website_settings.website_icon }}"></i>
+            </div>
+
+        {% else %}
+            <!-- Default initials fallback -->
+            <div class="auth-logo-initials">
+                {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+            </div>
+        {% endif %}
+      </a>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Welcome back</h1>
+        <p>Please enter your credentials to sign in</p>
+      </div>
+
+      <form id="loginForm" class="auth-form" method="post" action="{{ url_for('login') }}" autocomplete="off">
+        <!-- Add CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+        <div class="form-group">
+          <label for="companyEmail" class="form-label">Email Address</label>
+          <input type="email" id="companyEmail" name="companyEmail" class="form-control" placeholder="your.email@company.com" required value="{{ email_value }}">
+          <div id="emailFeedback" class="feedback-text text-danger" style="display: none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+            <span class="password-toggle" id="passwordToggle">
+              <i class="fas fa-eye"></i>
+            </span>
+          </div>
+          <div id="passwordFeedback" class="feedback-text text-danger" style="display: none;"></div>
+        </div>
+
+        <div class="forgot-password">
+          <a href="{{ url_for('reset_request') }}">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-with-icon" id="loginBtn">
+          <span class="btn-spinner">
+            <div class="spinner"></div>
+          </span>
+          <span class="btn-text">Log in</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
+    </div>
+  </div>
+
+  <!-- Promo sidebar (visible on larger screens) -->
+  <div class="promo-sidebar">
+    <div class="promo-sidebar-content">
+      <h2>Elevate Your SEO Score</h2>
+      <p>Get comprehensive insights into website performance, SEO optimization, and content structure with our advanced tools.</p>
+      
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-search"></i>
+          <span>Complete URL analysis in seconds</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-chart-line"></i>
+          <span>Track performance metrics over time</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-globe"></i>
+          <span>Visualize site structures and hierarchies</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-lock"></i>
+          <span>Secure and private data processing</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Handle logo loading errors
+  function handleLogoError(img) {
+    const fallback = document.getElementById('logoFallback');
+    if (fallback) {
+      img.style.display = 'none';
+      fallback.style.display = 'flex';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Your existing JavaScript code here...
+    
+    const passwordField = document.getElementById('password');
+    const passwordToggle = document.getElementById('passwordToggle');
+    const loginForm = document.getElementById('loginForm');
+    const emailField = document.getElementById('companyEmail');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const passwordFeedback = document.getElementById('passwordFeedback');
+    const loginBtn = document.getElementById('loginBtn');
+
+    // Toggle password visibility
+    passwordToggle.addEventListener('click', function() {
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+      
+      // Toggle icon
+      const icon = passwordToggle.querySelector('i');
+      icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    });
+
+    // Form validation and loading state
+    loginForm.addEventListener('submit', function(e) {
+      let isValid = true;
+
+      // Email validation
+      if (!validateEmail(emailField.value)) {
+        e.preventDefault();
+        emailField.classList.add('is-invalid');
+        emailFeedback.textContent = 'Please enter a valid email address';
+        emailFeedback.style.display = 'block';
+        isValid = false;
+      } else {
+        emailField.classList.remove('is-invalid');
+        emailFeedback.style.display = 'none';
+      }
+
+      // Password validation
+      if (passwordField.value.length < 8) {
+        e.preventDefault();
+        passwordField.classList.add('is-invalid');
+        passwordFeedback.textContent = 'Password must be at least 8 characters long';
+        passwordFeedback.style.display = 'block';
+        isValid = false;
+      } else {
+        passwordField.classList.remove('is-invalid');
+        passwordFeedback.style.display = 'none';
+      }
+
+      // If valid, show loading state
+      if (isValid) {
+        loginBtn.classList.add('btn-loading');
+        loginBtn.disabled = true;
+        
+        // Update button text
+        const btnText = loginBtn.querySelector('.btn-text');
+        btnText.textContent = 'Signing in...';
+      }
+    });
+
+    // Validate email format
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return re.test(String(email).toLowerCase());
+    }
+  });
+</script>
+{% endblock %}

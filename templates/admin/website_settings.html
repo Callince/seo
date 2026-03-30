@@ -1,0 +1,385 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Website Settings - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <!-- <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="fas fa-cog me-2"></i>Website Settings
+            </h1>
+            <p class="mb-0 text-muted">Manage website icon and logo</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#previewModal">
+                <i class="fas fa-eye me-2"></i>Preview Changes
+            </button>
+        </div>
+    </div> -->
+
+    <!-- Current Settings Preview -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-left-primary">
+                <div class="card-header py-3 d-flex align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-desktop me-2"></i>Current Website Logo/Icon
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-center" style="min-height: 100px;">
+                        {% if current_settings['website_logo_file'] %}
+                            <div class="text-center">
+                                <img src="{{ url_for('static', filename='uploads/' + current_settings['website_logo_file']) }}" 
+                                     alt="Website Logo" class="rounded" style="max-height: 80px; max-width: 200px;">
+                                <div class="mt-2"><small class="text-muted">Custom Logo</small></div>
+                            </div>
+                        {% else %}
+                            <div class="text-center">
+                                <i class="{{ current_settings['website_icon'] if current_settings['website_icon'] else 'fas fa-chart-line' }}" style="font-size: 4rem; color: #4f46e5;"></i>
+                                <div class="mt-2"><small class="text-muted">FontAwesome Icon</small></div>
+                            </div>
+                        {% endif %}
+                        <div class="position-absolute bottom-0 end-0 p-3">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#previewModal">
+                                <i class="fas fa-eye me-2"></i>Preview Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Form -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-edit me-2"></i>Update Settings
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin_update_website_settings') }}" method="post" enctype="multipart/form-data" id="settingsForm">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        
+                        <!-- Logo Type Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-image me-2 text-info"></i>Logo Type
+                            </label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="logo_type" 
+                                               id="use_icon" value="icon" {% if not current_settings['website_logo_file'] %}checked{% endif %}
+                                               onchange="toggleLogoType()">
+                                        <label class="form-check-label" for="use_icon">
+                                            <strong>Use FontAwesome Icon</strong>
+                                            <small class="d-block text-muted">Choose from pre-built icons</small>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="logo_type" 
+                                               id="use_custom" value="custom" {% if current_settings.website_logo_file %}checked{% endif %}
+                                               onchange="toggleLogoType()">
+                                        <label class="form-check-label" for="use_custom">
+                                            <strong>Upload Custom Logo</strong>
+                                            <small class="d-block text-muted">Use your own image file</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FontAwesome Icon Selection -->
+                        <div class="mb-4" id="icon_section" {% if current_settings.website_logo_file %}style="display: none;"{% endif %}>
+                            <label for="website_icon" class="form-label fw-bold">
+                                <i class="fas fa-icons me-2 text-warning"></i>FontAwesome Icon
+                            </label>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <select class="form-select" id="website_icon" name="website_icon" onchange="updatePreview()">
+                                        <option value="">Select an icon (default: Chart Line)</option>
+                                        {% for icon in fontawesome_icons %}
+                                        <option value="{{ icon.class }}" {% if current_settings.website_icon and icon.class == current_settings.website_icon %}selected{% endif %}>
+                                            {{ icon.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 border rounded bg-light">
+                                        <i id="icon_preview" class="{{ current_settings.website_icon if current_settings.website_icon else 'fas fa-chart-line' }}" style="font-size: 2rem; color: #4f46e5;"></i>
+                                        <div class="small text-muted mt-1">Preview</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Logo Upload -->
+                        <div class="mb-4" id="logo_section" {% if not current_settings.website_logo_file %}style="display: none;"{% endif %}>
+                            <label for="logo_file" class="form-label fw-bold">
+                                <i class="fas fa-upload me-2 text-success"></i>Custom Logo File
+                            </label>
+                            <input type="file" class="form-control" id="logo_file" name="logo_file" 
+                                   accept=".png,.jpg,.jpeg,.gif,.svg,.webp,.ico" onchange="previewLogo(this)">
+                            <input type="hidden" name="use_custom_logo" id="use_custom_logo" value="{% if current_settings.website_logo_file %}on{% endif %}">
+                            <div class="form-text">
+                                <strong>Supported formats:</strong> PNG, JPG, JPEG, GIF, SVG, WebP, ICO<br>
+                                <strong>Recommended size:</strong> 200x60px or similar aspect ratio<br>
+                                <strong>Max file size:</strong> 2MB
+                            </div>
+                            
+                            {% if current_settings.website_logo_file %}
+                            <div class="mt-3">
+                                <label class="form-label">Current Logo:</label>
+                                <div class="border rounded p-3 bg-light text-center">
+                                    <img src="{{ url_for('static', filename='uploads/' + current_settings.website_logo_file) }}" 
+                                         alt="Current Logo" class="img-fluid" style="max-height: 80px;">
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mt-3" id="logo_preview_container" style="display: none;">
+                                <label class="form-label">New Logo Preview:</label>
+                                <div class="border rounded p-3 bg-light text-center">
+                                    <img id="logo_preview" alt="Logo Preview" class="img-fluid" style="max-height: 80px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                    <i class="fas fa-undo me-2"></i>Reset Form
+                                </button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#resetModal">
+                                    <i class="fas fa-refresh me-2"></i>Clear All Settings
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings History -->
+        <div class="col-lg-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">
+                        <i class="fas fa-history me-2"></i>Recent Changes
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if settings_dict %}
+                    <div class="timeline">
+                        {% for key, setting in settings_dict.items() %}
+                        {% if setting.updated_at %}
+                        <div class="timeline-item mb-3">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">{{ setting.setting_key.replace('_', ' ').title() }}</h6>
+                                <p class="mb-1 text-muted small">{{ setting.description or 'Updated' }}</p>
+                                <span class="badge bg-secondary">
+                                    {{ setting.updated_at.strftime('%d %b %Y, %H:%M') }} UTC
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No settings history available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="card shadow mt-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">
+                        <i class="fas fa-lightbulb me-2"></i>Tips
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Choose between FontAwesome icon or custom logo</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Use high-quality images for better appearance</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>SVG logos work best for scalability</small>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Icons are lightweight and load faster</small>
+                        </li>
+                        <li class="mb-0">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <small>Changes take effect immediately</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">
+                    <i class="fas fa-eye me-2"></i>Preview Changes
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="border rounded p-4" style="background: #f8fafc;">
+                    <div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm rounded">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" id="preview_logo_container">
+                                <!-- Preview will be updated by JavaScript -->
+                            </div>
+                            <div>
+                                <h4 class="mb-1">Your Website</h4>
+                                <p class="text-muted mb-0">Logo/Icon Preview</p>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-primary">Preview</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Confirmation Modal -->
+<div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="resetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="resetModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Clear All Settings
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to clear all website settings?</p>
+                <div class="alert alert-warning">
+                    <i class="fas fa-warning me-2"></i>
+                    <strong>Warning:</strong> This action will:
+                    <ul class="mb-0 mt-2">
+                        <li>Reset icon to default chart icon</li>
+                        <li>Delete any custom logo files</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('admin_reset_website_settings') }}" method="post" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-refresh me-2"></i>Clear All Settings
+                    </button>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleLogoType() {
+    const useIcon = document.getElementById('use_icon').checked;
+    const useCustom = document.getElementById('use_custom').checked;
+    
+    document.getElementById('icon_section').style.display = useIcon ? 'block' : 'none';
+    document.getElementById('logo_section').style.display = useCustom ? 'block' : 'none';
+    document.getElementById('use_custom_logo').value = useCustom ? 'on' : '';
+    
+    updatePreview();
+}
+
+function updatePreview() {
+    const websiteIcon = document.getElementById('website_icon').value || 'fas fa-chart-line';
+    const useCustom = document.getElementById('use_custom').checked;
+    
+    // Update form preview elements
+    document.getElementById('icon_preview').className = websiteIcon;
+    
+    // Update modal preview elements
+    const previewLogoContainer = document.getElementById('preview_logo_container');
+    if (useCustom) {
+        // If using custom logo, keep current logo or show placeholder
+        {% if current_settings.website_logo_file %}
+        previewLogoContainer.innerHTML = '<img src="{{ url_for('static', filename='uploads/' + current_settings.website_logo_file) }}" alt="Logo" style="max-height: 50px; max-width: 100px;">';
+        {% else %}
+        previewLogoContainer.innerHTML = '<div class="bg-light border rounded p-2 text-center" style="width: 80px; height: 50px; display: flex; align-items: center; justify-content: center;"><small class="text-muted">Logo</small></div>';
+        {% endif %}
+    } else {
+        previewLogoContainer.innerHTML = '<i class="' + websiteIcon + '" style="font-size: 2.5rem; color: #4f46e5;"></i>';
+    }
+}
+
+function previewLogo(input) {
+    const preview = document.getElementById('logo_preview');
+    const container = document.getElementById('logo_preview_container');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            container.style.display = 'block';
+            
+            // Update modal preview as well
+            const previewLogoContainer = document.getElementById('preview_logo_container');
+            previewLogoContainer.innerHTML = '<img src="' + e.target.result + '" alt="Logo" style="max-height: 50px; max-width: 100px;">';
+        };
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        container.style.display = 'none';
+        updatePreview(); // Revert to current logo or icon
+    }
+}
+
+function resetForm() {
+    if (confirm('Are you sure you want to reset the form to current saved values?')) {
+        document.getElementById('settingsForm').reset();
+        document.getElementById('logo_preview_container').style.display = 'none';
+        toggleLogoType();
+        updatePreview();
+    }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    updatePreview();
+});
+</script>
+
+{% endblock %}

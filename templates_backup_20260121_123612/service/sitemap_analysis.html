@@ -1,0 +1,703 @@
+{% extends "base2.html" %}
+
+{% block title %}Site Structure Checker – Improve Website Architecture for Better SEO{% endblock %}
+{% block meta %}<meta name="description" content="Analyze your site structure with our website architecture checker to improve navigation, SEO, and user experience.">{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-teal-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-sitemap text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">Sitemap Analysis Tool</span>- Analyze and Improve Your Website Architecture for SEO
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Run a full Sitemap analysis with Seodada to understand how your site is structured. Our tool checks your website's sitemap and shows where navigation, linking, or layout needs improvement, so your SEO and user flow get better.
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('site_structure') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start Site Structure Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is Site Structure Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is Sitemap Analysis?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Sitemap analysis is simply checking how your pages are arranged and connected on your site. It tells us how users and search engines move through your content.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        A clean structure helps search engines understand your pages faster and helps visitors reach what they need without confusion. Our sitemap tool makes this easy by showing what is working and what needs fixing. We also support analyzing sitemaps for both XML and HTML formats.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Page Organization</h4>
+                                <p class="text-gray-600 text-sm">How pages are grouped and connected</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">User Navigation</h4>
+                                <p class="text-gray-600 text-sm">How visitors move through your site</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Search Engine Understanding</h4>
+                                <p class="text-gray-600 text-sm">How crawlers interpret your layout</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Site Structure Matters Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Why Site Structure Matters for SEO</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A strong layout makes crawling and ranking easier. Sitemap analysis helps us spot where your structure supports SEO and where it blocks growth.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Crawling and Indexing</h3>
+                            <p class="text-gray-600">
+                                A clear seo sitemap helps Google understand each page and its role.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved User Experience</h3>
+                            <p class="text-gray-600">
+                                Good structure makes the site easier to use, so people stay longer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-star text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Content Prioritization</h3>
+                            <p class="text-gray-600">
+                                It helps Google focus on your most important pages.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chart-line text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Performance</h3>
+                            <p class="text-gray-600">
+                                When the structure is clean, rankings and traffic improve steadily.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Site Structure Checker- How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our Sitemap analysis runs in a simple flow, so you get results fast.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Enter Your URL</h3>
+                    <p class="text-gray-600 text-sm">
+                        Add your website link to start.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Scan Hierarchy</h3>
+                    <p class="text-gray-600 text-sm">
+                        We map page depth, categories, and internal links.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Identify Issues</h3>
+                    <p class="text-gray-600 text-sm">
+                        We highlight weak pathways, missing links, and buried pages.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Optimize Structure</h3>
+                    <p class="text-gray-600 text-sm">
+                        You get clear steps to improve your layout.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                <p class="text-lg text-gray-700 text-center">
+                    This works for any platform, including WordPress sitemap and Shopify sitemap, so you can audit your structure no matter what platform you are built on.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Types of Website Structures Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Types of Website Structures</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Different sites follow different layouts. Sitemap analysis helps you see which structure you currently have and whether it matches your goals.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-sitemap text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Hierarchical Structure</h3>
+                    <p class="text-gray-600 mb-4">
+                        Pages are arranged in parent and child groups with clear categories.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        Best for large websites.
+                    </div>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-layer-group text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Flat Structure</h3>
+                    <p class="text-gray-600 mb-4">
+                        Most pages are only a few clicks from the homepage.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        Best for small sites.
+                    </div>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-project-diagram text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Silo Structure</h3>
+                    <p class="text-gray-600 mb-4">
+                        Pages are grouped by topic with strong internal linking.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        Best for blogs and content-heavy sites.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    A good structure gives every page a clear place. If you want to understand the ideal layout, we also show a simple sitemap example inside the report.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Site Structure for SEO Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Best Site Structure for SEO</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        The best layout is simple and easy to follow. Sitemap analysis helps confirm if your important pages are close to the homepage and if categories are clear.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Simple and organized layout</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Important pages are within 2 to 3 clicks</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Clear relationships between pages</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">What Is Best Site Structure for SEO?</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Logical category hierarchies</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Strong internal linking</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Clean URL structure</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Breadcrumb navigation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Site Structure Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Site Structure Analysis- What Our Tool Checks</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our Sitemap analysis reviews the key parts of your structure so you know what to improve.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-layer-group text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Page Depth</h3>
+                    <p class="text-gray-600 text-sm">
+                        We check how far pages are from the homepage.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-random text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Link Flow</h3>
+                    <p class="text-gray-600 text-sm">
+                        We see how internal links pass value to other pages.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-folder-tree text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Categories</h3>
+                    <p class="text-gray-600 text-sm">
+                        We review how content is grouped.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-route text-2xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Internal Pathways</h3>
+                    <p class="text-gray-600 text-sm">
+                        We check if pages connect properly.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-search text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">SEO Interpretation</h3>
+                    <p class="text-gray-600 text-sm">
+                        We show how search engines read your layout.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-blog text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Blog SEO Structure</h3>
+                    <p class="text-gray-600 text-sm">
+                        We highlight blog structure gaps if needed.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-gradient-to-br from-teal-50 to-white p-8 rounded-2xl border border-teal-100">
+                <p class="text-lg text-gray-700 text-center">
+                    We also check your XML sitemap file and confirm that your robots.txt sitemap setup is correct.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Site Structure Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Blog Structure Benefits</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Older articles stay visible</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>New posts get indexed quickly</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Users navigate topics easily</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Better content discoverability</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Blog Site Structure for SEO</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        A strong blog layout makes posts easy to find and easy to rank. Sitemap analysis helps you see whether your blog categories, tags, and internal links are working well.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        A planned blog structure keeps older posts visible, helps new posts index faster, and lets readers move through topics smoothly.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- E-commerce Site Structure Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">E-commerce Site Structure Best Practices</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Online stores need a clean setup, so shoppers can find products quickly. Sitemap analysis helps us spot layout gaps that hurt sales or crawling.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-teal-50 to-white p-6 rounded-xl border border-teal-100">
+                    <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-folder text-teal-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Logical Categories</h3>
+                    <p class="text-gray-600 text-sm">Clear product groups for easy browsing.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-filter text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Smart Filters</h3>
+                    <p class="text-gray-600 text-sm">Help users narrow products fast.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border border-green-100">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-boxes text-green-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Product Groups</h3>
+                    <p class="text-gray-600 text-sm">Related items are grouped well.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-100">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-mouse-pointer text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Fewer Clicks</h3>
+                    <p class="text-gray-600 text-sm">Customers reach products faster.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    A clean structure helps Google understand product connections and rank them better.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Improve Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How to Improve Your Website's Structure</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Start your Sitemap analysis by checking internal links, grouping similar pages, and reducing unnecessary depth. Fixing these basics makes your site easier for users and search engines to understand.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Key Improvements
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Review and optimize internal links</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Group related pages together</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Reduce unnecessary page depth</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Create clear hierarchy structure</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Benefits You'll See
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Better indexing by search engines</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Smoother browsing experience</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>More consistent visibility</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Improved user navigation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about Site Structure</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How does site structure affect Google rankings?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            A clean <strong>SEO site structure</strong> helps Google crawl your pages faster and understand which pages matter most. Better structure usually leads to stronger rankings.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">What is the ideal depth for pages in a website structure?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Most pages should be within two or three clicks from the homepage. This supports better <strong>site structure SEO</strong> and helps search engines index content easily.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Does internal linking improve site structure?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Internal links strengthen your <strong>website site structure</strong> by showing clear relationships between pages and guiding users smoothly through your website.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How often should I check my site structure?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Reviewing it regularly, especially when adding new content, ensures your <strong>site structure checker</strong> insights remain accurate as your website grows.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Is flat site structure better than deep structure?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            For many websites, a flatter structure improves crawling and user experience. However, large websites may need deeper layouts to support an organized <strong>site structure for SEO</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your Site Structure?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start your <strong>site structure analysis</strong> today and improve your website architecture for better SEO and user experience with our powerful <strong>site structure checker</strong>
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('site_structure') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start Site Structure Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

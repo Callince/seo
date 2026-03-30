@@ -1,0 +1,650 @@
+{% extends "base2.html" %}
+
+{% block title %}Keyword Analysis Tool – Find the Best Keywords to Rank Higher{% endblock %}
+{% block meta %}<meta name="description" content="Use our keyword analysis tool to find winning keywords, competitor gaps, and ranking opportunities instantly.">{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-green-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-key text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">Keyword Analysis Tool</span> – Find the Best Keywords to Rank Higher
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Use our keyword analysis tool to find winning keywords, competitor gaps, and ranking opportunities instantly. Discover powerful insights with our SEO keyword analysis tool.
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('keyword_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start Keyword Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is Keyword Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is Keyword Analysis?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Keyword analysis is the process of studying search terms to understand what users want and how search engines interpret them. If you're wondering <strong>what is keyword analysis</strong>, it simply means finding the words that matter for your content.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Strong insights from <strong>website keyword analysis</strong> help you target topics that match user intent and guide your growth online. Understanding search patterns gives you a competitive edge.
+                    </p>
+                    <p class="text-lg text-gray-600">
+                        Our <strong>keyword analysis tool</strong> provides comprehensive data to help you make informed decisions about your content strategy.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Understand User Intent</h4>
+                                <p class="text-gray-600 text-sm">Learn what your audience is searching for</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Target Right Topics</h4>
+                                <p class="text-gray-600 text-sm">Focus on keywords that drive results</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Guide Growth Strategy</h4>
+                                <p class="text-gray-600 text-sm">Build content that ranks and converts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Keyword Analysis Helps SEO Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Keyword Analysis Helps Improve SEO Rankings</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Keyword analysis gives you clarity on what people search for and helps you shape your content to match their needs.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-search text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Search Understanding</h3>
+                            <p class="text-gray-600">
+                                With clean <strong>keyword analysis SEO</strong> insights, your pages become easier for search engines to understand and rank.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chart-line text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved Visibility</h3>
+                            <p class="text-gray-600">
+                                This helps improve your visibility and brings more targeted traffic to your website consistently.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-link text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Strong Internal Linking</h3>
+                            <p class="text-gray-600">
+                                Strong keywords also support your internal linking, topic selection, and long-term ranking strategy.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bullseye text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Targeted Traffic</h3>
+                            <p class="text-gray-600">
+                                Reach users who are actively searching for what you offer with precise <strong>SEO keyword analysis</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Keyword Analysis Tool – How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our system scans search patterns and content structure to deliver accurate keyword analysis results.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Enter Your URL</h3>
+                    <p class="text-gray-600 text-sm">
+                        Provide your website URL or specific page to analyze
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Deep Scanning</h3>
+                    <p class="text-gray-600 text-sm">
+                        Our tool studies volume, competition, relevance, and user intent
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">SEO Analysis</h3>
+                    <p class="text-gray-600 text-sm">
+                        Get comprehensive <strong>SEO keyword analysis</strong> insights
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Optimize & Rank</h3>
+                    <p class="text-gray-600 text-sm">
+                        Understand where your page stands and how to improve
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-gradient-to-br from-green-50 to-white p-8 rounded-2xl border border-green-100">
+                <p class="text-lg text-gray-700 text-center">
+                    It works as a powerful <strong>keyword analysis tool</strong> that helps you understand your page positioning and content improvement opportunities for better ranking potential.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Competitor Keyword Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Why Competitor Analysis Matters</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Discover competitor strengths and weaknesses</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Find missed keyword opportunities</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Build stronger SEO decisions</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Outperform competition strategically</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Competitor Keyword Analysis (Find What Your Competitors Rank For)</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Understanding competitor performance helps you plan smarter. Our tool performs deep <strong>competitor keyword analysis</strong> and full <strong>keyword research and competitor analysis</strong> to show the terms your competitors are ranking for.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        This includes their strengths, weaknesses, and missed opportunities. These insights give you a strong base for better <strong>competitive keyword analysis</strong> and stronger SEO decisions.
+                    </p>
+                    <div class="space-y-3 mt-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-trophy text-blue-600"></i>
+                            </div>
+                            <span class="text-gray-700">Identify top-ranking competitor keywords</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-eye text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Analyze competitor content strategies</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-lightbulb text-purple-600"></i>
+                            </div>
+                            <span class="text-gray-700">Uncover untapped opportunities</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keyword Gap Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Keyword Gap Analysis – Discover Missing Opportunities</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our keyword gap insights show you what your competitors rank for that you don't.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-search-minus text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Find Missing Keywords</h3>
+                    <p class="text-gray-600">
+                        With accurate <strong>keyword gap analysis</strong>, you can discover content areas you're missing and plan new topics easily.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-bar text-2xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">High Potential Terms</h3>
+                    <p class="text-gray-600">
+                        This is supported by <strong>keyword search analysis</strong>, helping you find terms with high potential for ranking.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-rocket text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Early Advantage</h3>
+                    <p class="text-gray-600">
+                        Identifying these gaps early gives you an advantage before others target the same keywords.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keyword Research & Analysis Tool Features Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Keyword Research & Analysis Tool Features</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    This platform brings together the best <strong>keyword research and analysis</strong> features in a single dashboard.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Real-Time Search Trends</h3>
+                    <p class="text-gray-600 text-sm">
+                        Stay updated with the latest search patterns and trending topics in your niche.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-sort-amount-up text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Volume Insights</h3>
+                    <p class="text-gray-600 text-sm">
+                        Understand search volume data to prioritize high-impact keywords.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-crosshairs text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Intent Mapping</h3>
+                    <p class="text-gray-600 text-sm">
+                        Identify user intent behind searches to create more relevant content.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-tachometer-alt text-2xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Difficulty Scoring</h3>
+                    <p class="text-gray-600 text-sm">
+                        Evaluate ranking difficulty to find achievable keyword targets.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-lightbulb text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Topic Suggestions</h3>
+                    <p class="text-gray-600 text-sm">
+                        Get recommendations for better content topics and keyword clusters.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-layer-group text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Keyword Clusters</h3>
+                    <p class="text-gray-600 text-sm">
+                        Group related keywords for comprehensive content planning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    As a complete <strong>keyword research and analysis tool</strong>, these features make your planning more accurate and strategic.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Choose Right Keywords Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How to Choose the Right Keywords for SEO</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Choosing the right keywords comes down to understanding intent, competition, and usefulness.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-bullseye text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Match User Intent</h3>
+                    <p class="text-gray-600 text-sm">Focus on matching user needs with the topic you want to rank for.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border border-green-100">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-balance-scale text-green-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Check Competition</h3>
+                    <p class="text-gray-600 text-sm">Identify terms with reasonable difficulty using our <strong>SEO keyword analysis tool</strong>.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-100">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-chart-bar text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Analyze Volume</h3>
+                    <p class="text-gray-600 text-sm">Find keywords with good search volume for better traffic potential.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border border-orange-100">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-file-alt text-orange-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Ensure Relevance</h3>
+                    <p class="text-gray-600 text-sm">Make your content more relevant and easier to rank with <strong>keyword analysis for SEO</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Keyword Research Tips Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Keyword Research Tips for Better Ranking and Faster Results</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Small improvements in your keyword strategy can create strong results.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Best Practices
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use trusted <strong>keyword analysis tools</strong> to refine your choices</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Find keywords that match your content clearly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use <strong>keyword analysis software</strong> to track trends</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Leverage <strong>tools for keyword analysis</strong> for consistent updates</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Pro Tips
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Regular updates in keyword planning help you rank faster</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Stay consistent with your keyword strategy</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Focus on long-tail keywords for faster wins</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Monitor competitor keywords regularly</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about Keyword Analysis</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Why is keyword analysis important for SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Because it helps you understand what users search for and how to shape your content. Strong <strong>keyword analysis SEO</strong> insights lead to better ranking and engagement.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How often should I perform keyword analysis?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            It's helpful to check your keywords regularly to stay updated with trends and user behaviour. Frequent <strong>keyword SEO analysis</strong> keeps your content relevant.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">What's the difference between keyword research and keyword analysis?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Research finds new terms, while analysis studies how well they match your goals. Together, <strong>keyword research and analysis</strong> creates strong content planning.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Can keyword analysis help improve my content strategy?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Understanding performance helps you refine topics, improve structure, and match user intent more closely through <strong>keyword analysis for SEO</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Does keyword analysis help with PPC advertising?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. PPC planning also relies on strong keyword data. Good <strong>keyword research and analysis</strong> ensures you target the best terms for both paid and organic growth.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Find Winning Keywords?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start your <strong>keyword analysis</strong> today and discover untapped ranking opportunities with our powerful <strong>keyword analysis tools</strong>
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('keyword_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start Keyword Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

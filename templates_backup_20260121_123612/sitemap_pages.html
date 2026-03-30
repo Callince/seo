@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pages Sitemap - SEO Dada</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#273879',
+                        'primary-dark': '#1f2d5f',
+                        'primary-light': '#0f74b2',
+                        secondary: '#0f74b2',
+                        accent: '#0891b2',
+                        background: '#f8fafc',
+                        surface: '#ffffff',
+                        text: '#1e293b',
+                        'text-light': '#64748b',
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sitemap-link {
+            transition: all 0.2s ease;
+        }
+
+        .sitemap-link:hover {
+            color: #273879;
+            padding-left: 8px;
+        }
+
+        .table-row:hover {
+            background-color: #f8fafc;
+        }
+
+        .section-card {
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Mobile responsive table improvements */
+        .table-scroll-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #dee2e6 #f8f9fa;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+
+        .table-scroll-wrapper::-webkit-scrollbar-thumb {
+            background: #dee2e6;
+            border-radius: 3px;
+        }
+
+        .table-scroll-wrapper table {
+            min-width: 600px;
+        }
+
+        @media (max-width: 768px) {
+            .section-card .p-6 {
+                padding: 1rem !important;
+            }
+
+            table th, table td {
+                padding: 0.75rem 0.5rem !important;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            table th, table td {
+                padding: 0.5rem 0.35rem !important;
+                font-size: 0.75rem;
+            }
+
+            .section-card {
+                border-radius: 1rem;
+            }
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .section-card:hover {
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .table-row:hover {
+                background-color: transparent;
+            }
+
+            .table-row:active {
+                background-color: #f8fafc;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50" style="height: 4.375rem;">
+        <nav class="container mx-auto px-4 sm:px-6" style="height: 100%;">
+            <div class="flex justify-between items-center" style="height: 100%;">
+                <a href="{{ url_for('landing') }}" class="logo-display min-w-0">
+                    {% if website_settings and website_settings.website_logo_file %}
+                        <img src="{{ url_for('static', filename='uploads/' + website_settings.website_logo_file) }}"
+                            alt="SEO Dada Logo" class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='images/seodada.png') }}"
+                            alt="SEO Dada Logo" class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image">
+                    {% endif %}
+                </a>
+                <a href="{{ url_for('sitemap_page') }}" class="text-primary hover:text-primary-dark font-medium">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Sitemap
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary to-secondary text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <i class="fas fa-file-alt text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-bold">Pages</h1>
+                    <p class="text-blue-100">All website pages on SEO Dada</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <nav class="flex items-center space-x-2 text-sm">
+                <a href="{{ url_for('sitemap_page') }}" class="text-gray-500 hover:text-primary">Sitemap</a>
+                <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
+                <span class="text-gray-900 font-medium">Pages</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Main Pages Section -->
+        <div class="section-card bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-cyan-50">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-home text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Main Pages</h2>
+                        <p class="text-sm text-gray-500">Core website pages</p>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto table-scroll-wrapper">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Page</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">URL</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('landing') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-home mr-2 text-gray-400"></i>Home
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('about') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-info-circle mr-2 text-gray-400"></i>About Us
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/about</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('contact') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-envelope mr-2 text-gray-400"></i>Contact Us
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/contact</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEO Analysis Services Section -->
+        <div class="section-card bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-search text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">SEO Analysis Services</h2>
+                        <p class="text-sm text-gray-500">Analyze and optimize your website SEO</p>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto table-scroll-wrapper">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Service</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">URL</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('url_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-link mr-2 text-gray-400"></i>URL Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/url-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('heading_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-heading mr-2 text-gray-400"></i>Heading Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/heading-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('keyword_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-key mr-2 text-gray-400"></i>Keyword Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/keyword-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('image_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-image mr-2 text-gray-400"></i>Image Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/image-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('meta_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-tags mr-2 text-gray-400"></i>Meta Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/meta-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('sitemap_analysis_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-sitemap mr-2 text-gray-400"></i>Sitemap Analysis
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/services/sitemap-analysis</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Legal & Support Section -->
+        <div class="section-card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-teal-50">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Legal & Support</h2>
+                        <p class="text-sm text-gray-500">Policies, terms, and help resources</p>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto table-scroll-wrapper">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Page</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">URL</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('privacy') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-user-shield mr-2 text-gray-400"></i>Privacy Policy
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/privacy</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('terms') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-file-contract mr-2 text-gray-400"></i>Terms of Service
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/terms</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('cookie_policy') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-cookie-bite mr-2 text-gray-400"></i>Cookie Policy
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/cookie-policy</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                        <tr class="table-row">
+                            <td class="px-6 py-4">
+                                <a href="{{ url_for('help_page') }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <i class="fas fa-question-circle mr-2 text-gray-400"></i>Help Center
+                                </a>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ base_url }}/help</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">{{ current_date }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <p class="text-gray-400 text-sm">&copy; 2025 SEO Dada. All rights reserved.</p>
+                <div class="flex space-x-6 text-sm">
+                    <a href="{{ url_for('privacy') }}" class="text-gray-400 hover:text-white transition">Privacy</a>
+                    <a href="{{ url_for('terms') }}" class="text-gray-400 hover:text-white transition">Terms</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-400 hover:text-white transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

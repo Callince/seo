@@ -1,0 +1,1008 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Details{% endblock %}
+
+{% block content %}
+<div class="animate-fade-in">
+    <!-- Subscription Overview Card -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Subscription Details</h1>
+        <a href="{{ url_for('user_subscriptions') }}" class="btn-outline-primary">
+            <i class="fas fa-arrow-left mr-2"></i>Back to Subscriptions
+        </a>
+    </div>
+
+    <div class="card mb-8">
+        <div class="card-header">
+            <h2 class="text-xl font-semibold text-white">{{ plan.plan }} Plan</h2>
+        </div>
+        <div class="p-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-calendar-alt text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">Start Date</p>
+                            <p class="font-medium">{{ subscription.start_date.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-calendar-check text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">End Date</p>
+                            <p class="font-medium">{{ subscription.end_date.strftime('%B %d, %Y') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-hourglass-half text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">Days Remaining</p>
+                            <p class="font-medium">{{ subscription.days_remaining }} days</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-chart-line text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">Daily Usage Limit</p>
+                            <p class="font-medium">{{ plan.usage_per_day }} operations</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center mb-3">
+                        <i class="fas fa-tachometer-alt text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">Current Usage</p>
+                            <p class="font-medium">{{ subscription.current_usage }} operations</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-sync text-primary text-lg w-8"></i>
+                        <div>
+                            <p class="text-sm text-textSecondary">Auto-Renewal</p>
+                            <p class="font-medium">{% if subscription.is_auto_renew %}
+                                <span class="text-secondary">Enabled</span>
+                            {% else %}
+                                <span class="text-accent">Disabled</span>
+                            {% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Usage progress bar -->
+            <div class="mt-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm text-textSecondary">Daily Usage: {{ subscription.current_usage }}/{{ plan.usage_per_day }}</span>
+                    <span class="text-sm font-medium">{{ subscription.daily_usage_percent|round }}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-primary h-2.5 rounded-full" style="width: {{ subscription.daily_usage_percent }}%"></div>
+                </div>
+            </div>
+                
+            <!-- ENHANCED ADDON TOKENS SECTION (Moved from subscriptions.html) -->
+            <div class="mt-6 pt-4 border-t border-gray-200">
+                <div class="bg-gradient-to-r from-primary-light-bg to-primary-bg rounded-lg p-4 border border-primary-light">
+                    <div class="flex justify-between items-center mb-3">
+                        <div>
+                            <h4 class="text-primary-dark font-semibold text-sm flex items-center">
+                                <i class="fas fa-coins mr-2"></i>
+                                Additional Tokens
+                            </h4>
+                            <p class="text-xs text-primary">Extra operations when daily limit is reached</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-lg font-bold text-primary-dark">
+                                {{ usage_summary.purchased_tokens_available if usage_summary else 0 }}
+                            </span>
+                            <p class="text-xs text-primary">available</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Token Status and Purchase Section -->
+                    <div class="space-y-3">
+                        {% if usage_summary %}
+                            {% set tokens_available = usage_summary.purchased_tokens_available %}
+                            {% set total_purchased = usage_summary.total_tokens_purchased %}
+                            {% set total_used = usage_summary.total_tokens_used %}
+                            {% set daily_limit_reached = usage_summary.daily_limit_reached %}
+                            
+                            {% if tokens_available > 0 %}
+                                <!-- Show current token status -->
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center text-sm {% if daily_limit_reached %}text-green-700{% else %}text-primary-dark{% endif %}">
+                                        <i class="fas fa-check-circle mr-2"></i>
+                                        <span>You have <strong>{{ tokens_available }}</strong> additional tokens ready</span>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <select id="token-count" class="form-select text-sm border-gray-300 rounded-md">
+                                            <option value="10" data-price="20.00" data-base="16.95" data-gst="3.05">10 tokens - ₹20.00</option>
+                                            <option value="25" data-price="50.00" data-base="42.37" data-gst="7.63">25 tokens - ₹50.00</option>
+                                            <option value="50" data-price="100.00" data-base="84.75" data-gst="15.25">50 tokens - ₹100.00</option>
+                                            <option value="100" data-price="200.00" data-base="169.49" data-gst="30.51">100 tokens - ₹200.00</option>
+                                        </select>
+                                        <button id="purchase-tokens-btn" onclick="purchaseTokens()" class="text-xs px-3 py-1 text-white rounded-md transition-colors" style="background-color: #273879; border-color: #273879;">
+                                            <i class="fas fa-plus mr-1"></i>Buy More
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {% if daily_limit_reached %}
+                                <div class="text-xs text-green-700 bg-green-50 p-2 rounded">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Your daily limit is reached. Additional tokens will be used automatically for new operations.
+                                </div>
+                                {% else %}
+                                <div class="text-xs text-primary-dark bg-primary-light-bg p-2 rounded">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Tokens will be used automatically when your daily limit is reached.
+                                </div>
+                                {% endif %}
+                                
+                                {% if total_purchased > 0 %}
+                                <div class="text-xs text-primary-dark bg-primary-light-bg p-2 rounded">
+                                    <i class="fas fa-chart-bar mr-1"></i>
+                                    Total purchased: {{ total_purchased }} | Used: {{ total_used }} | Remaining: {{ tokens_available }}
+                                </div>
+                                {% endif %}
+                                
+                            {% elif total_purchased > 0 %}
+                                <!-- All tokens used, show option to buy more -->
+                                <div class="text-center space-y-3">
+                                    <div class="text-sm text-orange-700 bg-orange-50 p-2 rounded">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                                        All your additional tokens have been used
+                                    </div>
+                                    <div class="text-xs text-primary-dark">
+                                        Total purchased: {{ total_purchased }} | All used: {{ total_used }}
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <select id="token-count" class="form-select text-sm border-gray-300 rounded-md flex-1">
+                                            <option value="10" data-price="20.00" data-base="16.95" data-gst="3.05">10 tokens - ₹20.00</option>
+                                            <option value="25" data-price="50.00" data-base="42.37" data-gst="7.63">25 tokens - ₹50.00</option>
+                                            <option value="50" data-price="100.00" data-base="84.75" data-gst="15.25">50 tokens - ₹100.00</option>
+                                            <option value="100" data-price="200.00" data-base="169.49" data-gst="30.51">100 tokens - ₹200.00</option>
+                                        </select>
+                                        <button id="purchase-tokens-btn" onclick="purchaseTokens()" class="px-4 py-2 text-white rounded-md text-sm font-medium transition-colors" style="background-color: #273879; border-color: #273879;">
+                                            <i class="fas fa-shopping-cart mr-2"></i>Purchase More Tokens
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            {% else %}
+                                <!-- No tokens purchased yet -->
+                                {% set cta_text = 'Your daily limit is reached! Purchase tokens to continue:' if daily_limit_reached else 'Purchase additional tokens for when you exceed daily limits:' %}
+                                {% set button_color = 'bg-red-600 hover:bg-red-700' if daily_limit_reached else 'bg-primary hover:bg-primary-dark' %}
+                                
+                                <div class="text-center space-y-3">
+                                    <p class="text-sm {% if daily_limit_reached %}text-red-700{% else %}text-primary-dark{% endif %}">
+                                        <i class="fas fa-coins mr-2"></i>
+                                        {{ cta_text }}
+                                    </p>
+                                    <div class="flex items-center space-x-2">
+                                        <select id="token-count" class="form-select text-sm border-gray-300 rounded-md flex-1">
+                                            <option value="10" data-price="20.00" data-base="16.95" data-gst="3.05">10 tokens - ₹20.00</option>
+                                            <option value="25" data-price="50.00" data-base="42.37" data-gst="7.63">25 tokens - ₹50.00</option>
+                                            <option value="50" data-price="100.00" data-base="84.75" data-gst="15.25">50 tokens - ₹100.00</option>
+                                            <option value="100" data-price="200.00" data-base="169.49" data-gst="30.51">100 tokens - ₹200.00</option>
+                                        </select>
+                                        <button id="purchase-tokens-btn" onclick="purchaseTokens()" class="px-4 py-2 text-white rounded-md text-sm font-medium transition-colors" style="background-color: #273879; border-color: #273879;">
+                                            <i class="fas fa-shopping-cart mr-2"></i>Purchase Additional Tokens
+                                        </button>
+                                    </div>
+                                    <div class="text-xs text-primary">
+                                        ₹2.00 per token (including GST)
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <!-- Fallback when usage_summary is not available -->
+                            <div class="text-center space-y-3">
+                                <p class="text-sm text-primary-dark">
+                                    <i class="fas fa-coins mr-2"></i>
+                                    Purchase additional tokens for when you exceed daily limits:
+                                </p>
+                                <div class="flex items-center space-x-2">
+                                    <select id="token-count" class="form-select text-sm border-gray-300 rounded-md flex-1">
+                                        <option value="10" data-price="20.00" data-base="16.95" data-gst="3.05">10 tokens - ₹20.00</option>
+                                        <option value="25" data-price="50.00" data-base="42.37" data-gst="7.63">25 tokens - ₹50.00</option>
+                                        <option value="50" data-price="100.00" data-base="84.75" data-gst="15.25">50 tokens - ₹100.00</option>
+                                        <option value="100" data-price="200.00" data-base="169.49" data-gst="30.51">100 tokens - ₹200.00</option>
+                                    </select>
+                                    <button id="purchase-tokens-btn" onclick="purchaseTokens()" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium transition-colors">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Purchase Additional Tokens
+                                    </button>
+                                </div>
+                                <div class="text-xs text-primary">
+                                    ₹2.00 per token (including GST)
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Daily Limit Status -->
+                    <div class="mt-3 p-2 rounded-md bg-primary-light-bg">
+                        <div class="flex items-center justify-between text-xs text-primary-dark">
+                            <span>Daily Usage:</span>
+                            <span>{{ subscription.current_usage or 0 }}/{{ plan.usage_per_day }} operations</span>
+                        </div>
+                        <div class="w-full bg-primary-lighter rounded-full h-1.5 mt-1">
+                            {% if plan.usage_per_day > 0 %}
+                                {% set daily_progress = ((subscription.current_usage or 0) / plan.usage_per_day * 100) | round %}
+                                <div class="{% if daily_progress >= 100 %}bg-red-500{% elif daily_progress >= 80 %}bg-yellow-500{% else %}bg-primary{% endif %} h-1.5 rounded-full transition-all duration-300" style="width: {{ [daily_progress, 100] | min }}%"></div>
+                            {% else %}
+                                <div class="bg-primary h-1.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Token Purchase History -->
+                    {% if usage_summary and usage_summary.total_tokens_purchased > 0 %}
+                    <div class="mt-4">
+                        <div class="text-xs text-primary-dark mb-2">
+                            <i class="fas fa-history mr-1"></i>
+                            Token Purchase Summary
+                        </div>
+                        <div class="text-xs bg-white p-2 rounded border">
+                            <div class="flex justify-between">
+                                <span>Total Purchased:</span>
+                                <span class="font-medium text-green-600">{{ usage_summary.total_tokens_purchased }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Total Used:</span>
+                                <span class="font-medium text-orange-600">{{ usage_summary.total_tokens_used }}</span>
+                            </div>
+                            <div class="flex justify-between border-t pt-1 mt-1">
+                                <span>Available:</span>
+                                <span class="font-bold text-primary">{{ usage_summary.purchased_tokens_available }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- How it works info -->
+                    <div class="mt-3 text-xs text-primary-dark bg-primary-light-bg p-2 rounded">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>How tokens work:</strong> Tokens are automatically used when your daily limit is reached. 
+                        Each token allows one additional operation. Tokens expire when your subscription ends.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage History Section with AJAX Pagination -->
+    <h2 class="text-xl font-bold mb-4 flex items-center">
+        <i class="fas fa-history text-primary mr-3"></i>Usage History
+    </h2>
+    
+    <!-- Usage History Container - This will be updated via AJAX -->
+    <div id="usage-history-container">
+        {% include 'user/partials/usage_history.html' with context %}
+    </div>
+
+    <!-- Payment History Section -->
+    <h2 class="text-xl font-bold mb-4 flex items-center">
+        <i class="fas fa-file-invoice-dollar text-primary mr-3"></i>Payment History
+    </h2>
+    
+    {% if payment_records %}
+    <div class="overflow-x-auto mb-8">
+        <table class="min-w-full bg-white rounded-xl shadow-default">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Invoice Number</th>
+                    <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Date</th>
+                    <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Amount</th>
+                    <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                {% for payment in payment_records %}
+                <tr class="hover:bg-gray-50">
+                    <td class="py-3 px-4 whitespace-nowrap font-medium">{{ payment.invoice_number }}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">{{ payment.created_at.strftime('%Y-%m-%d') }}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">{{ payment.currency }} {{ payment.total_amount }}</td>
+                    <td class="py-3 px-4 whitespace-nowrap">
+                        {% if payment.status == 'completed' %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                                {{ payment.status }}
+                            </span>
+                        {% elif payment.status == 'created' %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                                {{ payment.status }}
+                            </span>
+                        {% else %}
+                            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                                {{ payment.status }}
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="bg-primary-light-bg p-4 rounded-lg mb-8 border border-primary-light">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-primary"></i>
+            </div>
+            <div class="ml-3">
+                <p class="text-sm text-primary-dark">No payment records found for this subscription.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Daily Usage Statistics Section -->
+    {% if daily_usage %}
+    <h2 class="text-xl font-bold mb-4 flex items-center">
+        <i class="fas fa-chart-bar text-primary mr-3"></i>Daily Usage Statistics
+    </h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+        {% for date, count in daily_usage %}
+        <div class="card p-4">
+            <div class="flex flex-col">
+                <span class="text-lg font-medium text-textPrimary">{{ date }}</span>
+                <span class="text-2xl font-bold text-primary">{{ count }}</span>
+                <span class="text-sm text-textSecondary">operations</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Razorpay script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Subscription details page loaded - No API calls needed');
+    
+    // Set up pagination event listeners
+    bindPaginationEvents();
+});
+
+function purchaseTokens() {
+    const tokenSelect = document.getElementById('token-count');
+    const tokenCount = tokenSelect.value;
+    const selectedOption = tokenSelect.options[tokenSelect.selectedIndex];
+    const purchaseBtn = document.getElementById('purchase-tokens-btn');
+    
+    // Disable button during purchase
+    purchaseBtn.disabled = true;
+    purchaseBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+    
+    // Create form data
+    const formData = new FormData();
+    formData.append('token_count', tokenCount);
+    formData.append('csrf_token', '{{ csrf_token }}');
+    
+    fetch('/purchase_tokens', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+            resetPurchaseButton();
+            return;
+        }
+        
+        // Initialize Razorpay checkout
+        const options = {
+            key: data.razorpay_key,
+            amount: data.amount * 100, // Amount in paisa
+            currency: 'INR',
+            order_id: data.order_id,
+            name: 'SEO Dada',
+            description: `${data.token_count} Additional Tokens`,
+            theme: {
+                color: '#273879'
+            },
+            handler: function(response) {
+                verifyTokenPayment(response);
+            },
+            modal: {
+                ondismiss: function() {
+                    resetPurchaseButton();
+                }
+            }
+        };
+        
+        const rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(error => {
+        console.error('Error initiating token purchase:', error);
+        alert('Error initiating purchase. Please try again.');
+        resetPurchaseButton();
+    });
+}
+
+function verifyTokenPayment(paymentResponse) {
+    const formData = new FormData();
+    formData.append('razorpay_payment_id', paymentResponse.razorpay_payment_id);
+    formData.append('razorpay_order_id', paymentResponse.razorpay_order_id);
+    formData.append('razorpay_signature', paymentResponse.razorpay_signature);
+    formData.append('csrf_token', '{{ csrf_token }}');
+    
+    fetch('/verify_token_payment', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Payment verification failed: ' + data.error);
+        } else {
+            // Show success message
+            showSuccessMessage(data.message);
+            
+            // Reload page to show updated token information
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+        resetPurchaseButton();
+    })
+    .catch(error => {
+        console.error('Error verifying payment:', error);
+        alert('Error verifying payment. Please contact support.');
+        resetPurchaseButton();
+    });
+}
+
+function resetPurchaseButton() {
+    const purchaseBtn = document.getElementById('purchase-tokens-btn');
+    purchaseBtn.disabled = false;
+    
+    // Reset button text based on current state
+    {% if usage_summary and usage_summary.daily_limit_reached and usage_summary.purchased_tokens_available == 0 %}
+        purchaseBtn.innerHTML = '<i class="fas fa-shopping-cart mr-2"></i>Buy Tokens Now';
+    {% elif usage_summary and usage_summary.purchased_tokens_available > 0 %}
+        purchaseBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Buy More';
+    {% else %}
+        purchaseBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>Buy Tokens';
+    {% endif %}
+}
+
+function showSuccessMessage(message) {
+    // Create success alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 relative animate-fade-in';
+    alertDiv.innerHTML = `
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline"> ${message}</span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
+            <i class="fas fa-times cursor-pointer"></i>
+        </span>
+    `;
+    
+    // Insert at the top of the page
+    const container = document.querySelector('.animate-fade-in');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+// Existing pagination functions...
+// Fixed pagination functions with better error handling
+function bindPaginationEvents() {
+    // Remove any existing event listeners to prevent duplicates
+    const existingLinks = document.querySelectorAll('#usage-history-container .pagination-link');
+    existingLinks.forEach(link => {
+        // Clone node to remove all event listeners
+        const newLink = link.cloneNode(true);
+        link.parentNode.replaceChild(newLink, link);
+    });
+    
+    // Add new event listeners
+    const paginationLinks = document.querySelectorAll('#usage-history-container .pagination-link');
+    console.log(`Found ${paginationLinks.length} pagination links`);
+    
+    paginationLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const url = this.getAttribute('href');
+            console.log('Pagination link clicked:', url);
+            
+            if (url && !this.classList.contains('active')) {
+                loadUsageHistoryPage(url);
+            }
+        });
+    });
+}
+
+function loadUsageHistoryPage(url) {
+    const container = document.getElementById('usage-history-container');
+    if (!container) {
+        console.error('Usage history container not found');
+        return;
+    }
+    
+    // Show loading spinner
+    container.innerHTML = `
+        <div class="flex justify-center items-center p-12">
+            <div class="text-center">
+                <i class="fas fa-spinner fa-spin text-4xl text-primary mb-4"></i>
+                <p class="text-gray-600">Loading usage history...</p>
+            </div>
+        </div>
+    `;
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+    })
+    .then(html => {
+        console.log('Received HTML response, updating container');
+        container.innerHTML = html;
+        
+        // Rebind pagination events after content update
+        setTimeout(() => {
+            bindPaginationEvents();
+        }, 100);
+        
+        // Smooth scroll to container
+        container.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+        });
+    })
+    .catch(error => {
+        console.error('Error loading usage history:', error);
+        container.innerHTML = `
+            <div class="bg-red-50 p-6 rounded-lg mb-8 border border-red-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-red-800">Failed to load usage history</h3>
+                        <p class="text-sm text-red-700 mt-1">
+                            ${error.message || 'Please try refreshing the page or contact support if the problem persists.'}
+                        </p>
+                        <button onclick="window.location.reload()" 
+                                class="mt-2 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 text-xs rounded-md transition-colors">
+                            Refresh Page
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+</script>
+
+<style>
+/* CSS Variables with seodada gradient colors */
+:root {
+    --primary: #273879;
+    --primary-dark: #1e2a5a;
+    --primary-light: #0f74b2;
+    --primary-lighter: rgba(15, 116, 178, 0.2);
+    --primary-light-bg: rgba(15, 116, 178, 0.08);
+    --primary-bg: rgba(39, 56, 121, 0.05);
+    --secondary: #0f74b2;
+    --accent: #60a5fa;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border-radius: 0.75rem;
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+    
+    /* Seodada gradient colors */
+    --seodada-gradient: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+    --seodada-gradient-hover: linear-gradient(135deg, #1e2a5a 0%, #0c5a8b 100%);
+}
+
+/* Color classes */
+.text-primary { color: var(--primary); }
+.text-primary-dark { color: var(--primary-dark); }
+.text-secondary { color: var(--secondary); }
+.text-accent { color: var(--accent); }
+.text-textPrimary { color: var(--text); }
+.text-textSecondary { color: var(--text-light); }
+.bg-primary { background-color: var(--primary); }
+.bg-primary-dark { background-color: var(--primary-dark); }
+.bg-primary-light-bg { background-color: var(--primary-light-bg); }
+.border-primary-light { border-color: var(--primary-light); }
+
+/* Custom styles for subscription details page */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+    background: var(--seodada-gradient);
+    color: white;
+    padding: 1rem 1.25rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.btn-custom-primary {
+    background-color: #273879 !important;
+    border-color: #273879 !important;
+    color: white !important;
+}
+
+.btn-custom-primary:hover {
+    background-color: #1e2a5c !important;
+    border-color: #1e2a5c !important;
+}
+
+.btn-custom-primary:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: var(--seodada-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.btn-primary {
+    background: var(--seodada-gradient);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: var(--seodada-gradient-hover);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Progress bar smooth transitions */
+.progress-bar {
+    transition: width 0.8s ease-in-out;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 768px) {
+    .grid.grid-cols-1.md\:grid-cols-2 {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .flex.items-center.space-x-2 {
+        flex-direction: column;
+        space-x: 0;
+        gap: 0.5rem;
+    }
+    
+    .flex.items-center.space-x-2 select,
+    .flex.items-center.space-x-2 button {
+        width: 100%;
+    }
+}
+
+/* Loading states */
+.loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+/* Enhanced table styling */
+.shadow-default {
+    box-shadow: var(--shadow-md);
+}
+
+.table th {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Button hover effects */
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: transform 0.5s ease;
+    transform: skewX(-15deg);
+}
+
+button:hover::before {
+    transform: translateX(200%) skewX(-15deg);
+}
+
+/* Form styling */
+.form-select {
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+}
+
+.form-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+}
+
+/* Card gradient effects */
+.card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+}
+
+/* Enhanced visual hierarchy */
+h1 {
+    color: #1f2937 !important;
+}
+
+h2.text-white {
+    color: white !important;
+}
+
+h2:not(.text-white) {
+    background: var(--seodada-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1));
+}
+
+/* Pagination styling fixes */
+.pagination-link {
+    color: var(--primary) !important;
+    background-color: transparent !important;
+    border: 1px solid #e5e7eb !important;
+    padding: 0.5rem 0.75rem !important;
+    text-decoration: none !important;
+    border-radius: 0.375rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.pagination-link:hover {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+
+.pagination-link.active,
+.pagination-link[aria-current="page"] {
+    background: var(--seodada-gradient) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+
+/* Progress bar color fixes */
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+
+.bg-red-500 {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+}
+
+.bg-yellow-500 {
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%) !important;
+}
+
+/* Text color fixes for blue elements */
+.text-blue-600,
+.text-blue-700,
+.text-blue-500 {
+    color: var(--primary) !important;
+}
+
+/* Number and percentage styling */
+.font-bold.text-primary,
+.font-medium.text-primary {
+    color: var(--primary) !important;
+}
+
+/* Ensure all pagination elements follow brand colors */
+nav[aria-label="Page navigation"] a,
+.pagination a,
+.page-link {
+    color: var(--primary) !important;
+    border-color: #e5e7eb !important;
+}
+
+nav[aria-label="Page navigation"] a:hover,
+.pagination a:hover,
+.page-link:hover {
+    background: var(--seodada-gradient) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+
+nav[aria-label="Page navigation"] .active,
+.pagination .active,
+.page-link.active {
+    background: var(--seodada-gradient) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+}
+/* Interactive elements */
+.btn-outline-primary, .btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-primary::before, 
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: transform 0.5s ease;
+    transform: skewX(-15deg);
+}
+
+.btn-outline-primary:hover::before,
+.btn-primary:hover::before {
+    transform: translateX(200%) skewX(-15deg);
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .card-header h2 {
+        font-size: 1.125rem;
+    }
+    
+    .flex.justify-between.items-center.mb-6 {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .flex.justify-between.items-center.mb-6 h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Enhanced gradients for better visual appeal */
+.bg-gradient-to-r.from-primary-light-bg.to-primary-bg {
+    background: linear-gradient(to right, 
+        rgba(15, 116, 178, 0.08) 0%, 
+        rgba(39, 56, 121, 0.05) 100%);
+}
+
+/* Improved spacing and layout */
+.space-y-3 > * + * {
+    margin-top: 0.75rem;
+}
+
+/* Animation delays for staggered effects */
+.card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+/* Enhanced focus states for accessibility */
+select:focus,
+button:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Better visual feedback for interactions */
+tr:hover {
+    background-color: rgba(39, 56, 121, 0.05) !important;
+    transition: background-color 0.2s ease;
+}
+
+/* Modern glass-like effects */
+.bg-primary-light-bg {
+    background: rgba(15, 116, 178, 0.08);
+    backdrop-filter: blur(10px);
+}
+
+.bg-primary-lighter {
+    background: rgba(15, 116, 178, 0.15);
+    backdrop-filter: blur(10px);
+}
+</style>
+
+{% endblock %}

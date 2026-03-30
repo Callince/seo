@@ -1,0 +1,408 @@
+{% extends "base2.html" %}
+
+{% block title %}{{ blog.meta_title or blog.title }} - SEODADA{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ blog.meta_description or (blog.description|striptags)[:160] }}">
+    {% if blog.meta_keyword %}
+    <meta name="keywords" content="{{ blog.meta_keyword }}">
+    {% endif %}
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ blog.meta_title or blog.title }}">
+    <meta property="og:description" content="{{ blog.meta_description or (blog.description|striptags)[:160] }}">
+    {% if blog.image %}
+    <meta property="og:image" content="{{ url_for('static', filename='uploads/blogs/' + blog.image, _external=True) }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ blog.title }}">
+    {% endif %}
+    <meta property="og:site_name" content="SEODADA">
+    <meta property="article:published_time" content="{{ (blog.publish_date.isoformat() if blog.publish_date else blog.created_at.isoformat()) }}">
+    <meta property="article:modified_time" content="{{ blog.updated_at.isoformat() if blog.updated_at else blog.created_at.isoformat() }}">
+    {% if blog.category %}
+    <meta property="article:section" content="{{ blog.category.name }}">
+    {% endif %}
+    {% if blog.meta_keyword %}
+    {% for keyword in blog.meta_keyword.split(',')[:5] %}
+    <meta property="article:tag" content="{{ keyword.strip() }}">
+    {% endfor %}
+    {% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{{ blog.meta_title or blog.title }}">
+    <meta name="twitter:description" content="{{ blog.meta_description or (blog.description|striptags)[:160] }}">
+    {% if blog.image %}
+    <meta name="twitter:image" content="{{ url_for('static', filename='uploads/blogs/' + blog.image, _external=True) }}">
+    <meta name="twitter:image:alt" content="{{ blog.title }}">
+    {% endif %}
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ blog.title }}",
+      "description": "{{ blog.meta_description or (blog.description|striptags)[:160] }}",
+      {% if blog.image %}
+      "image": {
+        "@type": "ImageObject",
+        "url": "{{ url_for('static', filename='uploads/blogs/' + blog.image, _external=True) }}",
+        "width": 1200,
+        "height": 630,
+        "caption": "{{ blog.title }}"
+      },
+      {% endif %}
+      "datePublished": "{{ (blog.publish_date.isoformat() if blog.publish_date else blog.created_at.isoformat()) }}",
+      "dateModified": "{{ blog.updated_at.isoformat() if blog.updated_at else blog.created_at.isoformat() }}",
+      {% if blog.author_name or blog.created_by %}
+      "author": {
+        "@type": "Person",
+        "name": "{{ blog.author_name or blog.created_by }}"
+      },
+      {% else %}
+      "author": {
+        "@type": "Organization",
+        "name": "SEODADA",
+        "url": "{{ url_for('index', _external=True) }}"
+      },
+      {% endif %}
+      "publisher": {
+        "@type": "Organization",
+        "name": "SEODADA",
+        "url": "{{ url_for('index', _external=True) }}",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "{{ url_for('static', filename='uploads/' + website_settings.website_logo_file, _external=True) if website_settings.website_logo_file else url_for('static', filename='images/logo.png', _external=True) }}"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "{{ request.url }}"
+      },
+      {% if blog.category %}
+      "articleSection": "{{ blog.category.name }}",
+      {% endif %}
+      {% if blog.meta_keyword %}
+      "keywords": "{{ blog.meta_keyword }}",
+      {% endif %}
+      "url": "{{ request.url }}"
+    }
+    </script>
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ url_for('landing', _external=True) }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "{{ url_for('public_blogs', _external=True) }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "{{ blog.title }}",
+          "item": "{{ request.url }}"
+        }
+      ]
+    }
+    </script>
+
+    {% if blog.schema_data %}
+    {% set faqs = blog.schema_data|from_json %}
+    {% if faqs %}
+    <!-- FAQ Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% for faq in faqs %}
+        {
+          "@type": "Question",
+          "name": "{{ faq.question|e }}",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "{{ faq.answer|e }}"
+          }
+        }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ]
+    }
+    </script>
+    {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Reading Progress Bar -->
+<div class="reading-progress">
+    <div class="reading-progress-bar" id="readingProgress"></div>
+</div>
+
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <a href="{{ url_for('public_blogs') }}">Blog</a>
+        {% if blog.category %}
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <a href="{{ url_for('public_blogs', category=blog.category.id) }}">{{ blog.category.name }}</a>
+        {% endif %}
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="current">{{ blog.title|truncate(40, True, '...') }}</span>
+    </nav>
+
+    <!-- Back Button -->
+    <a href="{{ url_for('public_blogs') }}" class="back-button">
+        <i class="fas fa-arrow-left"></i>Back to All Posts
+    </a>
+
+    <!-- Blog Header -->
+    <div class="blog-header-card">
+        {% if blog.category %}
+        <span class="blog-category-badge">
+            <i class="fas fa-folder me-1"></i>{{ blog.category.name }}
+        </span>
+        {% endif %}
+        <h1>{{ blog.title }}</h1>
+        <div class="blog-header-meta">
+            <span>
+                <i class="far fa-calendar-alt"></i>
+                {{ (blog.publish_date.strftime('%B %d, %Y') if blog.publish_date else blog.created_at.strftime('%B %d, %Y')) }}
+            </span>
+            {% if blog.author_name or blog.created_by %}
+            <span>
+                <i class="far fa-user"></i>
+                {{ blog.author_name or blog.created_by }}
+            </span>
+            {% endif %}
+            <span class="reading-time" id="readingTime">
+                <i class="far fa-clock"></i>
+                <span>-- min read</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Blog Content -->
+    <article class="blog-content-card" id="blogContent">
+        {% if blog.image %}
+        <img src="{{ url_for('static', filename='uploads/blogs/' + blog.image) }}"
+             alt="{{ blog.title }}"
+             class="blog-featured-image"
+             loading="eager">
+        {% endif %}
+
+        <div class="blog-body">
+            {{ blog.description|safe }}
+        </div>
+    </article>
+
+    <!-- FAQ Section -->
+    {% if blog.schema_data %}
+    {% set faqs = blog.schema_data|from_json %}
+    {% if faqs %}
+    <div class="faq-section">
+        <h3><i class="fas fa-question-circle me-2"></i>Frequently Asked Questions</h3>
+        {% for faq in faqs %}
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                <span>{{ faq.question }}</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>{{ faq.answer }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <!-- Share Section -->
+    <div class="share-card">
+        <h5><i class="fas fa-share-alt me-2"></i>Share this article</h5>
+        <div>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="share-btn share-facebook"
+               title="Share on Facebook"
+               aria-label="Share on Facebook">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://twitter.com/intent/tweet?url={{ request.url }}&text={{ blog.title|urlencode }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="share-btn share-twitter"
+               title="Share on Twitter"
+               aria-label="Share on Twitter">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.url }}&title={{ blog.title|urlencode }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="share-btn share-linkedin"
+               title="Share on LinkedIn"
+               aria-label="Share on LinkedIn">
+                <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="https://wa.me/?text={{ blog.title|urlencode }}%20{{ request.url }}"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="share-btn share-whatsapp"
+               title="Share on WhatsApp"
+               aria-label="Share on WhatsApp">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Related Posts -->
+    {% if related_blogs %}
+    <div class="related-posts">
+        <h3><i class="fas fa-newspaper me-2"></i>Related Articles</h3>
+        <div class="related-grid">
+            {% for related in related_blogs %}
+            <a href="{{ url_for('blog_detail', slug=related.slug) }}" class="related-card" style="text-decoration: none;">
+                {% if related.image %}
+                <img src="{{ url_for('static', filename='uploads/blogs/' + related.image) }}"
+                     alt="{{ related.title }}"
+                     class="related-image"
+                     loading="lazy">
+                {% else %}
+                <div class="related-image d-flex align-items-center justify-content-center">
+                    <i class="fas fa-newspaper fa-3x text-white" style="opacity: 0.3;"></i>
+                </div>
+                {% endif %}
+
+                <div class="related-card-body">
+                    <h4 class="related-title">{{ related.title }}</h4>
+                    <p class="related-date">
+                        <i class="far fa-calendar me-1"></i>
+                        {{ related.created_at.strftime('%B %d, %Y') }}
+                    </p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Calculate Reading Time
+    function calculateReadingTime() {
+        const content = document.getElementById('blogContent');
+        if (!content) return;
+
+        const text = content.innerText || content.textContent;
+        const wordCount = text.trim().split(/\s+/).length;
+        const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 words per minute
+
+        const readingTimeEl = document.getElementById('readingTime');
+        if (readingTimeEl) {
+            readingTimeEl.innerHTML = '<i class="far fa-clock"></i><span>' + readingTime + ' min read</span>';
+        }
+    }
+
+    // Reading Progress Bar
+    function updateReadingProgress() {
+        const progressBar = document.getElementById('readingProgress');
+        if (!progressBar) return;
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = (scrollTop / docHeight) * 100;
+
+        progressBar.style.width = Math.min(progress, 100) + '%';
+    }
+
+    // FAQ Toggle Function
+    function toggleFaq(element) {
+        const faqItem = element.parentElement;
+        const isActive = faqItem.classList.contains('active');
+
+        // Close all other FAQs
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Toggle current FAQ
+        if (!isActive) {
+            faqItem.classList.add('active');
+        }
+    }
+
+    // Scroll to Top Button Functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+
+    function handleScroll() {
+        // Update scroll to top button visibility
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
+
+        // Update reading progress
+        updateReadingProgress();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        calculateReadingTime();
+        updateReadingProgress();
+    });
+
+    // Throttled scroll handler
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                handleScroll();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+{% endblock %}
+

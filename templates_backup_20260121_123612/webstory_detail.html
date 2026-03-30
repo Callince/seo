@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ webstory.meta_title }} - SEODADA Web Story</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <meta name="description" content="{{ webstory.meta_description }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ webstory.meta_title }}">
+    <meta property="og:description" content="{{ webstory.meta_description }}">
+    {% if webstory.cover_image %}
+    <meta property="og:image" content="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}">
+    {% elif webstory.slides and webstory.slides[0].image %}
+    <meta property="og:image" content="{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}">
+    {% endif %}
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="1920">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{{ webstory.meta_title }}">
+    <meta name="twitter:description" content="{{ webstory.meta_description }}">
+    {% if webstory.cover_image %}
+    <meta name="twitter:image" content="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}">
+    {% elif webstory.slides and webstory.slides[0].image %}
+    <meta name="twitter:image" content="{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}">
+    {% endif %}
+
+    <!-- Schema.org Article Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ webstory.meta_title }}",
+        "description": "{{ webstory.meta_description }}",
+        {% if webstory.cover_image %}
+        "image": {
+            "@type": "ImageObject",
+            "url": "{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}",
+            "width": 1080,
+            "height": 1920,
+            "caption": "{{ webstory.meta_title }}"
+        },
+        {% elif webstory.slides and webstory.slides[0].image %}
+        "image": {
+            "@type": "ImageObject",
+            "url": "{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}",
+            "width": 1080,
+            "height": 1920,
+            "caption": "{{ webstory.meta_title }}"
+        },
+        {% endif %}
+        "datePublished": "{{ webstory.publish_date.isoformat() if webstory.publish_date else webstory.created_at.isoformat() }}",
+        "dateModified": "{{ webstory.updated_at.isoformat() if webstory.updated_at else webstory.created_at.isoformat() }}",
+        "author": {
+            "@type": "Organization",
+            "name": "SEODADA",
+            "url": "{{ url_for('landing', _external=True) }}"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "SEODADA",
+            "url": "{{ url_for('landing', _external=True) }}"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ request.url }}"
+        },
+        "url": "{{ request.url }}"
+    }
+    </script>
+
+    <!-- Google Fonts - Poppins, Roboto, Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Roboto:wght@400;600;700;900&family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #273879;
+            --secondary: #0f74b2;
+            --seodada-gradient: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .story-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .story-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .story-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            background-color: #000;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        .story-slide.active {
+            display: block;
+        }
+
+        /* Background image container for zoom/pan effect */
+        .story-slide .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center center;
+            z-index: 1;
+        }
+
+        .story-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 15;
+            padding: 1rem 1rem;
+            color: #fff;
+        }
+
+        .story-progress {
+            display: flex;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            flex: 1;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 3px;
+            background: #fff;
+            box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+        }
+
+        .progress-bar.active .progress-fill {
+            animation: progress 5s linear forwards;
+        }
+
+        .progress-bar.completed .progress-fill {
+            width: 100%;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        .story-close {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .story-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .story-content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .story-heading {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 900;
+            line-height: 1.3;
+            color: #fff;
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            width: 85%;
+            max-width: 85%;
+            pointer-events: auto;
+            /* Centered position - matching admin preview (percentage based) */
+            left: 50%;
+            bottom: 18%;
+            transform: translateX(-50%);
+        }
+
+        .story-text {
+            position: absolute;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #fff;
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            width: 85%;
+            max-width: 85%;
+            pointer-events: auto;
+            /* Centered position - matching admin preview (percentage based) */
+            left: 50%;
+            bottom: 9%;
+            transform: translateX(-50%);
+        }
+
+        .story-link {
+            position: absolute;
+            left: 50%;
+            bottom: 3%;
+            transform: translateX(-50%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            background: #fff;
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            pointer-events: auto;
+        }
+
+        .story-link:hover {
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.6);
+            color: var(--primary);
+            background: #fff;
+        }
+
+        .story-link i {
+            transition: transform 0.3s ease;
+        }
+
+        .story-link:hover i {
+            transform: translateX(3px);
+        }
+
+        .story-navigation {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 35%;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .nav-prev {
+            left: 0;
+        }
+
+        .nav-next {
+            right: 0;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #fff;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Tablet responsive */
+        @media (max-width: 1024px) {
+            .story-container {
+                max-width: 420px;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .story-container {
+                max-width: 100%;
+                height: 100vh;
+                height: 100dvh;
+            }
+
+            .story-heading {
+                font-size: 20px;
+                padding: 10px;
+                width: 90%;
+                max-width: 90%;
+            }
+
+            .story-text {
+                font-size: 14px;
+                padding: 10px;
+                width: 90%;
+                max-width: 90%;
+            }
+
+            .story-overlay {
+                padding: 1.25rem 1rem;
+            }
+
+            .story-header {
+                padding: 0.875rem;
+            }
+
+            .story-close {
+                width: 32px;
+                height: 32px;
+            }
+
+            .story-navigation {
+                width: 30%;
+            }
+
+            .progress-bar {
+                height: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .story-heading {
+                font-size: 16px;
+                padding: 8px;
+                bottom: 20%;
+                line-height: 1.4;
+            }
+
+            .story-text {
+                font-size: 12px;
+                padding: 8px;
+                bottom: 10%;
+                line-height: 1.5;
+            }
+
+            .story-link {
+                padding: 0.45rem 0.9rem;
+                font-size: 0.75rem;
+                bottom: 2%;
+            }
+
+            .story-header {
+                padding: 0.75rem;
+                gap: 0.5rem;
+            }
+
+            .story-close {
+                width: 28px;
+                height: 28px;
+                font-size: 0.875rem;
+            }
+
+            .pause-indicator {
+                width: 60px;
+                height: 60px;
+            }
+
+            .pause-indicator i {
+                font-size: 24px;
+            }
+
+            .loading-spinner {
+                width: 40px;
+                height: 40px;
+            }
+
+            .loading-text {
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .story-heading {
+                font-size: 14px;
+                padding: 6px;
+            }
+
+            .story-text {
+                font-size: 11px;
+                padding: 6px;
+            }
+
+            .story-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Landscape mode for mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .story-container {
+                max-width: 360px;
+            }
+
+            .story-heading {
+                font-size: 16px;
+                bottom: 22%;
+            }
+
+            .story-text {
+                font-size: 12px;
+                bottom: 12%;
+            }
+
+            .story-link {
+                bottom: 4%;
+            }
+        }
+
+        /* Safe area support for notched devices */
+        @supports (padding: max(0px)) {
+            .story-header {
+                padding-top: max(1rem, env(safe-area-inset-top));
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+
+            .story-link {
+                bottom: max(3%, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Pause indicator */
+        .pause-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        .pause-indicator.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .pause-indicator i {
+            color: #fff;
+            font-size: 32px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Story...</div>
+    </div>
+
+    <!-- Story Viewer -->
+    <div class="story-viewer">
+        <div class="story-container">
+            <!-- Pause Indicator -->
+            <div class="pause-indicator" id="pauseIndicator">
+                <i class="fas fa-pause"></i>
+            </div>
+
+            {% if webstory.slides %}
+            {% for slide in webstory.slides %}
+            {% if slide.status %}
+            <div class="story-slide {% if loop.first %}active{% endif %}"
+                 data-index="{{ loop.index0 }}">
+                <!-- Background image with zoom/pan -->
+                <div class="slide-bg" style="background-image: url('{{ slide.image }}');{% if slide.zoom and slide.zoom != 100 %} background-size: {{ slide.zoom }}%;{% endif %} background-position: {{ slide.pan_x or 50 }}% {{ slide.pan_y or 50 }}%;"></div>
+                
+                <div class="story-header" >
+                    <div class="story-progress">
+                        {% for s in webstory.slides %}
+                        {% if s.status %}
+                        <div class="progress-bar {% if loop.first %}active{% endif %}">
+                            <div class="progress-fill"></div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="story-content">
+                    {% if slide.heading %}
+                    <div class="story-heading" style="{% if slide.heading_bottom %}bottom: {{ slide.heading_bottom }};{% endif %}{% if slide.heading_font and slide.heading_font != 'inherit' %} font-family: {{ slide.heading_font }};{% endif %}{% if slide.heading_size %} font-size: {{ slide.heading_size }}px;{% endif %}">{{ slide.heading|safe }}</div>
+                    {% endif %}
+                    {% if slide.text %}
+                    <div class="story-text" style="{% if slide.text_bottom %}bottom: {{ slide.text_bottom }};{% endif %}{% if slide.text_font and slide.text_font != 'inherit' %} font-family: {{ slide.text_font }};{% endif %}{% if slide.text_size %} font-size: {{ slide.text_size }}px;{% endif %}">{{ slide.text|safe }}</div>
+                    {% endif %}
+                    {% if slide.learn_more_url %}
+                    <a href="{{ slide.learn_more_url }}" class="story-link" target="_blank" rel="noopener">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+
+            <!-- Navigation Areas -->
+            <div class="story-navigation nav-prev" onclick="previousSlide()"></div>
+            <div class="story-navigation nav-next" onclick="nextSlide()"></div>
+            {% else %}
+            <div class="story-slide active" style="background: var(--seodada-gradient);">
+                <div class="story-header">
+                    <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="story-content">
+                    <div class="story-heading">{{ webstory.meta_title }}</div>
+                    <div class="story-text">{{ webstory.meta_description }}</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.story-slide');
+        const progressBars = document.querySelectorAll('.progress-bar');
+        const loadingScreen = document.getElementById('loadingScreen');
+        let autoPlayTimer;
+        let isPaused = false;
+        let progressStartTime = 0;
+        let progressElapsed = 0;
+        const SLIDE_DURATION = 5000; // 5 seconds per slide
+
+        // Hide loading screen after page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+            }, 500);
+        });
+
+        function showSlide(index, resumeProgress = false) {
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+            progressBars.forEach(bar => bar.classList.remove('active'));
+
+            // Show current slide
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+                progressBars[currentSlide].classList.add('active');
+
+                // Mark previous slides as completed
+                progressBars.forEach((bar, i) => {
+                    if (i < currentSlide) {
+                        bar.classList.add('completed');
+                    } else {
+                        bar.classList.remove('completed');
+                    }
+                });
+
+                // Reset or resume progress animation
+                const progressFill = progressBars[currentSlide].querySelector('.progress-fill');
+
+                if (resumeProgress && progressElapsed > 0) {
+                    // Resume from where we left off
+                    const remainingTime = SLIDE_DURATION - progressElapsed;
+                    const progressPercent = (progressElapsed / SLIDE_DURATION) * 100;
+                    progressFill.style.animation = 'none';
+                    progressFill.style.width = progressPercent + '%';
+                    setTimeout(() => {
+                        progressFill.style.transition = `width ${remainingTime}ms linear`;
+                        progressFill.style.width = '100%';
+                    }, 10);
+
+                    // Set timer for remaining time
+                    clearTimeout(autoPlayTimer);
+                    if (!isPaused) {
+                        progressStartTime = Date.now() - progressElapsed;
+                        autoPlayTimer = setTimeout(() => {
+                            progressElapsed = 0;
+                            if (currentSlide < slides.length - 1) {
+                                nextSlide();
+                            } else {
+                                setTimeout(() => {
+                                    window.location.href = '{{ url_for("public_webstories") }}';
+                                }, 1000);
+                            }
+                        }, remainingTime);
+                    }
+                } else {
+                    // Fresh start
+                    progressElapsed = 0;
+                    progressFill.style.transition = 'none';
+                    progressFill.style.animation = 'none';
+                    progressFill.offsetHeight; // Force reflow to apply changes
+                    progressFill.style.width = '0%';
+                    progressFill.offsetHeight; // Force reflow again
+                    setTimeout(() => {
+                        progressFill.style.animation = `progress ${SLIDE_DURATION}ms linear forwards`;
+                    }, 10);
+
+                    // Auto advance after duration
+                    clearTimeout(autoPlayTimer);
+                    if (!isPaused) {
+                        progressStartTime = Date.now();
+                        autoPlayTimer = setTimeout(() => {
+                            progressElapsed = 0;
+                            if (currentSlide < slides.length - 1) {
+                                nextSlide();
+                            } else {
+                                setTimeout(() => {
+                                    window.location.href = '{{ url_for("public_webstories") }}';
+                                }, 1000);
+                            }
+                        }, SLIDE_DURATION);
+                    }
+                }
+            }
+        }
+
+        function pauseStory() {
+            if (!isPaused) {
+                isPaused = true;
+                clearTimeout(autoPlayTimer);
+
+                // Calculate elapsed time
+                if (progressStartTime > 0) {
+                    progressElapsed = Date.now() - progressStartTime;
+                }
+
+                // Pause the progress bar animation
+                const progressFill = progressBars[currentSlide].querySelector('.progress-fill');
+                const computedStyle = window.getComputedStyle(progressFill);
+                const currentWidth = computedStyle.width;
+                progressFill.style.animation = 'none';
+                progressFill.style.transition = 'none';
+                progressFill.style.width = currentWidth;
+
+                // Show pause indicator
+                document.getElementById('pauseIndicator').classList.add('show');
+            }
+        }
+
+        function resumeStory() {
+            if (isPaused) {
+                isPaused = false;
+
+                // Hide pause indicator
+                document.getElementById('pauseIndicator').classList.remove('show');
+                showSlide(currentSlide, true); // Resume with existing progress
+            }
+        }
+
+        function nextSlide() {
+            progressElapsed = 0;
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            } else {
+                window.location.href = '{{ url_for("public_webstories") }}';
+            }
+        }
+
+        function previousSlide() {
+            progressElapsed = 0;
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Click navigation on the story container
+        const storyContainer = document.querySelector('.story-container');
+        let clickStartTime = 0;
+        let isHolding = false;
+
+        storyContainer.addEventListener('click', (e) => {
+            // Don't trigger if clicking on close button or learn more link
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+
+            // If it was a hold (long press), don't navigate
+            if (isHolding) {
+                isHolding = false;
+                return;
+            }
+
+            const rect = storyContainer.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const containerWidth = rect.width;
+
+            // Instagram-style navigation:
+            // Left 25% = previous slide
+            // Center 50% = pause/resume
+            // Right 25% = next slide
+            if (clickX < containerWidth * 0.25) {
+                // Left side - go to previous slide
+                if (isPaused) isPaused = false;
+                previousSlide();
+            } else if (clickX > containerWidth * 0.75) {
+                // Right side - go to next slide
+                if (isPaused) isPaused = false;
+                nextSlide();
+            } else {
+                // Center - toggle pause/resume
+                if (isPaused) {
+                    resumeStory();
+                } else {
+                    pauseStory();
+                }
+            }
+        });
+
+        // Pause on hold (desktop)
+        storyContainer.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+            clickStartTime = Date.now();
+        });
+
+        storyContainer.addEventListener('mouseup', (e) => {
+            // Check if it was a hold (more than 200ms)
+            if (Date.now() - clickStartTime > 200) {
+                isHolding = true;
+                // If was paused by hold, resume
+                if (isPaused) {
+                    resumeStory();
+                }
+            }
+        });
+
+        // Pause on hold (mobile)
+        let touchStartTime = 0;
+        storyContainer.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+            touchStartTime = Date.now();
+
+            // Pause after short delay (for hold gesture)
+            setTimeout(() => {
+                if (Date.now() - touchStartTime >= 150) {
+                    pauseStory();
+                }
+            }, 150);
+        }, { passive: true });
+
+        storyContainer.addEventListener('touchend', (e) => {
+            const touchDuration = Date.now() - touchStartTime;
+
+            // If it was a hold (more than 200ms), resume
+            if (touchDuration > 200) {
+                isHolding = true;
+                if (isPaused) {
+                    resumeStory();
+                }
+            }
+        }, { passive: true });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'Escape') {
+                window.location.href = '{{ url_for("public_webstories") }}';
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        storyContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        storyContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = touchEndY - touchStartY;
+
+            // Only register swipe if horizontal movement is greater than vertical
+            if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+                if (swipeDistanceX < -50) {
+                    // Swipe left - next slide
+                    nextSlide();
+                } else if (swipeDistanceX > 50) {
+                    // Swipe right - previous slide
+                    previousSlide();
+                }
+            }
+        }
+
+        // Start the story
+        showSlide(0);
+    </script>
+</body>
+</html>

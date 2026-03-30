@@ -1,0 +1,470 @@
+/**
+ * Search Tools CSS - SEO Dada
+ * Shared styles for URL search, Meta search, Keyword search, Image search, H search
+ * Extracted from inline styles for better performance and maintainability
+ */
+
+/* ==========================================================================
+   CSS Variables for Search Tools
+   ========================================================================== */
+:root {
+  --search-transition: 0.3s ease;
+  --search-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  --search-shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.1);
+  --search-color-primary: #273879;
+  --search-color-primary-light: #3d4a91;
+  --search-color-secondary: #0f74b2;
+  --search-color-success: #28a745;
+  --search-color-success-hover: #218838;
+  --search-color-text: #1e293b;
+  --search-color-text-light: #64748b;
+  --search-color-border: #e5e7eb;
+  --search-color-background: #f8fafc;
+  --search-radius: 8px;
+  --search-font-weight-medium: 500;
+  --search-font-weight-semibold: 600;
+}
+
+/* ==========================================================================
+   Bootstrap Primary Color Overrides
+   ========================================================================== */
+.btn-primary {
+  background-color: var(--search-color-primary) !important;
+  border-color: var(--search-color-primary) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--search-color-primary-light) !important;
+  border-color: var(--search-color-primary-light) !important;
+}
+
+.btn-outline-primary {
+  color: var(--search-color-primary) !important;
+  border-color: var(--search-color-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--search-color-primary) !important;
+  border-color: var(--search-color-primary) !important;
+  color: white !important;
+}
+
+.bg-primary,
+.badge.bg-primary,
+.custom-primary-badge {
+  background-color: var(--search-color-primary) !important;
+}
+
+.text-primary {
+  color: var(--search-color-primary) !important;
+}
+
+.spinner-border.text-primary {
+  color: var(--search-color-primary) !important;
+}
+
+/* Success button styles */
+.btn-success {
+  background-color: var(--search-color-success) !important;
+  border-color: var(--search-color-success) !important;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active {
+  background-color: var(--search-color-success-hover) !important;
+  border-color: #1e7e34 !important;
+}
+
+/* ==========================================================================
+   Mobile-only Visibility
+   ========================================================================== */
+.mobile-only {
+  display: none;
+}
+
+/* ==========================================================================
+   Heading Colors Fix
+   ========================================================================== */
+.card-header h5,
+.card-header .card-title,
+h1, h2, h3, h4, h5, h6,
+.text-dark {
+  color: var(--search-color-text) !important;
+}
+
+/* ==========================================================================
+   Button Styles - Compact & Animated
+   ========================================================================== */
+.compact-btn {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border-radius: var(--search-radius);
+  font-weight: var(--search-font-weight-medium);
+  letter-spacing: 0.01em;
+  transition: all var(--search-transition);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--search-shadow);
+}
+
+.compact-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.2), rgba(255,255,255,0));
+  transition: transform 0.6s ease;
+}
+
+.compact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--search-shadow-hover);
+}
+
+.compact-btn:hover::after {
+  transform: translateX(200%);
+}
+
+.compact-btn:active {
+  transform: translateY(1px);
+}
+
+.btn-sm.compact-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   Card Styles - Compact & Animated
+   ========================================================================== */
+.compact-card {
+  box-shadow: var(--search-shadow);
+  border: 1px solid var(--search-color-border);
+  border-radius: var(--search-radius);
+  transition: transform var(--search-transition), box-shadow var(--search-transition);
+  background: white;
+}
+
+.compact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--search-shadow-hover);
+}
+
+.card-header {
+  background: linear-gradient(45deg, #f8f9fa, #ffffff);
+  border-bottom: 1px solid var(--search-color-border);
+  transition: background 0.3s ease;
+  color: var(--search-color-text);
+}
+
+.compact-card:hover .card-header {
+  background: linear-gradient(45deg, #f3f4f6, #ffffff);
+}
+
+/* ==========================================================================
+   Link Item Styling
+   ========================================================================== */
+.home-links-container.compact {
+  max-height: 350px;
+  border: 1px solid var(--search-color-border);
+  border-radius: var(--search-radius);
+  animation: searchFadeIn 0.5s ease backwards;
+  overflow-y: auto;
+}
+
+.link-item {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--search-color-border);
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  animation: searchFadeInStaggered 0.6s ease backwards;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link-item:last-child {
+  border-bottom: none;
+}
+
+.link-item:hover {
+  background-color: rgba(39, 56, 121, 0.05);
+  transform: translateX(5px);
+}
+
+.action-badge {
+  opacity: 0.7;
+  transition: all 0.3s ease;
+  margin-left: 0.3rem;
+}
+
+.action-badge:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Form Styles
+   ========================================================================== */
+.search-bar {
+  position: relative;
+  animation: searchFadeInUp 0.7s ease backwards;
+  animation-delay: 0.3s;
+}
+
+.search-input {
+  border: 1px solid var(--search-color-border);
+  border-radius: var(--search-radius);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: var(--search-color-primary);
+  box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+}
+
+/* Form Check Styling */
+.form-check-input.green-checkbox:checked {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+/* Label Color Fix */
+.form-check-label {
+  color: var(--search-color-text);
+}
+
+/* Button container styling */
+.d-flex.gap-2 {
+  gap: 0.5rem !important;
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+@keyframes searchFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes searchFadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes searchFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes searchFadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes searchFadeInStaggered {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply staggered animations to items */
+.link-item:nth-child(1) { animation-delay: 0.05s; }
+.link-item:nth-child(2) { animation-delay: 0.1s; }
+.link-item:nth-child(3) { animation-delay: 0.15s; }
+.link-item:nth-child(4) { animation-delay: 0.2s; }
+.link-item:nth-child(5) { animation-delay: 0.25s; }
+.link-item:nth-child(6) { animation-delay: 0.3s; }
+.link-item:nth-child(7) { animation-delay: 0.35s; }
+.link-item:nth-child(8) { animation-delay: 0.4s; }
+.link-item:nth-child(9) { animation-delay: 0.45s; }
+.link-item:nth-child(10) { animation-delay: 0.5s; }
+
+/* ==========================================================================
+   Small Text Style
+   ========================================================================== */
+.small {
+  font-size: 0.85rem;
+  color: var(--search-color-text-light);
+}
+
+/* ==========================================================================
+   Loading Overlay
+   ========================================================================== */
+#loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+}
+
+#loading-overlay.show {
+  display: flex;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Show mobile-only elements */
+  .mobile-only {
+    display: block !important;
+  }
+
+  .link-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .link-text {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* Button container stacks vertically on mobile */
+  .d-flex.gap-2 {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .d-flex.gap-2 .compact-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Show mobile search container and hide desktop one */
+  .mobile-search-container {
+    display: block !important;
+  }
+
+  .desktop-search-container {
+    display: none !important;
+  }
+
+  /* Mobile search bar styling */
+  .input-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .input-group-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0.375rem;
+    font-size: 0.875rem;
+  }
+
+  .form-control {
+    height: 38px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Add spacing between mobile search input and button */
+  .mobile-search-container {
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust button positioning */
+  .compact-btn {
+    margin-top: 0.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+}
+
+/* ==========================================================================
+   Accessibility - Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .compact-btn,
+  .compact-card,
+  .link-item,
+  .search-bar,
+  .search-input,
+  .action-badge,
+  .home-links-container.compact {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .compact-btn:hover,
+  .compact-card:hover,
+  .link-item:hover {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Accessibility - High Contrast
+   ========================================================================== */
+@media (prefers-contrast: high) {
+  .compact-card {
+    border: 2px solid #000;
+  }
+
+  .search-input {
+    border: 2px solid #000;
+  }
+
+  .btn-primary,
+  .compact-btn {
+    border: 2px solid #000;
+  }
+}
+
+/* ==========================================================================
+   Dark Mode Support - DISABLED to enforce light theme
+   ========================================================================== */
+/* Light theme is always used regardless of system preference */

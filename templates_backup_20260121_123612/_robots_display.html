@@ -1,0 +1,76 @@
+{% if robots_info and (request.method == 'POST' or (request.method == 'GET' and request.args.get('url'))) %}
+<div class="card mb-4">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Robots.txt Analysis</h5>
+    </div>
+    <div class="card-body">
+        {% if robots_info.success %}
+            <div class="alert {{ 'alert-success' if robots_info.has_robots_txt else 'alert-warning' }}">
+                <strong>Domain:</strong> {{ robots_info.domain }}
+                {% if robots_info.has_robots_txt %}
+                    <span class="badge bg-success">robots.txt found</span>
+                {% else %}
+                    <span class="badge bg-warning">no robots.txt found</span>
+                {% endif %}
+            </div>
+            
+            {% if robots_info.has_robots_txt %}
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h6>Disallow Rules:</h6>
+                    {% if robots_info.disallow_rules %}
+                        <ul class="list-group">
+                            {% for rule in robots_info.disallow_rules %}
+                            <li class="list-group-item">{{ rule }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p><em>No disallow rules found. All paths are allowed.</em></p>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6">
+                    <h6>Allow Rules:</h6>
+                    {% if robots_info.allow_rules %}
+                        <ul class="list-group">
+                            {% for rule in robots_info.allow_rules %}
+                            <li class="list-group-item">{{ rule }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p><em>No allow rules found.</em></p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if robots_info.sitemaps %}
+            <div class="mt-3">
+                <h6>Sitemaps:</h6>
+                <ul class="list-group">
+                    {% for sitemap in robots_info.sitemaps %}
+                    <li class="list-group-item">
+                        <a href="{{ sitemap }}" target="_blank">{{ sitemap }}</a>
+                        <a href="{{ url_for('sitemap_analysis', url=url_input) }}" class="btn btn-sm btn-info float-end">
+                            Analyze Sitemap
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            {% if robots_info.crawl_delay %}
+            <div class="mt-3">
+                <h6>Crawl Delay:</h6>
+                <p>{{ robots_info.crawl_delay }} seconds</p>
+            </div>
+            {% endif %}
+            {% endif %}
+        {% else %}
+            <div class="alert alert-danger">
+                {{ robots_info.message }}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>{% block title %}Web Analyzer Pro{% endblock %}</title>
+  <meta name="description" content="Web Analyzer Pro helps you analyze headings, keywords, images, and more for your website.">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://seodada.com/#organization",
+    "name": "SEO Dada",
+    "description": "SEO Dada is an SEO analysis platform that helps marketers and SEO professionals evaluate website performance, identify on-page issues, uncover keyword opportunities, and improve search visibility through clear, data-driven insights.",
+    "url": "https://seodada.com",
+    "logo": "https://seodada.com/static/uploads/logo_1761200794.png",
+    "email": "mailto:support@seodada.com",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "email": "support@seodada.com",
+      "url": "https://seodada.com/contact"
+    },
+    "founder": {
+      "@type": "Organization",
+      "name": "Fourth Dimension Media Solutions Pvt Ltd"
+    },
+    "sameAs": [
+      "https://www.facebook.com/profile.php?id=61584072508577&mibextid=rS40aB7S9Ucbxw6v",
+      "https://www.instagram.com/seodada1",
+      "https://www.linkedin.com/company/seodada/posts/?feedView=all"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://seodada.com/#website",
+    "url": "https://seodada.com/",
+    "name": "SEO Dada",
+    "description": "SEO Dada is an SEO analysis platform that helps marketers and SEO professionals evaluate website performance, identify on-page issues, uncover keyword opportunities, and improve search visibility through clear, data-driven insights.",
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://seodada.com/#organization"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://seodada.com/#webapplication",
+    "name": "SEO Dada",
+    "url": "https://seodada.com/",
+    "description": "SEO Dada is a web-based SEO analytics platform that helps marketers and SEO professionals evaluate website performance, identify on-page issues, uncover keyword opportunities, and improve search visibility through data-driven insights.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Works on modern browsers.",
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://seodada.com/#organization"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Basic Plan",
+        "price": "799",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "Pro Plan",
+        "price": "4999",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "Premium Plan",
+        "price": "8999",
+        "priceCurrency": "INR",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  }
+  </script>
+  <!-- Resource hints for performance -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Preload styles -->
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" crossorigin>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" crossorigin>
+  <!-- Stylesheets -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Base Layout CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base-layout.css') }}">
+
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+</head>
+<body>
+  <!-- Loading Overlay - KEEPING ORIGINAL -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Enhanced Header - KEEPING ORIGINAL DESIGN -->
+  <header class="header">
+    <div class="brand">
+      {% if website_settings.website_logo_file %}
+        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+             alt="{{ website_settings.website_name }}"
+             class="h-10 w-auto rounded" />
+      {% else %}
+        <i class="{{ website_settings.website_icon }} brand-icon"></i>
+      {% endif %}
+      <span class="brand-text">{{ website_settings.website_name }}</span>
+    </div>
+
+
+    
+    <!-- Mobile Navigation Dropdown - Only visible on mobile -->
+    <div class="mobile-nav-dropdown dropdown">
+      <button class="mobile-nav-btn dropdown-toggle" type="button" id="mobileNavDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-bars" aria-hidden="true"></i>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="mobileNavDropdown">
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+            <i class="fas fa-home" aria-hidden="true"></i>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'url_search' %}active{% endif %}" href="{{ url_for('url_search') }}">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            URL Analysis
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'h_search' %}active{% endif %}" href="{{ url_for('h_search') }}">
+            <i class="fas fa-heading" aria-hidden="true"></i>
+            Heading Analysis
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'keyword_search' %}active{% endif %}" href="{{ url_for('keyword_search') }}">
+            <i class="fas fa-key" aria-hidden="true"></i>
+            Keyword Analysis
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'image_search' %}active{% endif %}" href="{{ url_for('image_search') }}">
+            <i class="fas fa-images" aria-hidden="true"></i>
+            Image Analysis
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'meta_search' %}active{% endif %}" href="{{ url_for('meta_search') }}">
+            <i class="fas fa-tags" aria-hidden="true"></i>
+            Meta Analysis
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item {% if request.endpoint == 'site_structure' %}active{% endif %}" href="{{ url_for('site_structure') }}">
+            <i class="fas fa-sitemap" aria-hidden="true"></i>
+            Sitemap Analysis
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- COMPACT User Authentication Dropdown - FIXED OVERFLOW -->
+    <div class="user-dropdown dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-user" aria-hidden="true"></i> 
+        <span class="user-name">{{ current_user.name|title }}</span>
+      </button>
+      {% if current_user.is_authenticated %}
+      <ul class="dropdown-menu" aria-labelledby="authDropdown" role="menu">
+        {% if request.endpoint != 'dashboard' %}
+        <li>
+          <a class="dropdown-item" href="{{ url_for('index') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Dashboard
+          </a>
+        </li>
+        {% endif %}
+        
+        {% if request.endpoint != 'profile' %}
+        <li>
+          <a class="dropdown-item" href="{{ url_for('profile') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
+          </a>
+        </li>
+        {% endif %}
+        
+        {% if request.endpoint != 'user_subscriptions' %}
+        <li>
+          <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
+          </a>
+        </li>
+        {% endif %}
+        
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <a class="dropdown-item text-danger" href="{{ url_for('logout') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
+          </a>
+        </li>
+      </ul>
+      {% else %}
+      <ul class="dropdown-menu" aria-labelledby="authDropdown" role="menu">
+        <li>
+          <a class="dropdown-item" href="{{ url_for('login') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-sign-in-alt me-2" aria-hidden="true"></i>Login
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+            <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
+          </a>
+        </li>
+      </ul>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Enhanced Sidebar - KEEPING ORIGINAL (Hidden on mobile) -->
+  <nav class="sidebar" id="sidebar">
+    <div class="nav-list">
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" aria-label="Dashboard" data-page="index">
+          <i class="nav-icon fas fa-home" aria-hidden="true"></i>
+          <span class="nav-text">Dashboard</span>
+          <span class="tooltip">Dashboard</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('url_search') }}" class="nav-link {% if request.endpoint == 'url_search' %}active{% endif %}" aria-label="URL Analysis" data-page="url_search">
+          <i class="nav-icon fas fa-search" aria-hidden="true"></i>
+          <span class="nav-text">URL Analysis</span>
+          <span class="tooltip">URL Analysis</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('h_search') }}" class="nav-link {% if request.endpoint == 'h_search' %}active{% endif %}" aria-label="Heading Analysis" data-page="h_search">
+          <i class="nav-icon fas fa-heading" aria-hidden="true"></i>
+          <span class="nav-text">Heading Analysis</span>
+          <span class="tooltip">Heading Analysis</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('keyword_search') }}" class="nav-link {% if request.endpoint == 'keyword_search' %}active{% endif %}" aria-label="Keyword Analysis" data-page="keyword_search">
+          <i class="nav-icon fas fa-key" aria-hidden="true"></i>
+          <span class="nav-text">Keyword Analysis</span>
+          <span class="tooltip">Keyword Analysis</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('image_search') }}" class="nav-link {% if request.endpoint == 'image_search' %}active{% endif %}" aria-label="Image Analysis" data-page="image_search">
+          <i class="nav-icon fas fa-images" aria-hidden="true"></i>
+          <span class="nav-text">Image Analysis</span>
+          <span class="tooltip">Image Analysis</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('meta_search') }}" class="nav-link {% if request.endpoint == 'meta_search' %}active{% endif %}" aria-label="Meta Analysis" data-page="meta_search">
+          <i class="nav-icon fas fa-tags" aria-hidden="true"></i>
+          <span class="nav-text">Meta Analysis</span>
+          <span class="tooltip">Meta Analysis</span>
+        </a>
+      </div>
+      <div class="nav-item" tabindex="0">
+        <a href="{{ url_for('site_structure') }}" class="nav-link {% if request.endpoint == 'site_structure' %}active{% endif %}" aria-label="Sitemap Analysis" data-page="site_structure">
+          <i class="nav-icon fas fa-sitemap" aria-hidden="true"></i>
+          <span class="nav-text">Sitemap Analysis</span>
+          <span class="tooltip">Sitemap Analysis</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Enhanced Main Content - KEEPING ORIGINAL -->
+  <main class="main-content">
+    <div class="animate-fade-in">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+  
+  <!-- Loading indicator - KEEPING ORIGINAL -->
+  <div class="loading-indicator" id="loadingIndicator">
+    <div class="mini-spinner"></div>
+    <span class="loading-text">Loading...</span>
+  </div>
+
+  <!-- Enhanced Toggle Button - KEEPING ORIGINAL (Hidden on mobile) -->
+  <button class="toggle-btn" id="sidebarToggle" aria-label="Toggle Sidebar">
+    <i class="fas fa-chevron-left toggle-icon" id="toggleIcon" aria-hidden="true"></i>
+  </button>
+  
+  <!-- Enhanced Footer - KEEPING ORIGINAL -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-bottom">
+        <p>&copy; <span id="currentYear"></span> Web Analyzer. All rights reserved. &nbsp;|&nbsp;
+          <a href="{{url_for('privacy')}}">Privacy Policy</a> &nbsp;|&nbsp;
+          <a href="{{url_for('terms')}}">Terms of Service</a> &nbsp;|&nbsp;
+          <a href="{{url_for('cookie_policy')}}">Cookie Policy</a>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Updated script section - KEEPING ORIGINAL FUNCTIONALITY -->
+  <script>
+    document.getElementById("currentYear").textContent = new Date().getFullYear();
+    
+    // Utility functions - KEEPING ORIGINAL
+    const debounce = (func, wait) => {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    };
+    
+    // Elements - KEEPING ORIGINAL
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const toggleIcon = document.getElementById('toggleIcon');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Track navigation state - KEEPING ORIGINAL
+    let isNavigating = false;
+    let sidebarScale = 1;
+    
+    // Show loading animation - KEEPING ORIGINAL
+    function showLoading() {
+      if (document.body.classList.contains('modal-open')) {
+        console.log('Modal is open, not showing loading overlay');
+        return;
+      }
+      loadingOverlay.classList.add('active');
+    }
+
+    function hideLoading() {
+      loadingOverlay.classList.remove('active');
+    }
+    
+    function showLoadingIndicator() {
+      loadingIndicator.classList.add('active');
+    }
+    
+    function hideLoadingIndicator() {
+      loadingIndicator.classList.remove('active');
+    }
+    
+    // Apply sidebar scale transformation - KEEPING ORIGINAL
+    function applySidebarScale() {
+      if (window.innerWidth <= 768) return;
+      
+      document.documentElement.style.setProperty('--sidebar-scale', sidebarScale);
+      
+      const navIcons = document.querySelectorAll('.nav-icon');
+      const navTexts = document.querySelectorAll('.nav-text');
+      
+      navIcons.forEach(icon => {
+        icon.style.transform = `scale(${sidebarScale})`;
+      });
+      
+      navTexts.forEach(text => {
+        if (!sidebar.classList.contains('collapsed')) {
+          text.style.transform = `scale(${sidebarScale})`;
+        }
+      });
+    }
+
+    // Toggle sidebar function - KEEPING ORIGINAL
+    function toggleSidebar() {
+      if (window.innerWidth <= 768) return;
+      
+      if (isNavigating) return;
+      
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      const navTexts = document.querySelectorAll('.nav-text');
+
+      requestAnimationFrame(() => {
+        if (isCollapsed) {
+          sidebar.classList.remove('collapsed');
+          toggleIcon.classList.remove('fa-chevron-right');
+          toggleIcon.classList.add('fa-chevron-left');
+
+          setTimeout(() => {
+            navTexts.forEach((text, index) => {
+              text.style.display = 'block';
+              setTimeout(() => {
+                text.style.opacity = '1';
+                text.style.transform = `scale(${sidebarScale})`;
+              }, 30 * index);
+            });
+          }, 150);
+        } else {
+          navTexts.forEach((text, index) => {
+            text.style.opacity = '0';
+            setTimeout(() => {
+              text.style.display = 'none';
+            }, 300);
+          });
+
+          sidebar.classList.add('collapsed');
+          toggleIcon.classList.add('fa-chevron-right');
+          toggleIcon.classList.remove('fa-chevron-left');
+        }
+        
+        saveStateToLocalStorage();
+        updateToggleButtonPosition();
+      });
+    }
+    
+    // Update toggle button position - KEEPING ORIGINAL
+    function updateToggleButtonPosition() {
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        return;
+      }
+      
+      if (isCollapsed) {
+        sidebarToggle.style.left = `calc(var(--collapsed-sidebar-width) - 1.375rem)`;
+      } else {
+        sidebarToggle.style.left = `calc(var(--sidebar-width) - 1.875rem)`;
+      }
+    }
+
+    // Save/Get sidebar state functions - KEEPING ORIGINAL
+    function saveStateToLocalStorage() {
+      const isCollapsed = sidebar.classList.contains('collapsed');
+      localStorage.setItem('sidebarCollapsed', isCollapsed);
+      localStorage.setItem('sidebarScale', sidebarScale.toString());
+      
+      document.cookie = `sidebarCollapsed=${isCollapsed}; path=/; SameSite=Strict;`;
+      document.cookie = `sidebarScale=${sidebarScale}; path=/; SameSite=Strict;`;
+    }
+
+    function getSidebarState() {
+      const localState = localStorage.getItem('sidebarCollapsed');
+      if (localState !== null) {
+        return localState === 'true';
+      }
+      
+      const cookieMatch = document.cookie.match(/sidebarCollapsed=(true|false)/);
+      if (cookieMatch) {
+        return cookieMatch[1] === 'true';
+      }
+      
+      return false;
+    }
+    
+    function getSidebarScale() {
+      const localScale = localStorage.getItem('sidebarScale');
+      if (localScale !== null) {
+        return parseFloat(localScale);
+      }
+      
+      const cookieMatch = document.cookie.match(/sidebarScale=([0-9.]+)/);
+      if (cookieMatch) {
+        return parseFloat(cookieMatch[1]);
+      }
+      
+      return 1;
+    }
+
+    // Apply sidebar state - KEEPING ORIGINAL
+    function applySidebarState() {
+      const isMobile = window.innerWidth <= 768;
+      
+      if (isMobile) {
+        return;
+      }
+      
+      const shouldBeCollapsed = getSidebarState();
+      sidebarScale = getSidebarScale();
+      applySidebarScale();
+      
+      if (shouldBeCollapsed) {
+        sidebar.classList.add('collapsed');
+        toggleIcon.classList.add('fa-chevron-right');
+        toggleIcon.classList.remove('fa-chevron-left');
+        
+        document.querySelectorAll('.nav-text').forEach(text => {
+          text.style.display = 'none';
+          text.style.opacity = '0';
+        });
+        
+        updateToggleButtonPosition();
+      } else {
+        sidebar.classList.remove('collapsed');
+        toggleIcon.classList.remove('fa-chevron-right');
+        toggleIcon.classList.add('fa-chevron-left');
+        
+        document.querySelectorAll('.nav-text').forEach(text => {
+          text.style.display = 'block';
+          text.style.opacity = '1';
+          text.style.transform = `scale(${sidebarScale})`;
+        });
+        
+        updateToggleButtonPosition();
+      }
+    }
+    
+    // Handle navigation - KEEPING ORIGINAL
+    function handleNavigation(e) {
+      const navLink = e.currentTarget;
+      
+      if (navLink.getAttribute('href').startsWith('#')) {
+        return;
+      }
+      
+      if (isNavigating) {
+        e.preventDefault();
+        return;
+      }
+      
+      isNavigating = true;
+      saveStateToLocalStorage();
+      showLoadingIndicator();
+    }
+
+    // NEW: Smart user name truncation function
+    function truncateUserName() {
+      const userNameElement = document.querySelector('.user-name');
+      if (userNameElement) {
+        const isMobile = window.innerWidth <= 768;
+        const maxLength = isMobile ? 8 : 12; // Shorter on mobile
+        const fullName = userNameElement.textContent.trim();
+        
+        if (fullName.length > maxLength) {
+          userNameElement.textContent = fullName.substring(0, maxLength) + '...';
+          userNameElement.setAttribute('title', fullName); // Show full name on hover
+        }
+      }
+    }
+
+    // Event listeners - KEEPING ORIGINAL
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleSidebar();
+      });
+      
+      sidebarToggle.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+      });
+      
+      sidebarToggle.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSidebar();
+      });
+    }
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', handleNavigation);
+    });
+    
+    applySidebarState();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applySidebarState();
+      truncateUserName(); // NEW: Apply name truncation on load
+      
+      document.querySelectorAll('.dropdown-item').forEach(item => {
+        item.setAttribute('role', 'menuitem');
+        item.setAttribute('tabindex', '0');
+      });
+      
+      setTimeout(() => {
+        hideLoading();
+        isNavigating = false;
+      }, 300);
+    });
+
+    window.addEventListener('beforeunload', () => {
+      saveStateToLocalStorage();
+    });
+
+    // Handle window resize - KEEPING ORIGINAL + adding name truncation
+    const handleResize = debounce(() => {
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        return;
+      } else {
+        applySidebarState();
+        updateToggleButtonPosition();
+      }
+      
+      applySidebarScale();
+      truncateUserName(); // NEW: Re-apply name truncation on resize
+    }, 100);
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Remaining event listeners - KEEPING ORIGINAL
+    if (sidebar) {
+      sidebar.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && window.innerWidth > 768) {
+          if (sidebarToggle) {
+            sidebarToggle.focus();
+          }
+        }
+      });
+    }
+    
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleSidebar();
+        }
+      });
+    }
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        isNavigating = false;
+        hideLoadingIndicator();
+      }
+    });
+    
+    window.addEventListener('pageshow', (event) => {
+      isNavigating = false;
+      hideLoadingIndicator();
+      hideLoading();
+      
+      if (event.persisted) {
+        applySidebarState();
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS - KEEPING ORIGINAL -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+</body>
+</html>

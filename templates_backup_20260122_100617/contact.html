@@ -1,0 +1,421 @@
+{% extends "base2.html" %}
+
+{% block title %}Contact Us | SEO Dada{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Contact SEO Dada for support, questions, or feedback. Get in touch with our team for any assistance you need.">
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+{% endblock %}
+
+{% block content %}
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">Get In Touch</h1>
+                <p class="text-lg text-white/90">
+                    Have questions about our SEO Dada tools? Need support? We're here to help you optimize your website's performance.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12">
+                <!-- Flash Messages Placeholder -->
+                <div id="alertContainer"></div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Contact Information -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-primary mb-6 flex items-center gap-3 border-b-2 border-primary pb-2">
+                            <i class="fas fa-address-book"></i>
+                            Contact Information
+                        </h2>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-map-marker-alt text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-2 text-lg">Our Location</h3>
+                                        <p class="text-gray-700">
+                                            Shyamala Towers, 3rd floor<br>
+                                            No. 136, Arcot Rd, Saligramam<br>
+                                            Chennai, Tamil Nadu 600092
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-envelope text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-2 text-lg">Email Us</h3>
+                                        <p class="text-gray-700">
+                                            support@seodada.com
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                        <i class="fas fa-clock text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800 mb-2 text-lg">Business Hours</h3>
+                                        <p class="text-gray-700">
+                                            Monday - Friday: 9:00 AM - 6:00 PM<br>
+                                            Saturday: 10:00 AM - 4:00 PM<br>
+                                            Sunday: Closed
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 text-center">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Follow Us</h3>
+                            <div class="flex justify-center gap-3">
+                                <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary-dark transition-colors" aria-label="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary-dark transition-colors" aria-label="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary-dark transition-colors" aria-label="LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary-dark transition-colors" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white hover:bg-primary-dark transition-colors" aria-label="GitHub">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div>
+                        <h2 class="text-2xl font-bold text-primary mb-6 flex items-center gap-3 border-b-2 border-primary pb-2">
+                            <i class="fas fa-paper-plane"></i>
+                            Send us a Message
+                        </h2>
+
+                        <div class="success-checkmark" id="successCheckmark"></div>
+
+                        <form method="POST" action="{{ url_for('contact') }}" id="contactForm" novalidate class="space-y-5">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+
+                            <div>
+                                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                    <i class="fas fa-user mr-2"></i>Your Name *
+                                </label>
+                                <input type="text"
+                                       id="name"
+                                       name="name"
+                                       class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-lg"
+                                       placeholder="Enter your full name"
+                                       value="{{ name or '' }}"
+                                       required
+                                       minlength="2"
+                                       maxlength="100">
+                                <div class="error-message text-red-600 text-xs mt-1" id="nameError">Please enter your full name (2-100 characters)</div>
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                    <i class="fas fa-envelope mr-2"></i>Email Address *
+                                </label>
+                                <input type="email"
+                                       id="email"
+                                       name="email"
+                                       class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-lg"
+                                       placeholder="Enter your email address"
+                                       value="{{ email or '' }}"
+                                       required
+                                       maxlength="255">
+                                <div class="error-message text-red-600 text-xs mt-1" id="emailError">Please enter a valid email address</div>
+                            </div>
+
+                            <div>
+                                <label for="message" class="block text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">
+                                    <i class="fas fa-comment mr-2"></i>Your Message *
+                                </label>
+                                <textarea id="message"
+                                          name="message"
+                                          class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-lg resize-vertical"
+                                          placeholder="Tell us how we can help you..."
+                                          required
+                                          minlength="10"
+                                          maxlength="5000"
+                                          rows="5">{{ message or '' }}</textarea>
+                                <div class="flex justify-between items-center mt-1">
+                                    <div class="error-message text-red-600 text-xs" id="messageError">Please enter a message (10-5000 characters)</div>
+                                    <div class="text-xs text-gray-500">
+                                        <span id="charCount">0</span>/5000 characters
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-primary text-white font-semibold px-6 py-3 rounded-lg transition-colors hover:bg-primary-dark flex items-center justify-center gap-2" id="submitBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                <span id="submitText">Send Message</span>
+                            </button>
+
+                            <p class="text-center text-sm text-gray-500">
+                                <i class="fas fa-shield-alt mr-1"></i>
+                                We typically respond within 24 hours during business days.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Additional Info Section -->
+                <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Need Immediate Assistance?</h3>
+                    <p class="text-gray-700 mb-6">
+                        Our support team is dedicated to helping you succeed with SEO Dada. Whether you have technical questions, need guidance, or want to learn more about our features, we're here for you.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="/help" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                            <i class="fas fa-question-circle"></i>
+                            Visit Help Center
+                        </a>
+                        <a href="/about" class="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors">
+                            <i class="fas fa-info-circle"></i>
+                            About Us
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Last updated -->
+                <div class="text-center pt-8 border-t border-gray-200 mt-8">
+                    <p class="text-gray-500 text-sm">Fourth Dimension SEO Dada - Your Partner in SEO Excellence</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Contact Form Functionality
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const successCheckmark = document.getElementById('successCheckmark');
+
+        // Form fields
+        const nameField = document.getElementById('name');
+        const emailField = document.getElementById('email');
+        const messageField = document.getElementById('message');
+        const charCount = document.getElementById('charCount');
+
+        // Character counter
+        messageField.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+
+            // Change color based on length
+            if (length > 4500) {
+                charCount.style.color = '#ef4444';
+            } else if (length > 4000) {
+                charCount.style.color = '#f59e0b';
+            } else {
+                charCount.style.color = '#64748b';
+            }
+        });
+
+        // Initialize character count
+        charCount.textContent = messageField.value.length;
+
+        // Real-time validation
+        function validateField(field, errorElement, validator) {
+            field.addEventListener('blur', function() {
+                if (validator(this.value)) {
+                    this.classList.remove('invalid');
+                    this.classList.add('valid');
+                    errorElement.classList.remove('show');
+                } else {
+                    this.classList.remove('valid');
+                    this.classList.add('invalid');
+                    errorElement.classList.add('show');
+                }
+            });
+
+            field.addEventListener('input', function() {
+                if (this.classList.contains('invalid') && validator(this.value)) {
+                    this.classList.remove('invalid');
+                    this.classList.add('valid');
+                    errorElement.classList.remove('show');
+                }
+            });
+        }
+
+        // Validators
+        validateField(nameField, document.getElementById('nameError'),
+            value => value.trim().length >= 2 && value.trim().length <= 100);
+
+        validateField(emailField, document.getElementById('emailError'),
+            value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
+
+        validateField(messageField, document.getElementById('messageError'),
+            value => value.trim().length >= 10 && value.trim().length <= 5000);
+
+        // Form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate all fields
+            const isNameValid = nameField.value.trim().length >= 2 && nameField.value.trim().length <= 100;
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value);
+            const isMessageValid = messageField.value.trim().length >= 10 && messageField.value.trim().length <= 5000;
+
+            // Show errors for invalid fields
+            if (!isNameValid) {
+                nameField.classList.add('invalid');
+                document.getElementById('nameError').classList.add('show');
+            }
+
+            if (!isEmailValid) {
+                emailField.classList.add('invalid');
+                document.getElementById('emailError').classList.add('show');
+            }
+
+            if (!isMessageValid) {
+                messageField.classList.add('invalid');
+                document.getElementById('messageError').classList.add('show');
+            }
+
+            // If all valid, submit
+            if (isNameValid && isEmailValid && isMessageValid) {
+                submitForm();
+            } else {
+                // Scroll to first error
+                const firstError = document.querySelector('.form-input.invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+            }
+        });
+
+        function submitForm() {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            submitText.textContent = 'Sending...';
+
+            // Create form data
+            const formData = new FormData(form);
+
+            // Submit via fetch
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json().then(data => ({status: response.status, data: data})))
+            .then(result => {
+                if (result.status === 200 && result.data.success) {
+                    showSuccess(result.data.message);
+                } else {
+                    showError(result.data.message || 'Something went wrong. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('An error occurred while sending your message. Please try again.');
+            })
+            .finally(() => {
+                // Reset button state
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                submitText.textContent = 'Send Message';
+            });
+        }
+
+        function showSuccess(message) {
+            // Show success animation
+            successCheckmark.classList.add('show');
+
+            // Clear form
+            form.reset();
+            charCount.textContent = '0';
+
+            // Remove validation classes
+            document.querySelectorAll('.form-input').forEach(input => {
+                input.classList.remove('valid', 'invalid');
+            });
+
+            // Show success message
+            showAlert(message || 'Thank you for your message! We will get back to you soon.', 'success');
+
+            // Hide checkmark after 3 seconds
+            setTimeout(() => {
+                successCheckmark.classList.remove('show');
+            }, 3000);
+        }
+
+        function showError(message) {
+            showAlert(message, 'danger');
+        }
+
+        function showAlert(message, type) {
+            // Remove existing alerts
+            document.querySelectorAll('.alert').forEach(alert => alert.remove());
+
+            // Icon map
+            const iconMap = {
+                success: 'fa-check-circle',
+                danger: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+
+            // Color map
+            const colorMap = {
+                success: 'bg-green-50 border-green-500 text-green-800',
+                danger: 'bg-red-50 border-red-500 text-red-800',
+                warning: 'bg-yellow-50 border-yellow-500 text-yellow-800',
+                info: 'bg-blue-50 border-blue-500 text-blue-800'
+            };
+
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = `alert ${colorMap[type]} border-l-4 rounded-lg p-4 mb-6 flex items-center gap-3`;
+            alert.innerHTML = `
+                <i class="fas ${iconMap[type]}"></i>
+                <span>${message}</span>
+            `;
+
+            // Insert at top of form container
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.appendChild(alert);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+
+            // Scroll to alert
+            alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+</script>
+{% endblock %}

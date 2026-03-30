@@ -1,0 +1,600 @@
+{% extends "base2.html" %}
+
+{% block title %}{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ request.url }}">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<meta property="og:title" content="{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA">
+<meta property="og:description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+<meta property="og:site_name" content="SEODADA">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:url" content="{{ request.url }}">
+<meta name="twitter:title" content="{% if selected_category %}{{ selected_category.name }} - {% endif %}Blog - SEODADA">
+<meta name="twitter:description" content="{% if selected_category %}Explore our blog posts about {{ selected_category.name }}.{% else %}Explore our latest blog posts about SEO, digital marketing, and technology insights.{% endif %}">
+
+<!-- Schema.org structured data for Blog List -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "SEODADA Blog",
+  "description": "{% if selected_category %}{{ selected_category.name }} articles and insights{% else %}SEO, digital marketing, and technology insights{% endif %}",
+  "url": "{{ request.url }}",
+  "publisher": {
+    "@type": "Organization",
+    "name": "SEODADA",
+    "url": "{{ url_for('index', _external=True) }}"
+  }
+  {% if blogs %}
+  ,
+  "blogPost": [
+    {% for blog in blogs %}
+    {
+      "@type": "BlogPosting",
+      "headline": "{{ blog.title }}",
+      "url": "{{ url_for('blog_detail', slug=blog.slug, _external=True) }}",
+      "datePublished": "{{ (blog.publish_date.isoformat() if blog.publish_date else blog.created_at.isoformat()) }}",
+      "dateModified": "{{ blog.updated_at.isoformat() if blog.updated_at else blog.created_at.isoformat() }}",
+      {% if blog.image %}
+      "image": "{{ url_for('static', filename='uploads/blogs/' + blog.image, _external=True) }}",
+      {% endif %}
+      "author": {
+        "@type": "Organization",
+        "name": "SEODADA"
+      },
+      "description": "{{ (blog.description|striptags)[:160] }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+  {% endif %}
+}
+</script>
+
+<!-- BreadcrumbList Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "@id": "{% if selected_category %}{{ url_for('public_blogs', category=selected_category.id, _external=True) }}#breadcrumb{% else %}{{ url_for('public_blogs', _external=True) }}#breadcrumb{% endif %}",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ url_for('landing', _external=True) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blogs",
+      "item": "{{ url_for('public_blogs', _external=True) }}"
+    }
+    {% if selected_category %}
+    ,{
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ selected_category.name }}",
+      "item": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}"
+    }
+    {% endif %}
+  ]
+}
+</script>
+
+<!-- CollectionPage Schema for Category Pages -->
+{% if selected_category %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}#collection",
+  "name": "{{ selected_category.name }} Blogs",
+  "description": "A collection of {{ selected_category.name }} articles and guides published by SEO Dada.",
+  "url": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}",
+  "isPartOf": {
+    "@type": "WebSite",
+    "@id": "{{ url_for('index', _external=True) }}#website"
+  }
+}
+</script>
+{% endif %}
+
+<!-- Google Fonts - Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* Search Box Styles */
+    .search-box {
+        position: relative;
+        max-width: 400px;
+        margin-left: auto;
+    }
+    .search-box input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.75rem;
+        border: 2px solid var(--content-border);
+        border-radius: 50px;
+        font-size: 0.95rem;
+        transition: all var(--content-transition);
+        background: var(--content-surface);
+    }
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--content-primary);
+        box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+    }
+    .search-box i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--content-text-light);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid var(--content-border);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .stats-bar .results-count {
+        font-size: 0.95rem;
+        color: var(--content-text-light);
+    }
+    .stats-bar .results-count strong {
+        color: var(--content-text);
+    }
+
+    /* Featured Post */
+    .featured-post {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        background: var(--content-surface);
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 3rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+    .featured-post::before {
+        content: 'FEATURED';
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: var(--content-seodada-gradient);
+        color: white;
+        padding: 0.35rem 1rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        z-index: 2;
+    }
+    .featured-post-image {
+        height: 100%;
+        min-height: 350px;
+        object-fit: cover;
+        background: var(--content-seodada-gradient);
+    }
+    .featured-post-content {
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .featured-post-category {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.1), rgba(15, 116, 178, 0.08));
+        color: var(--content-primary);
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        width: fit-content;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .featured-post-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--content-text);
+        margin-bottom: 1rem;
+        line-height: 1.3;
+    }
+    .featured-post-title a {
+        color: inherit;
+        text-decoration: none;
+        transition: color var(--content-transition);
+    }
+    .featured-post-title a:hover {
+        color: var(--content-primary);
+    }
+    .featured-post-excerpt {
+        color: var(--content-text-light);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .featured-post-meta {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        color: var(--content-text-light);
+        font-size: 0.9rem;
+    }
+    .featured-post-meta span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .featured-post-meta i {
+        color: var(--content-primary);
+        opacity: 0.7;
+    }
+    .featured-post-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        background: var(--content-seodada-gradient);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all var(--content-transition);
+        width: fit-content;
+    }
+    .featured-post-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(39, 56, 121, 0.3);
+        color: white;
+    }
+    .featured-post-btn i {
+        transition: transform var(--content-transition);
+    }
+    .featured-post-btn:hover i {
+        transform: translateX(3px);
+    }
+
+    @media (max-width: 900px) {
+        .featured-post {
+            grid-template-columns: 1fr;
+        }
+        .featured-post-image {
+            min-height: 250px;
+        }
+        .featured-post-content {
+            padding: 1.5rem;
+        }
+        .featured-post-title {
+            font-size: 1.35rem;
+        }
+    }
+
+    /* Section Title */
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--content-text);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    .section-title i {
+        color: var(--content-primary);
+    }
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, var(--content-border), transparent);
+        margin-left: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="current">Blog</span>
+        {% if selected_category %}
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="current">{{ selected_category.name }}</span>
+        {% endif %}
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><i class="fas fa-blog me-2"></i>{% if selected_category %}{{ selected_category.name }}{% else %}Our Blog{% endif %}</h1>
+            <p>{% if selected_category %}Browse articles about {{ selected_category.name|lower }}{% else %}Discover insights, tips, and expert knowledge about SEO and digital marketing{% endif %}</p>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h5><i class="fas fa-filter me-2"></i>Filter by Category</h5>
+                <div>
+                    <a href="{{ url_for('public_blogs') }}"
+                       class="category-btn {% if not selected_category %}active{% endif %}">
+                        <i class="fas fa-th me-1"></i>All Posts
+                    </a>
+                    {% for category in categories %}
+                    <a href="{{ url_for('public_blogs', category=category.id) }}"
+                       class="category-btn {% if selected_category and selected_category.id == category.id %}active{% endif %}">
+                        {{ category.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="blogSearch" placeholder="Search articles..." aria-label="Search blog posts">
+            </div>
+        </div>
+    </div>
+
+    {% if blogs %}
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <span class="results-count">
+            Showing <strong>{{ blogs|length }}</strong> of <strong>{{ pagination.total }}</strong> articles
+            {% if selected_category %} in <strong>{{ selected_category.name }}</strong>{% endif %}
+        </span>
+    </div>
+
+    <!-- Featured Post (first blog) -->
+    {% if not selected_category and pagination.page == 1 and blogs|length > 0 %}
+    {% set featured = blogs[0] %}
+    <div class="featured-post">
+        {% if featured.image %}
+        <img src="{{ url_for('static', filename='uploads/blogs/' + featured.image) }}"
+             alt="{{ featured.title }}"
+             class="featured-post-image"
+             loading="eager">
+        {% else %}
+        <div class="featured-post-image d-flex align-items-center justify-content-center">
+            <i class="fas fa-blog fa-4x text-white" style="opacity: 0.3;"></i>
+        </div>
+        {% endif %}
+        <div class="featured-post-content">
+            {% if featured.category %}
+            <span class="featured-post-category">{{ featured.category.name }}</span>
+            {% endif %}
+            <h2 class="featured-post-title">
+                <a href="{{ url_for('blog_detail', slug=featured.slug) }}">{{ featured.title }}</a>
+            </h2>
+            <p class="featured-post-excerpt">
+                {% if featured.meta_description %}
+                    {{ featured.meta_description }}
+                {% elif featured.description %}
+                    {{ featured.description|striptags|truncate(200, True, '...') }}
+                {% endif %}
+            </p>
+            <div class="featured-post-meta">
+                <span>
+                    <i class="far fa-calendar-alt"></i>
+                    {{ (featured.publish_date.strftime('%B %d, %Y') if featured.publish_date else featured.created_at.strftime('%B %d, %Y')) }}
+                </span>
+                {% if featured.author_name or featured.created_by %}
+                <span>
+                    <i class="far fa-user"></i>
+                    {{ featured.author_name or featured.created_by }}
+                </span>
+                {% endif %}
+            </div>
+            <a href="{{ url_for('blog_detail', slug=featured.slug) }}" class="featured-post-btn">
+                Read Article <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Section Title for remaining posts -->
+    {% if blogs|length > 1 %}
+    <h2 class="section-title"><i class="fas fa-newspaper"></i>Latest Articles</h2>
+    {% endif %}
+    {% endif %}
+
+    <!-- Blog Grid -->
+    <div class="blogs-grid" id="blogsGrid">
+        {% for blog in blogs %}
+        {% if selected_category or pagination.page > 1 or loop.index > 1 %}
+        <article class="blog-card" data-title="{{ blog.title|lower }}" data-category="{{ blog.category.name|lower if blog.category else '' }}">
+            <a href="{{ url_for('blog_detail', slug=blog.slug) }}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+                {% if blog.image %}
+                <img src="{{ url_for('static', filename='uploads/blogs/' + blog.image) }}"
+                     alt="{{ blog.title }}"
+                     class="blog-image"
+                     loading="lazy">
+                {% else %}
+                <div class="blog-image d-flex align-items-center justify-content-center">
+                    <i class="fas fa-blog fa-3x text-white" style="opacity: 0.3;"></i>
+                </div>
+                {% endif %}
+
+                <div class="blog-card-body">
+                    {% if blog.category %}
+                    <span class="blog-category">{{ blog.category.name }}</span>
+                    {% endif %}
+
+                    <h3 class="blog-title">{{ blog.title }}</h3>
+
+                    <div class="blog-excerpt">
+                        {% if blog.meta_description %}
+                            {{ blog.meta_description }}
+                        {% elif blog.description %}
+                            {{ blog.description|striptags|truncate(150, True, '...') }}
+                        {% endif %}
+                    </div>
+
+                    <div class="blog-meta">
+                        <span>
+                            <i class="far fa-calendar me-1"></i>
+                            {{ (blog.publish_date.strftime('%b %d, %Y') if blog.publish_date else blog.created_at.strftime('%b %d, %Y')) }}
+                        </span>
+                        <span class="read-more">
+                            Read More <i class="fas fa-arrow-right ms-1"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </article>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- No Results Message (hidden by default) -->
+    <div class="no-blogs" id="noResults" style="display: none;">
+        <i class="fas fa-search"></i>
+        <h3>No articles found</h3>
+        <p>Try adjusting your search terms</p>
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination-wrapper">
+        <nav aria-label="Blog pagination">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.prev_num, category=selected_category.id if selected_category else '') }}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('public_blogs', page=page_num, category=selected_category.id if selected_category else '') }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.next_num, category=selected_category.id if selected_category else '') }}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="no-blogs">
+        <i class="fas fa-blog"></i>
+        <h3>No Blog Posts Yet</h3>
+        <p>Check back soon for exciting blog posts!</p>
+        <a href="{{ url_for('landing') }}" class="featured-post-btn" style="margin-top: 1rem;">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Search Functionality
+    const searchInput = document.getElementById('blogSearch');
+    const blogsGrid = document.getElementById('blogsGrid');
+    const noResults = document.getElementById('noResults');
+
+    if (searchInput && blogsGrid) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const blogCards = blogsGrid.querySelectorAll('.blog-card');
+            let visibleCount = 0;
+
+            blogCards.forEach(card => {
+                const title = card.dataset.title || '';
+                const category = card.dataset.category || '';
+
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    card.style.display = '';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 && searchTerm ? 'block' : 'none';
+            }
+        });
+    }
+
+    // Scroll to Top Button Functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+    let ticking = false;
+
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('visible');
+                } else {
+                    scrollToTopBtn.classList.remove('visible');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+{% endblock %}

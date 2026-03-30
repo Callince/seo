@@ -1,0 +1,94 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add Blog Category - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Add Blog Category
+                        </h5>
+                        <a href="{{ url_for('admin_blog_categories') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Categories
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin_add_blog_category') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label fw-semibold">
+                                Category Name <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   placeholder="Enter category name" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="sort_order" class="form-label fw-semibold">Sort Order</label>
+                            <input type="number" class="form-control" id="sort_order" name="sort_order"
+                                   value="0" placeholder="0">
+                            <small class="form-text text-muted">Lower numbers appear first</small>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="status" name="status" checked>
+                                <label class="form-check-label fw-semibold" for="status">
+                                    Active
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-2"></i>Save Category
+                            </button>
+                            <a href="{{ url_for('admin_blog_categories') }}" class="btn btn-outline-secondary px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 12px;
+    }
+
+    .form-control:focus {
+        border-color: #4895ef;
+        box-shadow: 0 0 0 0.2rem rgba(72, 149, 239, 0.25);
+    }
+</style>
+
+<script>
+    // Prevent double submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        let isSubmitting = false;
+
+        form.addEventListener('submit', function(e) {
+            if (isSubmitting) {
+                e.preventDefault();
+                return false;
+            }
+            isSubmitting = true;
+
+            // Re-enable after 3 seconds in case of error
+            setTimeout(() => {
+                isSubmitting = false;
+            }, 3000);
+        });
+    });
+</script>
+{% endblock %}
+

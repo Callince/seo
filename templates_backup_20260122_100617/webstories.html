@@ -1,0 +1,202 @@
+{% extends "base2.html" %}
+
+{% block title %}Web Stories - SEODADA{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Web Stories - SEODADA">
+    <meta property="og:description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+    <meta property="og:site_name" content="SEODADA">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Web Stories - SEODADA">
+    <meta name="twitter:description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+
+    <!-- BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ url_for('landing', _external=True) }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Web Stories",
+          "item": "{{ request.url }}"
+        }
+      ]
+    }
+    </script>
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="main-container">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <span class="separator"><i class="fas fa-chevron-right"></i></span>
+        <span class="current">Web Stories</span>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-content">
+            <h1><i class="fas fa-play-circle me-2"></i>Web Stories</h1>
+            <p>Explore our engaging visual stories about SEO, digital marketing, and technology insights</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- Web Stories Grid -->
+    {% if webstories %}
+    <!-- Stats Bar -->
+    <div class="share-card" style="margin-bottom: 2rem;">
+        <h5 style="margin: 0;"><i class="fas fa-layer-group me-2"></i>{{ webstories|length }} {% if webstories|length == 1 %}Story{% else %}Stories{% endif %} Available</h5>
+        <span style="color: var(--content-text-light); font-size: 0.9rem;">
+            <i class="fas fa-mobile-alt me-1"></i> Tap to view full story
+        </span>
+    </div>
+
+    <div class="stories-grid">
+        {% for webstory in webstories %}
+        <div class="story-card" onclick="window.location.href='{{ url_for('webstory_detail', slug=webstory.slug) }}'">
+            {% if webstory.cover_image %}
+            <img src="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image) }}"
+                 alt="{{ webstory.meta_title }}"
+                 class="story-image"
+                 loading="lazy">
+            {% else %}
+            <div class="story-image d-flex align-items-center justify-content-center" style="background: var(--content-seodada-gradient);">
+                <i class="fas fa-play-circle fa-4x text-white" style="opacity: 0.3;"></i>
+            </div>
+            {% endif %}
+
+            <div class="story-card-body">
+                <h3 class="story-title">
+                    <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}">
+                        {{ webstory.meta_title }}
+                    </a>
+                </h3>
+
+                {% if webstory.meta_description %}
+                <p class="story-excerpt">{{ webstory.meta_description }}</p>
+                {% endif %}
+
+                <div class="story-meta">
+                    <span>
+                        <i class="far fa-calendar"></i>
+                        {{ webstory.publish_date.strftime('%b %d, %Y') if webstory.publish_date else 'N/A' }}
+                    </span>
+                    <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}" class="read-more">
+                        View <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if pagination.pages > 1 %}
+    <div class="pagination-wrapper">
+        <nav aria-label="Web stories pagination">
+            <ul class="pagination">
+                {% if pagination.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_webstories', page=pagination.prev_num) }}">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('public_webstories', page=page_num) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('public_webstories', page=pagination.next_num) }}">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="no-stories">
+        <i class="fas fa-play-circle"></i>
+        <h3>No Web Stories Yet</h3>
+        <p>Check back soon for exciting visual stories!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Scroll to Top Button -->
+<button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Scroll to Top Button Functionality
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('visible');
+        } else {
+            scrollToTopBtn.classList.remove('visible');
+        }
+    }, { passive: true });
+
+    scrollToTopBtn.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+</script>
+{% endblock %}

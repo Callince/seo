@@ -1,0 +1,582 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Contact Submissions{% endblock %}
+
+{% block page_title %}Contact Form Submissions{% endblock %}
+
+
+{% block content %}
+<!-- Flash Messages Container -->
+<div id="flashMessagesContainer"></div>
+
+<div class="row dashboard-stats-row">
+    <!-- Summary Cards -->
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-users">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Total Submissions</div>
+                    <div class="stat-value">{{ total_count }}</div>
+                    <div class="stat-desc">All time messages</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-expiring">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">New Messages</div>
+                    <div class="stat-value">{{ new_count|default(0) }}</div>
+                    <div class="stat-desc">Awaiting response</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-subscriptions">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Responded</div>
+                    <div class="stat-value">{{ responded_count|default(0) }}</div>
+                    <div class="stat-desc">Messages handled</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-revenue">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Today's Messages</div>
+                    <div class="stat-value">{{ today_count|default(0) }}</div>
+                    <div class="stat-desc">Received today</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>Contact Form Submissions
+                </h5>
+                <div class="d-flex gap-2">
+                    <!-- Export Button -->
+                    <a href="{{ url_for('admin_export_contact_submissions') }}{% if status_filter != 'all' %}?status={{ status_filter }}{% endif %}" 
+                       class="btn btn-sm btn-outline-success">
+                        <i class="fas fa-download"></i> 
+                        <span class="d-none d-sm-inline ms-1">Export CSV</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Filter Tabs -->
+            <div class="card-body pb-0">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <ul class="nav nav-tabs flex-nowrap mobile-scroll" id="statusTabs" style="border-bottom: none;">
+                        <li class="nav-item">
+                            <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" 
+                               href="{{ url_for('admin_contact_submissions', status='all') }}">
+                                All ({{ submissions.total }})
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if status_filter == 'new' %}active{% endif %}" 
+                               href="{{ url_for('admin_contact_submissions', status='new') }}">
+                                <i class="fas fa-exclamation-circle text-danger"></i> New
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if status_filter == 'read' %}active{% endif %}" 
+                               href="{{ url_for('admin_contact_submissions', status='read') }}">
+                                <i class="fas fa-eye text-warning"></i> Read
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if status_filter == 'responded' %}active{% endif %}" 
+                               href="{{ url_for('admin_contact_submissions', status='responded') }}">
+                                <i class="fas fa-check-circle text-success"></i> Responded
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if status_filter == 'spam' %}active{% endif %}" 
+                               href="{{ url_for('admin_contact_submissions', status='spam') }}">
+                                <i class="fas fa-ban text-secondary"></i> Spam
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Submissions Content -->
+            <div class="card-body p-0">
+                <!-- Desktop Table View -->
+                <div class="desktop-table-view">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table class="table table-hover mb-0" style="min-width: max-content;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Message Preview</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for submission in submissions.items %}
+                                <tr class="{% if submission.status == 'new' %}table-warning{% endif %}">
+                                    <td>
+                                        <span class="badge bg-light text-dark">#{{ submission.id }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-primary-subtle text-primary me-2">
+                                                {{ submission.name[:1]|upper }}
+                                            </div>
+                                            <span class="fw-medium">{{ submission.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="mailto:{{ submission.email }}" class="text-decoration-none">
+                                            {{ submission.email }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                            {{ submission.message[:100] }}{% if submission.message|length > 100 %}...{% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if submission.status == 'new' %}
+                                            <span class="badge bg-danger">New</span>
+                                        {% elif submission.status == 'read' %}
+                                            <span class="badge bg-warning">Read</span>
+                                        {% elif submission.status == 'responded' %}
+                                            <span class="badge bg-success">Responded</span>
+                                        {% elif submission.status == 'spam' %}
+                                            <span class="badge bg-secondary">Spam</span>
+                                        {% else %}
+                                            <span class="badge bg-light text-dark">{{ submission.status|title }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div>{{ submission.created_at.strftime('%d %b, %Y') if submission.created_at else 'N/A' }}</div>
+                                        <small class="text-muted">{{ submission.created_at.strftime('%I:%M %p') if submission.created_at else '' }}</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ url_for('admin_contact_submission_detail', submission_id=submission.id) }}" 
+                                            class="btn btn-sm btn-outline-primary" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <!-- <button type="button" class="btn btn-sm btn-outline-success" 
+                                                    onclick="replyViaEmail('{{ submission.email }}', '{{ submission.name }}')" 
+                                                    title="Reply via Email">
+                                                <i class="fas fa-reply"></i>
+                                            </button> -->
+                                            {% if submission.status != 'spam' %}
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="markAsSpam({{ submission.id }})" title="Mark as Spam">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-5">
+                                        <div class="empty-state">
+                                            <div class="icon-wrapper bg-light rounded-circle p-4 mx-auto mb-3" style="width: fit-content;">
+                                                <i class="fas fa-inbox fs-1 text-muted"></i>
+                                            </div>
+                                            <h5>No contact submissions found</h5>
+                                            <p class="text-muted">Contact form submissions will appear here when customers send messages.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!-- Mobile Card View -->
+                <div class="mobile-card-view">
+                    {% for submission in submissions.items %}
+                    <div class="mobile-data-card {% if submission.status == 'new' %}border-warning{% endif %}">
+                        <div class="card-header-mobile">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="avatar-circle bg-primary-subtle text-primary me-3">
+                                    {{ submission.name[:1]|upper }}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">{{ submission.name }}</div>
+                                    <div class="small text-muted">{{ submission.email }}</div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column align-items-end">
+                                <span class="badge bg-light text-dark mb-1">#{{ submission.id }}</span>
+                                {% if submission.status == 'new' %}
+                                    <span class="badge bg-danger">New</span>
+                                {% elif submission.status == 'read' %}
+                                    <span class="badge bg-warning">Read</span>
+                                {% elif submission.status == 'responded' %}
+                                    <span class="badge bg-success">Responded</span>
+                                {% elif submission.status == 'spam' %}
+                                    <span class="badge bg-secondary">Spam</span>
+                                {% else %}
+                                    <span class="badge bg-light text-dark">{{ submission.status|title }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="card-body-mobile">
+                            <div class="data-label">Message:</div>
+                            <div class="data-value">{{ submission.message[:80] }}{% if submission.message|length > 80 %}...{% endif %}</div>
+                            
+                            <div class="data-label">Date:</div>
+                            <div class="data-value">{{ submission.created_at.strftime('%d %b, %Y %I:%M %p') if submission.created_at else 'N/A' }}</div>
+                        </div>
+                        
+                        <div class="card-actions-mobile">
+                            <a href="{{ url_for('admin_contact_submission_detail', submission_id=submission.id) }}" 
+                               class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            <button type="button" class="btn btn-sm btn-outline-success flex-fill"
+                                    onclick="replyViaEmail('{{ submission.email }}', '{{ submission.name }}')">
+                                <i class="fas fa-reply"></i> Reply
+                            </button>
+                            {% if submission.status != 'spam' %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                    onclick="markAsSpam({{ submission.id }})">
+                                <i class="fas fa-ban"></i>
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <div class="empty-state">
+                            <div class="icon-wrapper bg-light rounded-circle p-4 mx-auto mb-3" style="width: fit-content;">
+                                <i class="fas fa-inbox fs-1 text-muted"></i>
+                            </div>
+                            <h5>No contact submissions found</h5>
+                            <p class="text-muted">Contact form submissions will appear here when customers send messages.</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            {% if submissions.pages > 1 %}
+            <div class="card-footer">
+                <nav aria-label="Contact submissions pagination">
+                    <ul class="pagination justify-content-center mb-0 flex-wrap">
+                        {% if submissions.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin_contact_submissions', page=submissions.prev_num, status=status_filter) }}">
+                                <i class="fas fa-chevron-left"></i>
+                                <span class="d-none d-sm-inline ms-1">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for page_num in submissions.iter_pages() %}
+                            {% if page_num %}
+                                {% if page_num != submissions.page %}
+                                <li class="page-item d-none d-sm-block">
+                                    <a class="page-link" href="{{ url_for('admin_contact_submissions', page=page_num, status=status_filter) }}">{{ page_num }}</a>
+                                </li>
+                                {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                            <li class="page-item disabled d-none d-sm-block">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if submissions.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin_contact_submissions', page=submissions.next_num, status=status_filter) }}">
+                                <span class="d-none d-sm-inline me-1">Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Reply via email function
+function replyViaEmail(email, name) {
+    const subject = encodeURIComponent('Re: Your Contact Form Submission');
+    const body = encodeURIComponent(`Hello ${name},\n\nThank you for contacting us.\n\nBest regards,\nFourth Dimension Team`);
+    const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+
+    // Try to open in new window/tab first, fallback to location change
+    const newWindow = window.open(mailtoLink, '_blank');
+
+    // If popup was blocked or didn't work, use location.href as fallback
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        window.location.href = mailtoLink;
+    }
+}
+
+// Mark as spam function
+function markAsSpam(submissionId) {
+    showCustomConfirm(
+        'Are you sure you want to mark this submission as spam?',
+        function() {
+            fetch(`/admin/contact_submissions/${submissionId}/spam`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Submission marked as spam successfully.', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert('Error marking as spam: ' + (data.message || 'Unknown error'), 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while marking as spam.', 'danger');
+            });
+        }
+    );
+}
+
+// Show professional alert messages
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.minWidth = '300px';
+    alertDiv.style.maxWidth = '500px';
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'} me-2"></i>
+            <div class="flex-grow-1">${message}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 150);
+    }, 5000);
+}
+
+// Show custom confirmation dialog
+function showCustomConfirm(message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>Confirm Action
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">${message}</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    
+    document.getElementById('confirmBtn').addEventListener('click', function() {
+        bsModal.hide();
+        onConfirm();
+    });
+    
+    modal.addEventListener('hidden.bs.modal', function() {
+        modal.remove();
+    });
+}
+
+// Add animation to cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card, .mobile-data-card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 + (index * 50));
+    });
+    
+    // Mobile scroll tabs
+    const tabsContainer = document.getElementById('statusTabs');
+    if (tabsContainer) {
+        const activeTab = tabsContainer.querySelector('.nav-link.active');
+        if (activeTab && window.innerWidth <= 768) {
+            activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    }
+});
+</script>
+
+<style>
+.mobile-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.mobile-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 1rem;
+}
+
+.avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 600;
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+}
+
+.table-warning {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+}
+
+.border-warning {
+    border-color: #ffc107 !important;
+    border-width: 2px !important;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    .nav-tabs {
+        border-bottom: none;
+        margin-bottom: 0.5rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        white-space: nowrap;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .pagination {
+        font-size: 0.875rem;
+    }
+    
+    .page-link {
+        padding: 0.5rem 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-actions-mobile {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .card-actions-mobile .btn {
+        width: 100%;
+    }
+    
+    .stat-card .stat-card-body {
+        padding: 1rem;
+    }
+    
+    .stat-card .icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        margin-right: 0.75rem;
+    }
+    
+    .stat-card .stat-value {
+        font-size: 1.25rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,1130 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ user.name|title }}{% endblock %}
+
+{% block content %}
+<div class="w-full min-h-screen py-4 sm:py-8" style="background:transparent;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Profile Header with gradient theme -->
+        <div class="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden mb-6 sm:mb-8">
+            <div class="gradient-header relative">
+                <!-- Mobile: Centered layout, Desktop: Original left/right layout -->
+                <div class="flex flex-col sm:flex-row items-center sm:h-32 px-4 sm:px-6 py-6 sm:py-0 space-y-4 sm:space-y-0">
+                    
+                    <!-- User Info - Centered on mobile, flex-grow on desktop -->
+                    <div class="text-center sm:text-left sm:flex-grow order-1 sm:order-none">
+                        <h1 class="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-1">{{ user.name|title }}</h1>
+                        <p class="text-white flex items-center justify-center">
+                            <i class="fas fa-envelope mr-2"></i>{{ user.company_email }}
+                            
+                        </p>
+                    </div>
+                    
+                    <!-- Right Side Info - Stacked on mobile, right-aligned on desktop -->
+                    <div class="text-center sm:text-right order-2 sm:order-none w-full sm:w-auto">
+                        {% if active_subscription %}
+                            {% set sub, plan = active_subscription %}
+                            <div class="mb-2">
+                                <span class="inline-block  text-white text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full">
+                                    <i class="fas fa-crown mr-1"></i>{{ plan.plan }} Plan
+                                </span>
+
+                            </div>
+                        {% endif %}
+                        <p class="text-xs sm:text-sm text-white">
+                            <i class="fas fa-calendar mr-1"></i>
+                            Member since {% if user.created_at %}{{ user.created_at.strftime('%B %Y') }}{% else %}N/A{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Flash Messages -->
+       <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-6 border-l-4 p-4 rounded relative flash-message flash-{{ category }}">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-times-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm">{{ message }}</p>
+                            </div>
+                            <button type="button" class="ml-auto -mr-1 px-2" onclick="this.parentElement.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}-->
+
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-6">
+            <!-- Left Sidebar Navigation -->
+            <div class="lg:w-1/4">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <nav class="p-3 sm:p-4">
+                        <button type="button" 
+                                class="tab-btn w-full flex items-center px-3 sm:px-4 lg:px-6 py-3 lg:py-4 text-left rounded-lg transition-colors duration-200 font-medium tab-active" 
+                                data-tab="overview">
+                            <i class="fas fa-th-large w-5 lg:w-6 text-primary"></i>
+                            <span class="ml-3 text-text">Overview</span>
+                        </button>
+                        <button type="button" 
+                                class="tab-btn w-full flex items-center px-3 sm:px-4 lg:px-6 py-3 lg:py-4 text-left rounded-lg transition-colors duration-200 mt-2" 
+                                data-tab="account">
+                            <i class="fas fa-user-circle w-5 lg:w-6 text-text-light"></i>
+                            <span class="ml-3 text-text-light">Account Settings</span>
+                        </button>
+                        <button type="button" 
+                                class="tab-btn w-full flex items-center px-3 sm:px-4 lg:px-6 py-3 lg:py-4 text-left rounded-lg transition-colors duration-200 mt-2" 
+                                data-tab="subscription">
+                            <i class="fas fa-credit-card w-5 lg:w-6 text-text-light"></i>
+                            <span class="ml-3 text-text-light">Subscription</span>
+                        </button>
+                        <button type="button" 
+                                class="tab-btn w-full flex items-center px-3 sm:px-4 lg:px-6 py-3 lg:py-4 text-left rounded-lg transition-colors duration-200 mt-2" 
+                                data-tab="security">
+                            <i class="fas fa-shield-alt w-5 lg:w-6 text-text-light"></i>
+                            <span class="ml-3 text-text-light">Security</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+            
+            <!-- Right Content Area -->
+            <div class="lg:w-3/4">
+                <!-- Overview Tab -->
+                <div class="tab-pane" data-tab-content="overview">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
+                        <!-- Quick Stats -->
+                        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 card-hover">
+                            <h3 class="text-lg font-semibold mb-4 text-text gradient-text">
+                                <i class="fas fa-chart-line mr-2"></i>Quick Stats
+                            </h3>
+                            <div class="space-y-3">
+                                {% if active_subscription %}
+                                    {% set sub, plan = active_subscription %}
+                                    <div class="flex justify-between">
+                                        <span class="text-text-light text-sm sm:text-base">Daily Usage</span>
+                                        <span class="font-medium text-text text-sm sm:text-base">{{ sub.current_usage or 0 }} / {{ plan.usage_per_day or 'Unlimited' }}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-light text-sm sm:text-base">Days Remaining</span>
+                                        <span class="font-medium text-text text-sm sm:text-base">{{ (sub.end_date - now).days }} days</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-text-light text-sm sm:text-base">Plan Type</span>
+                                        <span class="font-medium text-secondary text-sm sm:text-base">{{ plan.plan }}</span>
+                                    </div>
+                                {% else %}
+                                    <div class="flex justify-between">
+                                        <span class="text-text-light text-sm sm:text-base">Subscription Status</span>
+                                        <span class="font-medium text-gray-500 text-sm sm:text-base">No Active Plan</span>
+                                    </div>
+                                {% endif %}
+                                <div class="flex justify-between">
+                                    <span class="text-text-light text-sm sm:text-base">Account Status</span>
+                                    <span class="font-medium text-secondary text-sm sm:text-base">Active</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity - FIXED to use actual data -->
+                        <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 card-hover">
+                            <h3 class="text-lg font-semibold mb-4 text-text gradient-text">
+                                <i class="fas fa-clock mr-2"></i>Recent Activity
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center text-sm">
+                                    <div class="w-2 h-2 rounded-full mr-3 bg-secondary flex-shrink-0"></div>
+                                    <span class="text-text-light">Last login: {{ recent_activity.last_login if recent_activity else 'Never' }}</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <div class="w-2 h-2 rounded-full mr-3 bg-primary flex-shrink-0"></div>
+                                    <span class="text-text-light">Profile updated: {{ recent_activity.profile_updated if recent_activity else 'Never' }}</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full mr-3 flex-shrink-0"></div>
+                                    <span class="text-text-light">Password changed: {{ recent_activity.password_changed if recent_activity else 'Never' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 card-hover">
+                        <h3 class="text-lg font-semibold mb-4 text-text gradient-text">
+                            <i class="fas fa-bolt mr-2"></i>Quick Actions
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                            <a href="{{ url_for('user_subscriptions') }}" class="action-card action-card-primary">
+                                <i class="fas fa-shopping-cart text-lg sm:text-xl mr-2 sm:mr-3"></i>
+                                <span class="font-medium text-sm sm:text-base">Manage Subscription</span>
+                            </a>
+                            <button onclick="showTab('security')" class="action-card action-card-secondary">
+                                <i class="fas fa-key text-lg sm:text-xl mr-2 sm:mr-3"></i>
+                                <span class="font-medium text-sm sm:text-base">Change Password</span>
+                            </button>
+                            <a href="{{ url_for('index') }}" class="action-card action-card-neutral">
+                                <i class="fas fa-tachometer-alt text-lg sm:text-xl mr-2 sm:mr-3"></i>
+                                <span class="font-medium text-sm sm:text-base">Go to Dashboard</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Settings Tab -->
+                <div class="tab-pane hidden" data-tab-content="account">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 gradient-header">
+                            <h2 class="text-lg sm:text-xl font-semibold text-white">Account Settings</h2>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <form method="POST" action="{{ url_for('update_profile') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                                <input type="hidden" name="update_type" value="account">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium mb-2 text-text">Full Name</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-user text-text-light text-sm"></i>
+                                            </div>
+                                            <input type="text" class="form-input" 
+                                                  id="name" name="name" value="{{ user.name | title }}" required>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="companyEmail" class="block text-sm font-medium mb-2 text-text">Company Email</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-envelope text-text-light text-sm"></i>
+                                            </div>
+                                            <input type="email" class="form-input-disabled" 
+                                                  id="companyEmail" value="{{ user.company_email }}" readonly>
+                                        </div>
+                                        <p class="mt-1 text-xs sm:text-sm text-text-light">Email address cannot be changed</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 sm:mt-6 flex justify-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save mr-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subscription Tab -->
+                <div class="tab-pane hidden" data-tab-content="subscription">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 gradient-header">
+                            <h2 class="text-lg sm:text-xl font-semibold text-white">
+                                <i class="fas fa-star mr-2"></i>Subscription Details
+                            </h2>
+                        </div>
+                        <div class="p-0">
+                            {% if active_subscription %}
+                                <!-- Only show the most recent active subscription -->
+                                {% set sub, plan = active_subscription %}
+                                <div id="active-subscriptions">
+                                    <!-- Compact Card Design -->
+                                    <div class="bg-white rounded-lg overflow-hidden w-full">
+                                        <!-- Content Grid - Responsive Layout -->
+                                        <div class="bg-white p-4 sm:p-6">
+                                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                                <!-- Subscription Period -->
+                                                <div>
+                                                    <h4 class="text-gray-600 font-medium text-sm mb-2">Subscription Period</h4>
+                                                    <div class="space-y-1">
+                                                        <p class="text-xs sm:text-sm text-gray-800">{{ sub.start_date.strftime('%B %d, %Y') }} - {{ sub.end_date.strftime('%B %d, %Y') }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Days Remaining -->
+                                                <div>
+                                                    <h4 class="text-gray-600 font-medium text-sm mb-2">Days Remaining</h4>
+                                                    {% if now < sub.end_date %}
+                                                        <div class="space-y-2">
+                                                            <div class="text-lg font-bold" style="color:#273879;">
+                                                                {{ (sub.end_date - now).days }}
+                                                            </div>
+
+                                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                                {% set percent_left = ((sub.end_date - now).total_seconds() / (sub.end_date - sub.start_date).total_seconds() * 100) | round %}
+                                                                <div class="h-2 rounded-full transition-all duration-300" style="background-color:#273879; width: {{ percent_left }}%"></div>
+                                                            </div>
+
+                                                            <p class="text-xs text-gray-500">{{ (sub.end_date - now).days }} of {{ (sub.end_date - sub.start_date).days }} days</p>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="text-lg font-bold text-red-600">0</div>
+                                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                                            <div class="bg-red-500 h-2 rounded-full" style="width: 0%"></div>
+                                                        </div>
+                                                        <p class="text-xs text-gray-500">Subscription expired</p>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <!-- Daily Limit -->
+                                                <div>
+                                                    <h4 class="text-gray-600 font-medium text-sm mb-2">Daily Limit</h4>
+                                                    {% if plan.usage_per_day and plan.usage_per_day > 0 %}
+                                                        <div class="text-lg font-bold text-gray-800">{{ plan.usage_per_day }} operations</div>
+                                                    {% else %}
+                                                        <div class="text-lg font-bold text-gray-800">Unlimited</div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <!-- Today's Usage -->
+                                                <div>
+                                                    <h4 class="text-gray-600 font-medium text-sm mb-2">Today's Usage</h4>
+                                                    {% if plan.usage_per_day and plan.usage_per_day > 0 %}
+                                                        <div class="space-y-2">
+                                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                                {% if sub.current_usage %}
+                                                                {% set usage_percent = (sub.current_usage / plan.usage_per_day * 100) | round %}
+                                                                <div class="bg-secondary h-2 rounded-full transition-all duration-300" style="width: {{ usage_percent }}%"></div>
+                                                                {% else %}
+                                                                <div class="bg-secondary h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                                                {% endif %}
+                                                            </div>
+                                                            <p class="text-sm font-medium text-gray-800">{{ sub.current_usage or 0 }} of {{ plan.usage_per_day }} operations</p>
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="space-y-2">
+                                                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                                                <div class="bg-secondary h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                                                            </div>
+                                                            <p class="text-sm font-medium text-gray-800">No daily limit</p>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Action Buttons -->
+                                            <div class="mt-4 sm:mt-6 pt-4 border-t border-gray-200">
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                   <!-- Manage Subscription Button -->
+                                                    <a href="{{ url_for('user_subscriptions') }}"
+                                                        class="{% if now > sub.end_date %}bg-gray-400 cursor-not-allowed{% else %}text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-sm sm:text-base{% endif %}"
+                                                        {% if now > sub.end_date %}onclick="return false;"{% endif %}
+                                                        style="{% if now <= sub.end_date %}background-color:#273879;{% endif %}">
+                                                            <i class="fas fa-cog mr-2"></i> Manage Subscription
+                                                    </a>
+
+
+                                                   <!-- View Details Button -->
+                                                    <a href="{{ url_for('subscription_details', subscription_id=sub.id) }}"
+                                                        class="text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-center text-sm sm:text-base"
+                                                        style="background-color:#273879;">
+                                                            <i class="fas fa-chart-line mr-2"></i> View Details
+                                                    </a>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="bg-primary/10 text-primary border border-primary/30 rounded-lg px-4 sm:px-6 py-6 sm:py-8 w-full m-3 sm:m-6">
+                                    <div class="flex items-center justify-center">
+                                        <div class="text-center">
+                                            <p class="font-medium text-sm sm:text-base lg:text-lg">There is no Active Subscription Found, Subscribe to Access the Tools</p>
+                                            <p class="text-xs sm:text-sm opacity-80 mt-2">
+                                                <a href="{{ url_for('user_subscriptions') }}" class="text-primary font-semibold hover:underline">Check out our subscription plans</a>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Tab -->
+                <div class="tab-pane hidden" data-tab-content="security">
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 gradient-header">
+                            <h2 class="text-lg sm:text-xl font-semibold text-white">Security Settings</h2>
+                        </div>
+                        <div class="p-4 sm:p-6">
+                            <form method="POST" action="{{ url_for('update_profile') }}" id="passwordForm">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                                <input type="hidden" name="update_type" value="security">
+                                
+                                <div class="border-l-4 border-primary p-3 sm:p-4 mb-4 sm:mb-6 rounded" style="background-color: rgba(39, 56, 121, 0.1);">
+                                    <p class="text-xs sm:text-sm" style="color:#273879;">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        Choose a strong password that you don't use for other accounts
+                                    </p>
+
+                                </div>
+
+                                <div class="space-y-4 sm:space-y-6">
+                                    <div>
+                                        <label for="currentPassword" class="block text-sm font-medium mb-2 text-text">Current Password</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-lock text-text-light text-sm"></i>
+                                            </div>
+                                            <input type="password" class="form-input" id="currentPassword" name="currentPassword">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password" data-target="currentPassword">
+                                                <i class="fas fa-eye text-text-light text-sm"></i>
+                                            </button>
+                                        </div>
+                                        <div id="currentPasswordFeedback" class="mt-2"></div>
+                                    </div>
+
+                                    <div>
+                                        <label for="newPassword" class="block text-sm font-medium mb-2 text-text">New Password</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-key text-text-light text-sm"></i>
+                                            </div>
+                                            <input type="password" class="form-input" id="newPassword" name="newPassword">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password" data-target="newPassword">
+                                                <i class="fas fa-eye text-text-light text-sm"></i>
+                                            </button>
+                                        </div>
+                                        <div id="passwordStrength" class="mt-2"></div>
+                                        <div class="mt-3 p-3 sm:p-4 rounded-lg bg-gray-50">
+                                            <p class="text-sm font-medium mb-2 text-text">Password Requirements:</p>
+                                            <ul class="text-xs sm:text-sm space-y-1">
+                                                <li id="length-check" class="flex items-center text-text-light">
+                                                    <i class="fas fa-circle text-xs mr-2 flex-shrink-0"></i>At least 8 characters
+                                                </li>
+                                                <li id="uppercase-check" class="flex items-center text-text-light">
+                                                    <i class="fas fa-circle text-xs mr-2 flex-shrink-0"></i>At least one uppercase letter
+                                                </li>
+                                                <li id="lowercase-check" class="flex items-center text-text-light">
+                                                    <i class="fas fa-circle text-xs mr-2 flex-shrink-0"></i>At least one lowercase letter
+                                                </li>
+                                                <li id="number-check" class="flex items-center text-text-light">
+                                                    <i class="fas fa-circle text-xs mr-2 flex-shrink-0"></i>At least one number
+                                                </li>
+                                                <li id="special-check" class="flex items-center text-text-light">
+                                                    <i class="fas fa-circle text-xs mr-2 flex-shrink-0"></i>At least one special character
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label for="confirmPassword" class="block text-sm font-medium mb-2 text-text">Confirm New Password</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-check-double text-text-light text-sm"></i>
+                                            </div>
+                                            <input type="password" class="form-input" id="confirmPassword" name="confirmPassword">
+                                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password" data-target="confirmPassword">
+                                                <i class="fas fa-eye text-text-light text-sm"></i>
+                                            </button>
+                                        </div>
+                                        <div id="passwordMatch" class="mt-2"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-6 sm:mt-8 flex justify-end">
+                                    <button type="submit" class="btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed" id="changePasswordBtn" disabled>
+                                        <i class="fas fa-shield-alt mr-2"></i>Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* CSS Variables with seodada gradient colors */
+:root {
+    --primary: #273879;
+    --primary-dark: #1e2a5a;
+    --primary-light: #0f74b2;
+    --secondary: #0f74b2;
+    --accent: #60a5fa;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border-radius: 0.75rem;
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+    
+    /* Seodada gradient colors */
+    --seodada-gradient: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+    --seodada-gradient-hover: linear-gradient(135deg, #1e2a5a 0%, #0c5a8b 100%);
+}
+.bg-primary { background-color: var(--primary); }
+/* Gradient Header Styling */
+.gradient-header {
+    background: var(--seodada-gradient);
+    position: relative;
+    overflow: hidden;
+}
+
+.gradient-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: transform 0.5s ease;
+    transform: skewX(-15deg);
+}
+
+.gradient-header:hover::before {
+    transform: translateX(200%) skewX(-15deg);
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: var(--seodada-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1));
+}
+
+/* Color Classes */
+.text-primary { color: var(--primary); }
+.text-secondary { color: var(--secondary); }
+.text-text { color: var(--text); }
+.text-text-light { color: var(--text-light); }
+.bg-primary { background-color: var(--primary); }
+.bg-primary-dark { background-color: var(--primary-dark); }
+.bg-secondary { background-color: var(--secondary); }
+.border-primary { border-color: var(--primary); }
+
+/* Flash Messages */
+.flash-message {
+    border-radius: var(--border-radius);
+}
+
+.flash-success {
+    background-color: rgba(15, 116, 178, 0.1);
+    border-color: var(--secondary);
+    color: #155724;
+}
+
+.flash-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #e74c3c;
+    color: #721c24;
+}
+
+.flash-warning {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+    color: #856404;
+}
+
+.flash-info {
+    background-color: rgba(39, 56, 121, 0.1);
+    border-color: var(--primary);
+    color: #004085;
+}
+
+/* Tab Styling */
+.tab-active {
+    background: linear-gradient(to right, rgba(39, 56, 121, 0.1), transparent) !important;
+}
+
+.tab-active .fas {
+    color: var(--primary) !important;
+}
+
+.tab-active span {
+    color: var(--text) !important;
+    font-weight: 500;
+}
+
+.tab-btn:hover:not(.tab-active) {
+    background-color: rgba(236, 240, 241, 0.3);
+}
+
+/* Card Hover Effects */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-0.125rem);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Action Cards - Improved Mobile Responsiveness */
+.action-card {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+    min-height: 48px;
+}
+
+.action-card-primary {
+    background: linear-gradient(to right, rgba(39, 56, 121, 0.1), rgba(15, 116, 178, 0.05));
+    color: var(--text);
+}
+
+.action-card-primary:hover {
+    background: linear-gradient(to right, rgba(39, 56, 121, 0.2), rgba(15, 116, 178, 0.1));
+    transform: translateY(-0.125rem);
+}
+
+.action-card-primary i {
+    color: var(--primary);
+}
+
+.action-card-secondary {
+    background: linear-gradient(to right, rgba(15, 116, 178, 0.1), rgba(39, 56, 121, 0.05));
+    color: var(--text);
+}
+
+.action-card-secondary:hover {
+    background: linear-gradient(to right, rgba(15, 116, 178, 0.2), rgba(39, 56, 121, 0.1));
+    transform: translateY(-0.125rem);
+}
+
+.action-card-secondary i {
+    color: var(--secondary);
+}
+
+.action-card-neutral {
+    background: rgba(100, 116, 139, 0.1);
+    color: var(--text);
+}
+
+.action-card-neutral:hover {
+    background: rgba(100, 116, 139, 0.2);
+    transform: translateY(-0.125rem);
+}
+
+.action-card-neutral i {
+    color: var(--text-light);
+}
+
+/* Form Styling */
+.form-input {
+    width: 100%;
+    padding-left: 2.5rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    color: var(--text);
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+}
+
+.form-input-disabled {
+    width: 100%;
+    padding-left: 2.5rem;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    background-color: #f8fafc;
+    color: var(--text-light);
+    cursor: not-allowed;
+}
+
+/* Button Styling */
+.btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    min-height: 40px;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: transform 0.5s ease;
+    transform: skewX(-15deg);
+}
+
+.btn:hover::before {
+    transform: translateX(200%) skewX(-15deg);
+}
+
+.btn-primary {
+    background: var(--seodada-gradient);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    background: var(--seodada-gradient-hover);
+    transform: translateY(-0.125rem);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0.0625rem);
+}
+
+/* Progress bars */
+.progress-bar {
+    transition: width 0.8s ease-in-out;
+}
+
+/* Mobile Responsive Improvements */
+@media (max-width: 768px) {
+    .action-card {
+        padding: 0.625rem 0.75rem;
+        min-height: 44px;
+    }
+    
+    .action-card i {
+        font-size: 1rem;
+        margin-right: 0.5rem;
+    }
+    
+    .tab-btn {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+    
+    /* Compact layout for mobile */
+    .p-4 {
+        padding: 0.75rem;
+    }
+    
+    .p-6 {
+        padding: 1rem;
+    }
+    
+    /* Reduce gap between sections */
+    .gap-6 {
+        gap: 1rem;
+    }
+    
+    .space-y-6 > * + * {
+        margin-top: 1rem;
+    }
+    
+    /* More compact form elements */
+    .form-input, .form-input-disabled {
+        padding: 0.625rem 0.75rem 0.625rem 2.25rem;
+    }
+}
+
+/* Extra small devices (phones, 360px and up) */
+@media (max-width: 640px) {
+    .gradient-header {
+        background: var(--seodada-gradient);
+    }
+    
+    /* Ensure text is readable on mobile */
+    .text-white {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Better touch targets */
+    .tab-btn, .action-card, .btn {
+        min-height: 48px;
+    }
+    
+    /* Reduce container spacing on mobile */
+    .w-full.min-h-screen {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    /* More compact layout on mobile */
+    .max-w-7xl {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Better grid spacing on mobile */
+    .grid {
+        gap: 1rem;
+    }
+    
+    /* Better font sizes for mobile */
+    .text-lg {
+        font-size: 1.0625rem;
+    }
+    
+    .text-xl {
+        font-size: 1.125rem;
+    }
+    
+    /* Reduce form spacing on mobile */
+    .space-y-6 > * + * {
+        margin-top: 1rem;
+    }
+    
+    .space-y-4 > * + * {
+        margin-top: 0.75rem;
+    }
+    
+    /* More compact tab content */
+    .tab-pane .bg-white {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Very small devices (phones, 320px and up) */
+@media (max-width: 320px) {
+    .max-w-200px {
+        max-width: 120px;
+    }
+    
+    .action-card {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .action-card i {
+        font-size: 0.875rem;
+        margin-right: 0.375rem;
+    }
+}
+
+/* Smooth transitions for better UX */
+.transition-colors {
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+/* Flex utilities for better alignment */
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+</style>
+
+<!-- Custom JavaScript for Profile Page -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab system
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    
+    function showTab(tabName) {
+        // Hide all panes
+        tabPanes.forEach(pane => {
+            pane.classList.add('hidden');
+        });
+        
+        // Remove active state from all buttons
+        tabButtons.forEach(btn => {
+            btn.classList.remove('tab-active');
+            const icon = btn.querySelector('i');
+            const text = btn.querySelector('span');
+            icon.style.color = 'var(--text-light)';
+            text.style.color = 'var(--text-light)';
+            text.style.fontWeight = 'normal';
+        });
+        
+        // Show selected pane
+        const selectedPane = document.querySelector(`[data-tab-content="${tabName}"]`);
+        if (selectedPane) {
+            selectedPane.classList.remove('hidden');
+        }
+        
+        // Activate selected button
+        const selectedButton = document.querySelector(`[data-tab="${tabName}"]`);
+        if (selectedButton) {
+            selectedButton.classList.add('tab-active');
+        }
+    }
+    
+    // Add click handlers to tab buttons
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            showTab(tabName);
+        });
+    });
+    
+    // Show first tab by default
+    showTab('overview');
+    
+    // Make showTab function globally available
+    window.showTab = showTab;
+    
+    // Password visibility toggle
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+    
+    // Password strength meter
+    const newPassword = document.getElementById('newPassword');
+    const currentPassword = document.getElementById('currentPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const passwordStrength = document.getElementById('passwordStrength');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const currentPasswordFeedback = document.getElementById('currentPasswordFeedback');
+    const requirementChecks = {
+        length: document.getElementById('length-check'),
+        uppercase: document.getElementById('uppercase-check'),
+        lowercase: document.getElementById('lowercase-check'),
+        number: document.getElementById('number-check'),
+        special: document.getElementById('special-check')
+    };
+    const changePasswordBtn = document.getElementById('changePasswordBtn');
+    let isCurrentPasswordValid = false;
+
+    // Verify current password when user moves to next field
+    if (currentPassword) {
+        currentPassword.addEventListener('blur', function() {
+            const currentPasswordValue = this.value;
+
+            if (!currentPasswordValue) {
+                currentPasswordFeedback.innerHTML = '';
+                isCurrentPasswordValid = false;
+                validatePasswords();
+                return;
+            }
+
+            // Show loading state
+            currentPasswordFeedback.innerHTML = `
+                <div class="flex items-center" style="color: var(--text-light);">
+                    <i class="fas fa-spinner fa-spin mr-2"></i>
+                    <span class="font-medium">Verifying...</span>
+                </div>
+            `;
+
+            // Make AJAX call to verify password
+            fetch('{{ url_for("verify_current_password") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    currentPassword: currentPasswordValue
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    currentPasswordFeedback.innerHTML = `
+                        <div class="flex items-center" style="color: var(--secondary);">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span class="font-medium">Password verified</span>
+                        </div>
+                    `;
+                    isCurrentPasswordValid = true;
+                } else {
+                    currentPasswordFeedback.innerHTML = `
+                        <div class="flex items-center" style="color: #e74c3c;">
+                            <i class="fas fa-times-circle mr-2"></i>
+                            <span class="font-medium">${data.message}</span>
+                        </div>
+                    `;
+                    isCurrentPasswordValid = false;
+                }
+                validatePasswords();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                currentPasswordFeedback.innerHTML = `
+                    <div class="flex items-center" style="color: #e74c3c;">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <span class="font-medium">Error verifying password</span>
+                    </div>
+                `;
+                isCurrentPasswordValid = false;
+                validatePasswords();
+            });
+        });
+
+        // Clear feedback when user starts typing again
+        currentPassword.addEventListener('input', function() {
+            isCurrentPasswordValid = false;
+            currentPasswordFeedback.innerHTML = '';
+            validatePasswords();
+        });
+    }
+
+    if (newPassword) {
+        newPassword.addEventListener('input', function() {
+            const value = this.value;
+            let strength = 0;
+
+            // Update requirement checks
+            const checks = {
+                length: value.length >= 8,
+                uppercase: /[A-Z]/.test(value),
+                lowercase: /[a-z]/.test(value),
+                number: /[0-9]/.test(value),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(value)
+            };
+
+            Object.entries(checks).forEach(([key, passed]) => {
+                const element = requirementChecks[key];
+                const icon = element.querySelector('i');
+
+                if (passed) {
+                    element.style.color = 'var(--secondary)';
+                    icon.classList.remove('fa-circle');
+                    icon.classList.add('fa-check-circle');
+                    strength++;
+                } else {
+                    element.style.color = 'var(--text-light)';
+                    icon.classList.remove('fa-check-circle');
+                    icon.classList.add('fa-circle');
+                }
+            });
+
+            // Update strength meter
+            let strengthText, strengthColor, strengthIcon;
+            if (value.length === 0) {
+                strengthText = '';
+                strengthColor = '';
+                strengthIcon = '';
+            } else if (strength < 3) {
+                strengthText = 'Weak password';
+                strengthColor = '#e74c3c';
+                strengthIcon = 'fa-exclamation-circle';
+            } else if (strength < 5) {
+                strengthText = 'Medium password';
+                strengthColor = '#f1c40f';
+                strengthIcon = 'fa-exclamation-circle';
+            } else {
+                strengthText = 'Strong password';
+                strengthColor = 'var(--secondary)';
+                strengthIcon = 'fa-check-circle';
+            }
+
+            passwordStrength.innerHTML = strengthText ? `
+                <div class="flex items-center" style="color: ${strengthColor};">
+                    <i class="fas ${strengthIcon} mr-2"></i>
+                    <span class="font-medium">${strengthText}</span>
+                </div>
+            ` : '';
+
+            validatePasswords();
+        });
+
+        confirmPassword.addEventListener('input', function() {
+            validatePasswords();
+        });
+
+        currentPassword.addEventListener('input', function() {
+            validatePasswords();
+        });
+    }
+
+    function validatePasswords() {
+        const newPasswordValue = newPassword.value;
+        const confirmPasswordValue = confirmPassword.value;
+        const currentPasswordValue = currentPassword.value;
+
+        // Disable button if current password is not valid
+        if (!isCurrentPasswordValid) {
+            changePasswordBtn.disabled = true;
+            if (!confirmPasswordValue) {
+                passwordMatch.innerHTML = '';
+            }
+            return;
+        }
+
+        if (!confirmPasswordValue) {
+            passwordMatch.innerHTML = '';
+            changePasswordBtn.disabled = true;
+            return;
+        }
+
+        // Check if new password is same as current password
+        if (currentPasswordValue && newPasswordValue && currentPasswordValue === newPasswordValue) {
+            passwordMatch.innerHTML = `
+                <div class="flex items-center" style="color: #e74c3c;">
+                    <i class="fas fa-times-circle mr-2"></i>
+                    <span class="font-medium">New password must be different from current password</span>
+                </div>
+            `;
+            changePasswordBtn.disabled = true;
+            return;
+        }
+
+        if (newPasswordValue === confirmPasswordValue) {
+            passwordMatch.innerHTML = `
+                <div class="flex items-center" style="color: var(--secondary);">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span class="font-medium">Passwords match</span>
+                </div>
+            `;
+
+            // Check if all password requirements are met
+            const allRequirementsMet =
+                newPasswordValue.length >= 8 &&
+                /[A-Z]/.test(newPasswordValue) &&
+                /[a-z]/.test(newPasswordValue) &&
+                /[0-9]/.test(newPasswordValue) &&
+                /[!@#$%^&*(),.?":{}|<>]/.test(newPasswordValue);
+
+            changePasswordBtn.disabled = !allRequirementsMet || !isCurrentPasswordValid;
+        } else {
+            passwordMatch.innerHTML = `
+                <div class="flex items-center" style="color: #e74c3c;">
+                    <i class="fas fa-times-circle mr-2"></i>
+                    <span class="font-medium">Passwords do not match</span>
+                </div>
+            `;
+            changePasswordBtn.disabled = true;
+        }
+    }
+});
+</script>
+{% endblock %}

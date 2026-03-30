@@ -1,0 +1,437 @@
+{% extends "base1.html" %}
+
+{% block title %}Reset Password | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<style>
+  :root {
+    --primary: #273879;
+    --primary-dark: #3c35b5;
+    --primary-rgb: 79, 70, 229;
+    --secondary: #0f74b2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --surface: #ffffff;
+    --surface-dark: #f9fafb;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --text-muted: #9ca3af;
+    --border-color: #e5e7eb;
+    --header-height: 64px;
+    --border-radius: 10px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease-in-out;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9ff;
+    color: var(--text-dark);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 2rem;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo img {
+    height: 50px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 450px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .auth-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+  }
+
+  .auth-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+  }
+
+  .auth-header p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+  }
+
+  .auth-form {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-dark);
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-dark);
+    background-color: var(--surface);
+    background-clip: padding-box;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    transition: var(--transition);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+  }
+
+  .form-control.is-invalid {
+    border-color: var(--danger);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    padding-right: calc(1.5em + 0.75rem);
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
+
+  .btn-with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-with-icon i {
+    margin-right: 0.5rem;
+  }
+
+  /* Loading button styles */
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-spinner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+
+  .btn-loading .btn-spinner {
+    display: flex;
+  }
+
+  .btn-loading .btn-text {
+    opacity: 0.7;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .feedback-text {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+
+  .feedback-text.text-danger {
+    color: var(--danger);
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-light);
+    font-size: 0.95rem;
+  }
+
+  .auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .back-to-login {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .back-to-login a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .back-to-login a i {
+    margin-right: 0.5rem;
+  }
+
+  .back-to-login a:hover {
+    color: var(--primary);
+  }
+
+  /* Info message box */
+  .info-message {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background-color: rgba(var(--primary-rgb), 0.1);
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+  }
+
+  .info-message i {
+    color: var(--primary);
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .info-message p {
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 576px) {
+    .container {
+      padding: 1rem;
+    }
+  }
+
+  /* Hide display for token input */
+  .reset-token-input {
+    display: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="auth-logo">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+    <!-- Logo section (left) -->
+    <div class="logo-section">
+      {% if website_settings.website_logo_file %}
+          <!-- Admin uploaded logo -->
+          <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+               alt="{{ website_settings.website_name }} Logo"
+               style="max-width: 120px; max-height: 60px; width: auto; height: auto; object-fit: contain; display: block;"
+               id="websiteLogo"
+               onerror="handleLogoError(this)" />
+          
+          <!-- Fallback if image breaks -->
+          <div id="logoFallback" style="display: none; width: 60px; height: 60px; background-color: #4f46e5; border-radius: 12px; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+          </div>
+          
+      {% elif website_settings.website_icon %}
+          <!-- FontAwesome icon -->
+          <div style="width: 60px; height: 60px; background-color: #f8fafc; border: 2px solid #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="{{ website_settings.website_icon }}" style="color: #4f46e5; font-size: 1.75rem;"></i>
+          </div>
+          
+      {% else %}
+          <!-- Default initials fallback -->
+          <!-- <div style="width: 60px; height: 60px; background-color: #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+          </div> -->
+      {% endif %}
+    </div>
+    
+    <!-- Name and tagline section (right) -->
+    <!-- <div class="name-section" style="text-align: left;">
+      {% if website_settings.website_name %}
+      <div style="color: #1f2937; font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.25rem;">
+          {{ website_settings.website_name }}
+      </div>
+      {% endif %}
+      
+      {% if website_settings.website_tagline %}
+      <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.3;">
+          {{ website_settings.website_tagline }}
+      </div>
+      {% endif %}
+    </div> -->
+  </div>
+</div>
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Reset Password</h1>
+      <p>Enter your email to receive a password reset link</p>
+    </div>
+
+    <form id="resetPasswordForm" class="auth-form" method="post" action="{{ url_for('reset_request') }}">
+      <!-- Add CSRF token -->
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <!-- Token input (hidden unless URL has token) -->
+      <div class="reset-token-input" id="tokenSection">
+        <input type="hidden" id="token" name="token">
+      </div>
+
+      <!-- Email section (shown by default) -->
+      <div id="emailSection">
+        <div class="info-message">
+          <i class="fas fa-info-circle" style="color:#273879;"></i>
+
+          <p>We'll send you an email with instructions to reset your password. Make sure to check your spam folder if you don't see it in your inbox.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="companyEmail" class="form-label">Email Address</label>
+          <input type="email" id="companyEmail" name="companyEmail" class="form-control" placeholder="your.email@company.com" required>
+          <div id="emailFeedback" class="feedback-text text-danger" style="display: none;"></div>
+        </div>
+
+        <button type="submit" 
+              class="btn btn-block btn-with-icon" 
+              id="requestResetBtn"
+              style="background: linear-gradient(90deg, #273879, #0f74b2); color: #fff; border: none;">
+          
+          <span class="btn-spinner">
+              <div class="spinner"></div>
+          </span>
+          
+          <span class="btn-text">Send Reset Link</span>
+      </button>
+
+      </div>
+    </form>
+  </div>
+
+  <div class="back-to-login">
+    <a href="{{ url_for('login') }}">
+      <i class="fas fa-arrow-left"></i>
+      Back to Login
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('resetPasswordForm');
+    const emailInput = document.getElementById('companyEmail');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const submitBtn = document.getElementById('requestResetBtn');
+
+    form.addEventListener('submit', function(e) {
+      if (!validateEmail(emailInput.value)) {
+        e.preventDefault();
+        emailInput.classList.add('is-invalid');
+        emailFeedback.textContent = 'Please enter a valid email address.';
+        emailFeedback.style.display = 'block';
+      } else {
+        emailInput.classList.remove('is-invalid');
+        emailFeedback.style.display = 'none';
+
+        // Show loading spinner and disable button
+        submitBtn.classList.add('btn-loading');
+        submitBtn.disabled = true;
+        
+        // Update button text while loading
+        const btnText = submitBtn.querySelector('.btn-text');
+        btnText.textContent = 'Sending...';
+      }
+    });
+
+    function validateEmail(email) {
+      const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return re.test(String(email).toLowerCase());
+    }
+  });
+</script>
+{% endblock %}

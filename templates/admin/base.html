@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;900&family=Roboto:wght@400;600;700;900&family=Open+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Admin CSS - Extracted styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-pages.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Mobile Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <!-- Updated sidebar logo section - replace the existing one -->
+        <div class="sidebar-logo">
+            {% if website_settings.website_logo_file %}
+                <img src="{{ url_for('static', filename='uploads/' + website_settings.website_logo_file) }}"
+                    style="max-height: 40px; max-width: 200px; margin-bottom: 0.5rem;"
+                    class="d-block mx-auto">
+                <h5 class="text-white mb-0">Admin Portal</h5>
+            {% else %}
+                <i class="{{ website_settings.website_icon }} fa-2x mb-2 text-white"></i>
+                <div class="text-white-50 small">Admin Portal</div>
+            {% endif %}
+        </div>
+
+        {% if session.get('admin_id') %}
+            <div class="admin-profile">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-3x"></i>
+                </div>
+                <div class="admin-name">{{ session.get('admin_name', 'Admin') }}</div>
+                <div class="admin-role">{{ session.get('admin_role', 'Administrator') }}</div>
+            </div>
+        {% else %}
+            <div class="p-4 text-center">
+                <p class="mb-3">Please login to access the admin panel</p>
+                <a href="{{ url_for('admin_login') }}" class="btn btn-primary w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i> Login
+                </a>
+            </div>
+        {% endif %}
+
+        {% if session.get('admin_id') %}
+            {% set admin_permissions_raw = session.get('admin_permissions', []) %}
+            {% if admin_permissions_raw is string %}
+                {% set admin_permissions = admin_permissions_raw | tojson | fromjson %}
+            {% else %}
+                {% set admin_permissions = admin_permissions_raw %}
+            {% endif %}
+
+            <!-- Dashboard is always visible if logged in -->
+            {% if 'dashboard' in admin_permissions %}
+            <div class="sidebar-heading">Main</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' else '' }}" href="{{ url_for('admin_dashboard') }}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- Roles Section -->
+            {% if 'manage_roles' in admin_permissions %}
+            <div class="sidebar-heading">Roles</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'manage_roles' else '' }}" href="{{ url_for('manage_roles') }}">
+                        <i class="fas fa-user-shield"></i> Role Management
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- System Section -->
+            {% if 'website_settings' in admin_permissions %}
+            <div class="sidebar-heading">System</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_website_settings' else '' }}"
+                       href="{{ url_for('admin_website_settings') }}">
+                        <i class="fas fa-cog"></i> Website Settings
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- Subscriptions Section -->
+            {% if 'subscription_management' in admin_permissions or 'subscribed_users_view' in admin_permissions %}
+            <div class="sidebar-heading">Subscriptions</div>
+            <ul class="nav flex-column">
+                {% if 'subscription_management' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscriptions' else '' }}" href="{{ url_for('admin_subscriptions') }}">
+                        <i class="fas fa-tag"></i> Subscription Plans
+                    </a>
+                </li>
+                {% endif %}
+                {% if 'subscribed_users_view' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscribed_users' else '' }}" href="{{ url_for('admin_subscribed_users') }}">
+                        <i class="fas fa-users-cog"></i> Subscribed Users
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+
+            <!-- Users Section -->
+            {% if 'user_management' in admin_permissions or 'search_history' in admin_permissions %}
+            <div class="sidebar-heading">Users</div>
+            <ul class="nav flex-column">
+                {% if 'user_management' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_users' else '' }}" href="{{ url_for('admin_users') }}">
+                        <i class="fas fa-user"></i> User Management
+                    </a>
+                </li>
+                {% endif %}
+                {% if 'search_history' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_search_history' else '' }}" href="{{ url_for('admin_search_history') }}">
+                        <i class="fas fa-history"></i> Search History
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+
+            <!-- Finance Section -->
+            {% if 'payments' in admin_permissions %}
+            <div class="sidebar-heading">Finance</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_payments' else '' }}" href="{{ url_for('admin_payments') }}">
+                        <i class="fas fa-credit-card"></i> Payments
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- Communication Section -->
+            {% if 'contact_submissions' in admin_permissions %}
+            <div class="sidebar-heading">Communication</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_contact_submissions' else '' }}"
+                    href="{{ url_for('admin_contact_submissions') }}">
+                        <i class="fas fa-envelope"></i> Contact Submissions
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+
+            <!-- Content Management Section -->
+            {% if 'blog_categories' in admin_permissions or 'blog_management' in admin_permissions or 'webstory_management' in admin_permissions %}
+            <div class="sidebar-heading">Content Management</div>
+            <ul class="nav flex-column">
+                {% if 'blog_categories' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint in ['admin_blog_categories', 'admin_add_blog_category', 'admin_edit_blog_category'] else '' }}"
+                       href="{{ url_for('admin_blog_categories') }}">
+                        <i class="fas fa-folder"></i> Blog Categories
+                    </a>
+                </li>
+                {% endif %}
+                {% if 'blog_management' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint in ['admin_blogs', 'admin_add_blog', 'admin_edit_blog'] else '' }}"
+                       href="{{ url_for('admin_blogs') }}">
+                        <i class="fas fa-blog"></i> Manage Blogs
+                    </a>
+                </li>
+                {% endif %}
+                {% if 'webstory_management' in admin_permissions %}
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint in ['admin_webstories', 'admin_add_webstory', 'admin_edit_webstory'] else '' }}"
+                       href="{{ url_for('admin_webstories') }}">
+                        <i class="fas fa-book-open"></i> Web Stories
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+            {% endif %}
+
+            <!-- Email Management Section -->
+            {% if 'email_logs' in admin_permissions %}
+            <div class="sidebar-heading">Email Management</div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link {{ 'active' if request.endpoint in ['admin_email_logs', 'admin_email_log_detail'] else '' }}"
+                    href="{{ url_for('admin_email_logs') }}">
+                        <i class="fas fa-mail-bulk"></i> Email Logs
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center flex-grow-1">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center">
+                    <h4 class="mb-0">
+                        {% block page_title %}{{ website_settings.website_settings }}Website Settings {% endblock %}
+                    </h4>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="d-none d-sm-inline ms-1">Logout</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {% if category == 'success' %}
+                            <i class="fas fa-check-circle me-2"></i>
+                        {% elif category == 'danger' %}
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        {% elif category == 'info' %}
+                            <i class="fas fa-info-circle me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Page Content -->
+        <div class="container-fluid px-0">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    {% block extra_js %}{% endblock %}
+
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        // Enhanced Sidebar toggle with overlay
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function showSidebar() {
+            sidebar.classList.add('show');
+            sidebarOverlay.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideSidebar() {
+            sidebar.classList.remove('show');
+            sidebarOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        sidebarToggle.addEventListener('click', function() {
+            if (sidebar.classList.contains('show')) {
+                hideSidebar();
+            } else {
+                showSidebar();
+            }
+        });
+
+        // Close sidebar when clicking overlay
+        sidebarOverlay.addEventListener('click', hideSidebar);
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideSidebar();
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 992) {
+                hideSidebar();
+            }
+        });
+
+        // Add automatic timeout for alerts
+        window.setTimeout(function() {
+            $('.alert').not('.alert-permanent').fadeTo(500, 0).slideUp(500, function() {
+                $(this).remove();
+            });
+        }, 5000);
+
+        // Ensure the active class is applied correctly
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the current path
+            const currentPath = window.location.pathname;
+
+            // Find all sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+            // Loop through links and add active class if href matches current path
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Specific check for search history
+            if (currentPath.includes('/admin/search-history')) {
+                const searchHistoryLink = document.querySelector('a[href*="search-history"]');
+                if (searchHistoryLink) {
+                    searchHistoryLink.classList.add('active');
+                }
+            }
+
+            // Add mobile-friendly touch events
+            if ('ontouchstart' in window) {
+                document.body.classList.add('touch-device');
+            }
+        });
+
+        // Enhanced loading states
+        function showLoading(element) {
+            element.classList.add('loading');
+            const spinner = document.createElement('span');
+            spinner.className = 'spinner-border spinner-border-sm me-2';
+            spinner.setAttribute('role', 'status');
+            element.insertBefore(spinner, element.firstChild);
+        }
+
+        function hideLoading(element) {
+            element.classList.remove('loading');
+            const spinner = element.querySelector('.spinner-border');
+            if (spinner) {
+                spinner.remove();
+            }
+        }
+
+        // Add form loading states
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    showLoading(submitBtn);
+                }
+            });
+        });
+
+        // Scroll to Top Button Functionality
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Mobile-friendly dropdown auto-close
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+                dropdowns.forEach(dropdown => {
+                    if (!dropdown.contains(e.target) && !dropdown.parentElement.contains(e.target)) {
+                        bootstrap.Dropdown.getInstance(dropdown.parentElement.querySelector('[data-bs-toggle="dropdown"]'))?.hide();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1034 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Subscribed Users{% endblock %}
+
+{% block page_title %}
+Subscribed Users
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Mobile View Button -->
+<div class="d-block d-sm-none mb-3">
+<a href="{{ url_for('admin_new_subscribed_user') }}" class="btn btn-primary d-block d-sm-none ">
+    <i class="fas fa-plus-circle me-1"></i>
+    Add New
+</a>
+ </div>
+<!-- Desktop View Button -->
+<div class="d-none d-sm-block mb-3">
+<a href="{{ url_for('admin_new_subscribed_user') }}" class="btn btn-primary d-none d-sm-inline-flex .mb-1">
+    <i class="fas fa-plus-circle me-1"></i>
+    Add New Subscription
+</a>
+</div>  
+<div class="row dashboard-stats-row">
+    <!-- Summary Cards -->
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-users">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Total Subscriptions</div>
+                    <div class="stat-value">{{ total_subscriptions }}</div>
+                    <div class="stat-desc">All time subscriptions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-subscriptions">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Active Subscriptions</div>
+                    <div class="stat-value">{{ active_subscriptions }}</div>
+                    <div class="stat-desc">Currently active plans</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-expiring">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Expiring in 7 Days</div>
+                    <div class="stat-value">{{ expiring_soon_count }}</div>
+                    <div class="stat-desc">Needs attention</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-revenue">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Cancelled Subscriptions</div>
+                    <div class="stat-value">{{ cancelled_subscriptions }}</div>
+                    <div class="stat-desc">User cancelled</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Filters and Actions -->
+    <div class="card mb-4">
+        <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+            <div>
+                <i class="fas fa-filter me-2"></i> Filters
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('admin_subscribed_users') }}" method="GET" class="row g-3">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label for="search_email" class="form-label">Search by Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="text" name="search_email" id="search_email" class="form-control"
+                               placeholder="Enter user email..."
+                               value="{{ search_email if search_email else '' }}">
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+                        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        <option value="expired" {% if status_filter == 'expired' %}selected{% endif %}>Expired</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label for="plan" class="form-label">Subscription Plan</label>
+                    <select name="plan" id="plan" class="form-select">
+                        <option value="all" {% if plan_filter == 'all' %}selected{% endif %}>All Plans</option>
+                        {% for plan in all_plans %}
+                        <option value="{{ plan.S_ID }}" {% if plan_filter|int == plan.S_ID %}selected{% endif %}>
+                            {{ plan.plan }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <label class="form-label d-none d-lg-block">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i> Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Subscriptions Table/Cards with Scrollable Container -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-users me-2"></i> Subscribed Users
+            </div>
+            <small class="text-muted">
+                <i class="fas fa-arrows-alt-v me-1"></i>Scroll to view more
+            </small>
+        </div>
+        <div class="card-body p-0 subscribed-users-container">
+            <!-- Mobile Card View (visible on medium screens and below) -->
+            <div class="d-block d-xl-none mobile-cards-container">
+                {% for item in subscribed_users %}
+                {% set sub_user = item.sub_user %}
+                {% set user = item.user %}
+                {% set subscription = item.subscription %}
+                <div class="border-bottom p-3 subscribed-user-item" data-email="{{ user.company_email|lower }}">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="flex-grow-1 min-w-0">
+                            <div class="fw-bold">{{ user.name }}</div>
+                            <div class="text-muted small text-break">{{ user.company_email }}</div>
+                            <span class="badge bg-info mt-1">{{ subscription.plan }}</span>
+                        </div>
+                        <div class="dropdown ms-2">
+                            <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="width: 36px; height: 36px;">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a href="{{ url_for('admin_edit_subscribed_user', id=sub_user.id) }}" class="dropdown-item">
+                                        <i class="fas fa-edit me-2 text-primary"></i> Edit
+                                    </a>
+                                </li>
+                                {% if sub_user._is_active and sub_user.end_date > now %}
+                                <li>
+                                    <button type="button" class="dropdown-item open-modal-btn" data-modal-id="extendModal{{ sub_user.id }}">
+                                        <i class="fas fa-calendar-plus me-2 text-success"></i> Extend
+                                    </button>
+                                </li>
+                                {% endif %}
+                                {% if not sub_user._is_active and sub_user.end_date > now %}
+                                <li>
+                                    <button type="button" class="dropdown-item open-modal-btn" data-modal-id="reactivateModal{{ sub_user.id }}">
+                                        <i class="fas fa-play me-2 text-info"></i> Reactivate
+                                    </button>
+                                </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <button type="button" class="dropdown-item text-danger open-modal-btn" data-modal-id="deleteModal{{ sub_user.id }}">
+                                        <i class="fas fa-trash-alt me-2"></i> Delete
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <div class="text-muted">Start Date:</div>
+                            <div>{{ sub_user.start_date.strftime('%Y-%m-%d') }}</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted">End Date:</div>
+                            <div>{{ sub_user.end_date.strftime('%Y-%m-%d') }}</div>
+                        </div>
+                        <div class="col-12">
+                            <div class="text-muted">Status:</div>
+                            {% if sub_user._is_active and sub_user.end_date > now %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Active
+                                </span>
+                            {% elif not sub_user._is_active and sub_user.end_date > now %}
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-ban me-1"></i>Cancelled by User
+                                </span>
+                            {% elif sub_user.end_date <= now %}
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-clock me-1"></i>Expired
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="col-12">
+                            <div class="text-muted">Usage:</div>
+                            <div class="progress mb-1" style="height: 8px;">
+                                <div class="progress-bar {{ 'bg-danger' if sub_user.daily_usage_percent > 90 else 'bg-success' }}"
+                                     role="progressbar"
+                                     style="width: {{ sub_user.daily_usage_percent }}%;"
+                                     aria-valuenow="{{ sub_user.daily_usage_percent }}"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100"></div>
+                            </div>
+                            <div class="small">{{ sub_user.current_usage }} / {{ sub_user.get_total_usage_limit() }} daily requests</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted">Tokens Purchased:</div>
+                            <div class="fw-bold text-primary">
+                                <i class="fas fa-coins me-1"></i>{{ item.total_tokens_purchased }}
+                            </div>
+                            <div class="text-muted small">Remaining: {{ item.tokens_remaining }}</div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-muted">Auto-Renew:</div>
+                            {% if sub_user.is_auto_renew %}
+                                <span class="badge bg-info">
+                                    <i class="fas fa-sync-alt me-1"></i>Yes
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    <i class="fas fa-times me-1"></i>No
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="text-muted">No subscribed users found matching the filter criteria.</div>
+                </div>
+                {% endfor %}
+            </div>
+            <!-- Desktop Table View (visible on extra large screens) -->
+            <div class="table-responsive d-none d-xl-block desktop-table-container">
+                <table class="table table-striped table-hover mb-0" style="min-width: 1400px;">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Plan</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Status</th>
+                            <th>Usage</th>
+                            <th>Tokens</th>
+                            <th>Auto-Renew</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in subscribed_users %}
+                        {% set sub_user = item.sub_user %}
+                        {% set user = item.user %}
+                        {% set subscription = item.subscription %}
+                        <tr class="subscribed-user-item" data-email="{{ user.company_email|lower }}">
+                            <td>
+                                <div class="fw-bold">{{ user.name }}</div>
+                            </td>
+                            <td>
+                                <div class="text-muted">{{ user.company_email }}</div>
+                            </td>
+                            <td>{{ subscription.plan }}</td>
+                            <td>{{ sub_user.start_date.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ sub_user.end_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                {% if sub_user._is_active and sub_user.end_date > now %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle me-1"></i>Active
+                                    </span>
+                                {% elif not sub_user._is_active and sub_user.end_date > now %}
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-ban me-1"></i>Cancelled by User
+                                    </span>
+                                {% elif sub_user.end_date <= now %}
+                                    <span class="badge bg-danger">
+                                        <i class="fas fa-clock me-1"></i>Expired
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar {{ 'bg-danger' if sub_user.daily_usage_percent > 90 else 'bg-success' }}"
+                                        role="progressbar"
+                                        style="width: {{ sub_user.daily_usage_percent }}%;"
+                                        aria-valuenow="{{ sub_user.daily_usage_percent }}"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"></div>
+                                </div>
+                                <div class="small mt-1">{{ sub_user.current_usage }} / {{ sub_user.get_total_usage_limit() }} daily requests</div>
+                            </td>
+                            <td>
+                                <div class="fw-bold text-primary">
+                                    <i class="fas fa-coins me-1"></i>{{ item.total_tokens_purchased }}
+                                </div>
+                                <div class="small text-muted">Remaining: {{ item.tokens_remaining }}</div>
+                            </td>
+                            <td>
+                                {% if sub_user.is_auto_renew %}
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-sync-alt me-1"></i>Yes
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-times me-1"></i>No
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a href="{{ url_for('admin_edit_subscribed_user', id=sub_user.id) }}"
+                                    class="btn btn-sm btn-outline-primary"
+                                    title="Edit Subscription">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    {% if sub_user._is_active and sub_user.end_date > now %}
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-success open-modal-btn"
+                                                data-modal-id="extendModal{{ sub_user.id }}"
+                                                title="Extend Subscription">
+                                            <i class="fas fa-calendar-plus"></i>
+                                        </button>
+                                    {% endif %}
+
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger open-modal-btn"
+                                            data-modal-id="deleteModal{{ sub_user.id }}"
+                                            title="Delete Subscription">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center py-4">
+                                <div class="text-muted">No subscribed users found matching the filter criteria.</div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODALS -->
+{% for item in subscribed_users %}
+{% set sub_user = item.sub_user %}
+{% set user = item.user %}
+{% set subscription = item.subscription %}
+<!-- Extend Modal - Only for Active Subscriptions -->
+{% if sub_user._is_active and sub_user.end_date > now %}
+<div id="extendModal{{ sub_user.id }}" class="custom-modal">
+    <div class="custom-modal-overlay"></div>
+    <div class="custom-modal-container">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header bg-success text-white">
+                <h5 class="custom-modal-title">
+                    <i class="fas fa-calendar-plus me-2"></i> Extend Subscription
+                </h5>
+                <button type="button" class="btn-close btn-close-white close-modal-btn" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin_extend_subscription', id=sub_user.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="custom-modal-body">
+                    <div class="text-center mb-3">
+                        <p class="fw-bold mb-1">{{ user.name }}</p>
+                        <p class="text-muted small mb-1 text-break">{{ user.email }}</p>
+                        <span class="badge bg-info">{{ subscription.plan }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="extension_days{{ sub_user.id }}" class="form-label">Extension Period (Days)</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="extension_days{{ sub_user.id }}" name="extension_days" min="1" value="30" required>
+                            <span class="input-group-text">days</span>
+                        </div>
+                        <div class="form-text small">Current expiration: {{ sub_user.end_date.strftime('%Y-%m-%d') }}</div>
+                    </div>
+                </div>
+                <div class="custom-modal-footer">
+                    <button type="button" class="btn btn-sm btn-outline-secondary close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <i class="fas fa-check me-1"></i> Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Reactivate Modal - Only for Cancelled Subscriptions -->
+{% if not sub_user._is_active and sub_user.end_date > now %}
+<div id="reactivateModal{{ sub_user.id }}" class="custom-modal">
+    <div class="custom-modal-overlay"></div>
+    <div class="custom-modal-container">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header bg-info text-white">
+                <h5 class="custom-modal-title">
+                    <i class="fas fa-play me-2"></i> Reactivate Subscription
+                </h5>
+                <button type="button" class="btn-close btn-close-white close-modal-btn" aria-label="Close"></button>
+            </div>
+            <div class="custom-modal-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-play fa-3x text-info mb-3"></i>
+                    <h5>Reactivate Subscription?</h5>
+                    <p>You are about to reactivate the subscription for:</p>
+                    <p class="fw-bold">{{ user.name }}</p>
+                    <p class="text-muted small text-break">({{ user.email }})</p>
+                    <p>Plan: <span class="badge bg-info">{{ subscription.plan }}</span></p>
+                    <p class="text-muted small">Subscription will remain valid until: {{ sub_user.end_date.strftime('%Y-%m-%d') }}</p>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-outline-secondary close-modal-btn">Cancel</button>
+                <form action="{{ url_for('admin_reactivate_subscription', id=sub_user.id) }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <button type="submit" class="btn btn-info">
+                        <i class="fas fa-play me-1"></i> Reactivate
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Delete Modal -->
+<div id="deleteModal{{ sub_user.id }}" class="custom-modal">
+    <div class="custom-modal-overlay"></div>
+    <div class="custom-modal-container">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header bg-danger text-white">
+                <h5 class="custom-modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Confirm Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white close-modal-btn" aria-label="Close"></button>
+            </div>
+            <div class="custom-modal-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+                    <h5>Delete Subscription?</h5>
+                    <p>You are about to delete the subscription for:</p>
+                    <p class="fw-bold">{{ user.name }}</p>
+                    <p class="text-muted small text-break">({{ user.email }})</p>
+                    <p>Plan: <span class="badge bg-info">{{ subscription.plan }}</span></p>
+                </div>
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone.
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" class="btn btn-outline-secondary close-modal-btn">Cancel</button>
+                <form action="{{ url_for('admin_delete_subscribed_user', id=sub_user.id) }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt me-1"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+/* Enhanced Scrollable Subscribed Users Container with Horizontal Scroll */
+.subscribed-users-container {
+    max-height: 500px; /* Fixed height for the container */
+    overflow-y: auto;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    position: relative;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Mobile Cards Container - no individual scroll */
+.mobile-cards-container {
+    min-width: 100%; /* Ensure full width usage */
+}
+
+/* Desktop Table Container - enable horizontal scroll */
+.desktop-table-container {
+    overflow-x: auto; /* Keep horizontal scroll for table */
+    min-width: 100%;
+}
+
+/* Ensure table maintains minimum width for horizontal scrolling */
+.desktop-table-container .table {
+    min-width: 1400px; /* Minimum width to trigger horizontal scroll */
+    margin-bottom: 0;
+}
+
+/* Sticky table header for scrollable table */
+.desktop-table-container .table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f9fa;
+    z-index: 10;
+    border-bottom: 2px solid #dee2e6;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced scrollbar styling for both directions */
+.subscribed-users-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px; /* Height for horizontal scrollbar */
+}
+
+.subscribed-users-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.subscribed-users-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.subscribed-users-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.subscribed-users-container::-webkit-scrollbar-corner {
+    background: #f1f1f1;
+}
+
+.subscribed-users-container {
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Hide scrollbars for nested containers to avoid double scrollbars */
+.mobile-cards-container::-webkit-scrollbar,
+.desktop-table-container::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+
+.mobile-cards-container,
+.desktop-table-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow: visible; /* Let parent handle scrolling */
+}
+
+/* Scroll indicator in header - updated for both directions */
+.card-header small {
+    opacity: 0.7;
+    font-size: 0.75rem;
+}
+
+/* Ensure proper table cell sizing for horizontal scroll */
+.desktop-table-container .table th,
+.desktop-table-container .table td {
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+/* Specific column width adjustments for better horizontal scroll experience */
+.desktop-table-container .table th:nth-child(1),
+.desktop-table-container .table td:nth-child(1) {
+    min-width: 150px; /* User column */
+}
+
+.desktop-table-container .table th:nth-child(2),
+.desktop-table-container .table td:nth-child(2) {
+    min-width: 200px; /* Email column */
+}
+
+.desktop-table-container .table th:nth-child(3),
+.desktop-table-container .table td:nth-child(3) {
+    min-width: 120px; /* Plan column */
+}
+
+.desktop-table-container .table th:nth-child(4),
+.desktop-table-container .table td:nth-child(4),
+.desktop-table-container .table th:nth-child(5),
+.desktop-table-container .table td:nth-child(5) {
+    min-width: 110px; /* Date columns */
+}
+
+.desktop-table-container .table th:nth-child(6),
+.desktop-table-container .table td:nth-child(6) {
+    min-width: 130px; /* Status column */
+}
+
+.desktop-table-container .table th:nth-child(7),
+.desktop-table-container .table td:nth-child(7) {
+    min-width: 150px; /* Usage column */
+}
+
+.desktop-table-container .table th:nth-child(8),
+.desktop-table-container .table td:nth-child(8) {
+    min-width: 130px; /* Tokens column */
+}
+
+.desktop-table-container .table th:nth-child(9),
+.desktop-table-container .table td:nth-child(9) {
+    min-width: 100px; /* Auto-Renew column */
+}
+
+.desktop-table-container .table th:nth-child(10),
+.desktop-table-container .table td:nth-child(10) {
+    min-width: 120px; /* Actions column */
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 575.98px) {
+    .subscribed-users-container {
+        max-height: 400px; /* Smaller height on mobile */
+    }
+    
+    .page-title h1 {
+        font-size: 1.5rem;
+    }
+    
+    .btn {
+        min-height: 44px;
+    }
+    
+    .btn-sm {
+        min-height: 36px;
+    }
+    
+    .form-control, .form-select {
+        min-height: 44px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .custom-modal-container {
+        margin: 1rem;
+        max-width: none;
+    }
+}
+
+@media (min-width: 1200px) {
+    .subscribed-users-container {
+        max-height: 600px; /* Larger height on bigger screens */
+    }
+}
+
+/* Stats card responsive design */
+.stat-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+@media (max-width: 767.98px) {
+    .stat-value {
+        font-size: 1.5rem;
+    }
+}
+
+/* Custom Modal Styles - Mobile Optimized */
+.custom-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+.custom-modal.active {
+    display: block;
+    pointer-events: all;
+}
+
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+}
+
+.custom-modal-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10001;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 20px;
+}
+
+@media (max-width: 575.98px) {
+    .custom-modal-container {
+        margin: 10px;
+        max-width: none;
+        width: calc(100% - 20px);
+    }
+}
+
+.custom-modal-content {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+    overflow: hidden;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.custom-modal-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.custom-modal-body {
+    padding: 1rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.custom-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+}
+
+@media (max-width: 575.98px) {
+    .custom-modal-header,
+    .custom-modal-body,
+    .custom-modal-footer {
+        padding: 0.75rem;
+    }
+    
+    .custom-modal-footer {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .custom-modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* Enhanced badges and status elements */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge i {
+    font-size: 0.7rem;
+}
+
+/* Progress bars */
+.progress {
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Text utilities */
+.text-break {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.min-w-0 {
+    min-width: 0;
+}
+
+/* Table hover effects */
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    transition: background-color 0.2s ease;
+}
+
+/* Button hover effects */
+.btn-outline-primary:hover, 
+.btn-outline-success:hover, 
+.btn-outline-danger:hover, 
+.btn-outline-info:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+@media (max-width: 767.98px) {
+    .btn-outline-primary:hover, 
+    .btn-outline-success:hover, 
+    .btn-outline-danger:hover, 
+    .btn-outline-info:hover {
+        transform: none; /* Disable hover effects on mobile */
+        box-shadow: none;
+    }
+}
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Custom modal handling
+    const openModalButtons = document.querySelectorAll('.open-modal-btn');
+    const closeModalButtons = document.querySelectorAll('.close-modal-btn');
+    const modalOverlays = document.querySelectorAll('.custom-modal-overlay');
+    
+    // Open modal function
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    // Close modal function
+    function closeModal(modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Event listeners for opening modals
+    openModalButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modalId = this.getAttribute('data-modal-id');
+            openModal(modalId);
+        });
+    });
+    
+    // Event listeners for closing modals
+    closeModalButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.custom-modal');
+            closeModal(modal);
+        });
+    });
+    
+    // Close modal when clicking on overlay
+    modalOverlays.forEach(overlay => {
+        overlay.addEventListener('click', function() {
+            const modal = this.closest('.custom-modal');
+            closeModal(modal);
+        });
+    });
+    
+    // Close modal when pressing ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.custom-modal.active').forEach(modal => {
+                closeModal(modal);
+            });
+        }
+    });
+
+    // Real-time email search filtering
+    const searchEmailInput = document.getElementById('search_email');
+    const subscribedUserItems = document.querySelectorAll('.subscribed-user-item');
+    const mobileContainer = document.querySelector('.mobile-cards-container');
+    const desktopTableBody = document.querySelector('.desktop-table-container tbody');
+
+    if (searchEmailInput) {
+        searchEmailInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            subscribedUserItems.forEach(item => {
+                const email = item.getAttribute('data-email') || '';
+                const isMatch = email.includes(searchTerm);
+
+                if (isMatch) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show/hide "no results" message
+            updateNoResultsMessage(visibleCount, searchTerm);
+        });
+    }
+
+    function updateNoResultsMessage(visibleCount, searchTerm) {
+        // Remove existing no-results messages
+        document.querySelectorAll('.no-search-results').forEach(el => el.remove());
+
+        if (visibleCount === 0 && searchTerm) {
+            const noResultsHTML = `
+                <div class="no-search-results text-center py-4">
+                    <i class="fas fa-search fa-2x text-muted mb-2"></i>
+                    <div class="text-muted">No users found matching "<strong>${searchTerm}</strong>"</div>
+                </div>
+            `;
+
+            // Add to mobile container
+            if (mobileContainer) {
+                mobileContainer.insertAdjacentHTML('beforeend', noResultsHTML);
+            }
+
+            // Add to desktop table
+            if (desktopTableBody) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.className = 'no-search-results';
+                noResultsRow.innerHTML = `<td colspan="10" class="text-center py-4">
+                    <i class="fas fa-search fa-2x text-muted mb-2 d-block"></i>
+                    <div class="text-muted">No users found matching "<strong>${searchTerm}</strong>"</div>
+                </td>`;
+                desktopTableBody.appendChild(noResultsRow);
+            }
+        }
+    }
+
+    // Scroll indicator functionality - updated for both vertical and horizontal
+    const mainScrollContainer = document.querySelector('.subscribed-users-container');
+    
+    if (mainScrollContainer) {
+        const scrollIndicator = mainScrollContainer.closest('.card').querySelector('.card-header small');
+        
+        if (scrollIndicator) {
+            // Check if content is scrollable
+            function updateScrollIndicator() {
+                const isVerticalScrollable = mainScrollContainer.scrollHeight > mainScrollContainer.clientHeight;
+                const isHorizontalScrollable = mainScrollContainer.scrollWidth > mainScrollContainer.clientWidth;
+                const isAtBottom = Math.abs(mainScrollContainer.scrollHeight - mainScrollContainer.scrollTop - mainScrollContainer.clientHeight) < 1;
+                const isAtRight = Math.abs(mainScrollContainer.scrollWidth - mainScrollContainer.scrollLeft - mainScrollContainer.clientWidth) < 1;
+                
+                if (!isVerticalScrollable && !isHorizontalScrollable) {
+                    scrollIndicator.style.display = 'none';
+                } else if (isVerticalScrollable && isHorizontalScrollable) {
+                    scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt me-1"></i>Scroll to view more';
+                    scrollIndicator.style.opacity = '0.7';
+                } else if (isVerticalScrollable) {
+                    if (isAtBottom) {
+                        scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-v me-1"></i>Scroll to top';
+                        scrollIndicator.style.opacity = '0.5';
+                    } else {
+                        scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-v me-1"></i>Scroll to view more';
+                        scrollIndicator.style.opacity = '0.7';
+                    }
+                } else if (isHorizontalScrollable) {
+                    scrollIndicator.innerHTML = '<i class="fas fa-arrows-alt-h me-1"></i>Scroll horizontally';
+                    scrollIndicator.style.opacity = '0.7';
+                }
+            }
+            
+            // Initial check
+            updateScrollIndicator();
+            
+            // Update on scroll
+            mainScrollContainer.addEventListener('scroll', updateScrollIndicator);
+            
+            // Update on resize
+            window.addEventListener('resize', updateScrollIndicator);
+        }
+        
+        // Smooth scrolling for main container only
+        mainScrollContainer.style.scrollBehavior = 'smooth';
+    }
+    
+});
+</script>
+{% endblock %}

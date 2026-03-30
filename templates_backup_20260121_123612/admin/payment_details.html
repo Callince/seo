@@ -1,0 +1,336 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Payment Details{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-file-invoice-dollar mr-2"></i> 
+    {% if payment_type == 'tokens' %}
+        Token Purchase Details
+    {% else %}
+        Payment Details
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Payment Status Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header {% if payment_type == 'tokens' %}bg-warning{% else %}bg-primary{% endif %} text-white">
+            <h5>
+                {% if payment_type == 'tokens' %}
+                    <i class="fas fa-coins"></i> Token Purchase Status
+                {% else %}
+                    <i class="fas fa-info-circle"></i> Payment Status
+                {% endif %}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Order ID:</strong> {{ payment_details.payment.razorpay_order_id }}</p>
+                    <p><strong>Payment ID:</strong> {{ payment_details.payment.razorpay_payment_id or 'Not completed' }}</p>
+                    <p><strong>Invoice Number:</strong> {{ payment_details.payment.invoice_number or 'Not generated' }}</p>
+                    {% if payment_type == 'tokens' %}
+                    <p><strong>Token Count:</strong> {{ payment_details.payment.token_count }} tokens</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Amount (Total):</strong> ₹{{ "%.2f"|format(payment_details.payment.total_amount) }} {{ payment_details.payment.currency or 'INR' }}</p>
+                    <p><strong>Base Amount:</strong> ₹{{ "%.2f"|format(payment_details.payment.base_amount) }}</p>
+                    <p><strong>GST (18%):</strong> ₹{{ "%.2f"|format(payment_details.payment.gst_amount) }}</p>
+                    <p><strong>Created At:</strong> {{ payment_details.payment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> 
+                        <span class="badge {% if payment_details.payment.status == 'completed' %}bg-success
+                                            {% elif payment_details.payment.status == 'created' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                            {{ payment_details.payment.status }}
+                        </span>
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Description:</strong> {{ payment_details.description }}</p>
+                </div>
+            </div>
+
+            <!-- Status Update Form -->
+            <div class="mt-4 pt-3 border-top">
+                <form method="POST" 
+                      action="{% if payment_type == 'tokens' %}{{ url_for('admin_update_token_payment', order_id=payment_details.payment.invoice_number) }}{% else %}{{ url_for('admin_update_payment', order_id=payment_details.payment.invoice_number) }}{% endif %}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label for="status">Update Status:</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="created" {% if payment_details.payment.status == 'created' %}selected{% endif %}>Created</option>
+                                <option value="completed" {% if payment_details.payment.status == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="failed" {% if payment_details.payment.status == 'failed' %}selected{% endif %}>Failed</option>
+                                <option value="cancelled" {% if payment_details.payment.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Status
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Payment Information -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header {% if payment_type == 'tokens' %}bg-warning{% else %}bg-info{% endif %} text-white">
+                    <h5>
+                        {% if payment_type == 'tokens' %}
+                            <i class="fas fa-coins"></i> Token Purchase Information
+                        {% else %}
+                            <i class="fas fa-credit-card"></i> Payment Information
+                        {% endif %}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Order ID:</strong> {{ payment_details.payment.razorpay_order_id }}</p>
+                    <p><strong>Payment ID:</strong> {{ payment_details.payment.razorpay_payment_id or 'Not completed' }}</p>
+                    <p><strong>Amount (Total):</strong> ₹{{ "%.2f"|format(payment_details.payment.total_amount) }} {{ payment_details.payment.currency or 'INR' }}</p>
+                    <p><strong>Base Amount:</strong> ₹{{ "%.2f"|format(payment_details.payment.base_amount) }}</p>
+                    <p><strong>GST (18%):</strong> ₹{{ "%.2f"|format(payment_details.payment.gst_amount) }}</p>
+                    <p><strong>Created At:</strong> {{ payment_details.payment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    
+                    {% if payment_type == 'tokens' %}
+                    <hr>
+                    <p><strong>Token Count:</strong> {{ payment_details.payment.token_count }} tokens</p>
+                    <p><strong>Price per Token:</strong> ₹{{ "%.2f"|format(payment_details.payment.total_amount / payment_details.payment.token_count) }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- User & Subscription Information -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="fas fa-user-tag"></i> User & Subscription</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>User:</strong> {{ payment_details.user.name }}</p>
+                    <p><strong>Email:</strong> {{ payment_details.user.company_email }}</p>
+                    <p><strong>Subscription Plan:</strong> {{ payment_details.subscription.plan }}</p>
+                    <p><strong>Plan Price:</strong> ₹{{ payment_details.subscription.price }}</p>
+                    <p><strong>Duration:</strong> {{ payment_details.subscription.days }} days</p>
+                    <p><strong>Daily Usage Limit:</strong> {{ payment_details.subscription.usage_per_day }} times per day</p>
+                    
+                    {% if payment_type == 'tokens' %}
+                    <hr>
+                    <p><strong>Related Subscription:</strong> {{ payment_details.subscription.plan }}</p>
+                    {% if payment_details.subscribed_user %}
+                    <p><strong>Subscription End Date:</strong> {{ payment_details.subscribed_user.end_date.strftime('%Y-%m-%d') }}</p>
+                    {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Usage Details (only for token payments) -->
+    {% if payment_type == 'tokens' and payment_details.user_tokens %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5><i class="fas fa-chart-bar"></i> Token Usage Details</h5>
+        </div>
+        <div class="card-body">
+            {% for user_token in payment_details.user_tokens %}
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <strong>Tokens Purchased:</strong> {{ user_token.tokens_purchased }}
+                </div>
+                <div class="col-md-3">
+                    <strong>Tokens Used:</strong> {{ user_token.tokens_used }}
+                </div>
+                <div class="col-md-3">
+                    <strong>Tokens Remaining:</strong> {{ user_token.tokens_remaining }}
+                </div>
+                <div class="col-md-3">
+                    <strong>Expires:</strong> {{ user_token.expires_at.strftime('%Y-%m-%d') }}
+                </div>
+            </div>
+            
+            <!-- Usage Progress Bar -->
+            <div class="progress mb-3">
+                {% set usage_percent = (user_token.tokens_used / user_token.tokens_purchased * 100) if user_token.tokens_purchased > 0 else 0 %}
+                <div class="progress-bar {% if usage_percent < 50 %}bg-success{% elif usage_percent < 80 %}bg-warning{% else %}bg-danger{% endif %}" 
+                     style="width: {{ usage_percent }}%">
+                    {{ "%.1f"|format(usage_percent) }}% Used
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Razorpay Details Section -->
+    {% if razorpay_details %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5><i class="fas fa-code"></i> Razorpay Payment Details</h5>
+        </div>
+        <div class="card-body">
+            <pre class="text-muted bg-light p-3 rounded">{{ razorpay_details|tojson(indent=4) }}</pre>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Related Payments Section -->
+    {% if related_subscription_payments or related_token_payments %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-info text-white">
+            <h5><i class="fas fa-history"></i> Related Payments for {{ payment_details.user.name }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Subscription Payments -->
+                {% if related_subscription_payments %}
+                <div class="col-md-6">
+                    <h6 class="text-primary"><i class="fas fa-calendar-alt"></i> Recent Subscription Payments</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in related_subscription_payments %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('admin_payment_details', order_id=payment.invoice_number) }}" 
+                                           class="text-decoration-none">
+                                            {{ payment.invoice_number or 'N/A' }}
+                                        </a>
+                                    </td>
+                                    <td>₹{{ "%.2f"|format(payment.total_amount) }}</td>
+                                    <td>
+                                        <span class="badge {% if payment.status == 'completed' %}bg-success{% elif payment.status == 'created' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ payment.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ payment.created_at.strftime('%m/%d/%y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Token Payments -->
+                {% if related_token_payments %}
+                <div class="col-md-6">
+                    <h6 class="text-warning"><i class="fas fa-coins"></i> Recent Token Purchases</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Invoice</th>
+                                    <th>Tokens</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for token_payment in related_token_payments %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('admin_payment_details', order_id=token_payment.invoice_number) }}" 
+                                           class="text-decoration-none">
+                                            {{ token_payment.invoice_number or 'N/A' }}
+                                        </a>
+                                    </td>
+                                    <td>{{ token_payment.token_count }}</td>
+                                    <td>₹{{ "%.2f"|format(token_payment.total_amount) }}</td>
+                                    <td>
+                                        <span class="badge {% if token_payment.status == 'completed' %}bg-success{% elif token_payment.status == 'created' %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ token_payment.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ token_payment.created_at.strftime('%m/%d/%y') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('admin_payments') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Payments
+        </a>
+        <div>
+            {% if payment_details.payment.status == 'completed' and payment_details.payment.invoice_number %}
+                {% if payment_type == 'tokens' %}
+                <a href="{{ url_for('download_token_invoice', token_purchase_id=payment_details.payment.id) }}" target="_blank" class="btn btn-warning">
+                    <i class="fas fa-file-pdf"></i> View Token Invoice
+                </a>
+                {% else %}
+                <a href="{{ url_for('admin_payment_invoice', order_id=payment_details.payment.razorpay_order_id) }}" target="_blank" class="btn btn-info">
+                    <i class="fas fa-file-pdf"></i> View Invoice
+                </a>
+                {% endif %}
+            {% endif %}
+            
+            <a href="{{ url_for('admin_users', user_id=payment_details.user.id) }}" class="btn btn-secondary">
+                <i class="fas fa-user"></i> View Customer
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.progress {
+    height: 20px;
+}
+
+.table-sm td, .table-sm th {
+    padding: 0.3rem;
+}
+
+.badge {
+    font-size: 0.75rem;
+}
+
+.card-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .d-flex.justify-content-between > div {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+}
+</style>
+{% endblock %}

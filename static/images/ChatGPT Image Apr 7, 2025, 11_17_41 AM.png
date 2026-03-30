@@ -1,0 +1,8 @@
+<<<<<<< HEAD
+﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>AuthenticationFailed</Code><Message>Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.
+RequestId:3b5c320b-d01e-0062-2a80-a7cf7a000000
+=======
+﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>AuthenticationFailed</Code><Message>Server failed to authenticate the request. Make sure the value of Authorization header is formed correctly including the signature.
+RequestId:3b5c320b-d01e-0062-2a80-a7cf7a000000
+>>>>>>> b76c30e467af241b3e80b553ae7e325bc89b9f0f
+Time:2025-04-07T05:47:45.5014437Z</Message><AuthenticationErrorDetail>Signed expiry time [Sun, 06 Apr 2025 16:44:33 GMT] must be after signed start time [Mon, 07 Apr 2025 05:47:45 GMT]</AuthenticationErrorDetail></Error>

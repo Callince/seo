@@ -1,0 +1,259 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Add New User Subscription{% endblock %}
+
+{% block page_title %}Add New User Subscription{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{{ url_for('admin_subscribed_users') }}">Subscribed Users</a></li>
+<li class="breadcrumb-item active">Add New</li>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="row">
+        <div class="col-lg-8 col-md-12 mx-auto">
+            <div class="card">
+                <div class="card-header d-flex align-items-center">
+                    <i class="fas fa-plus-circle me-2"></i> New Subscription Details
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('admin_new_subscribed_user') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                        
+                        <div class="mb-4">
+                            <label for="user_search" class="form-label">
+                                <i class="fas fa-user me-2 text-primary"></i>User
+                            </label>
+                            <div class="position-relative">
+                                <input type="text" class="form-control" id="user_search" placeholder="Search users by name or email..." autocomplete="off">
+                                <div class="dropdown-menu w-100" id="user_dropdown" style="max-height: 200px; overflow-y: auto; display: none;">
+                                    {% for user in users %}
+                                    <a class="dropdown-item user-option" href="#" data-user-id="{{ user.id }}" data-user-name="{{ user.name }}" data-user-email="{{ user.email }}">
+                                        <div class="d-flex justify-content-between">
+                                            <span>{{ user.name }} ({{ user.company_email }})</span>
+                                          <!-- <small class="text-muted">{{ user.email }} ({{ user.company_email }})</small> -->
+                                        </div>
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <input type="hidden" id="user_id" name="user_id" required>
+                            <div class="invalid-feedback">Please select a user.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="subscription_id" class="form-label">
+                                <i class="fas fa-tag me-2 text-primary"></i>Subscription Plan
+                            </label>
+                            <select class="form-select" id="subscription_id" name="subscription_id" required>
+                                <option value="">Select a plan</option>
+                                {% for subscription in subscriptions %}
+                                <option value="{{ subscription.S_ID }}">{{ subscription.plan }} - ₹{{ subscription.price }} ({{ subscription.days }} days)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('admin_subscribed_users') }}" class="btn btn-outline-secondary me-md-2">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Add Subscription
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to the card
+        const card = document.querySelector('.card');
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100);
+        
+        // User search functionality
+        const userSearch = document.getElementById('user_search');
+        const userDropdown = document.getElementById('user_dropdown');
+        const userIdInput = document.getElementById('user_id');
+        const userOptions = document.querySelectorAll('.user-option');
+        
+        // Show dropdown on input focus
+        userSearch.addEventListener('focus', function() {
+            userDropdown.style.display = 'block';
+            filterUsers('');
+        });
+        
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.position-relative')) {
+                userDropdown.style.display = 'none';
+            }
+        });
+        
+        // Filter users based on search input
+        userSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filterUsers(searchTerm);
+        });
+        
+        function filterUsers(searchTerm) {
+            let hasVisibleOptions = false;
+            userOptions.forEach(option => {
+                const userName = option.dataset.userName.toLowerCase();
+                const userEmail = option.dataset.userEmail.toLowerCase();
+                
+                if (userName.includes(searchTerm) || userEmail.includes(searchTerm)) {
+                    option.style.display = 'block';
+                    hasVisibleOptions = true;
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            // Show "No users found" message if no options are visible
+            const noResultsMsg = userDropdown.querySelector('.no-results');
+            if (!hasVisibleOptions && searchTerm) {
+                if (!noResultsMsg) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'dropdown-item-text text-muted no-results';
+                    noResults.textContent = 'No users found';
+                    userDropdown.appendChild(noResults);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+        
+        // Handle user selection
+        userOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                const userId = this.dataset.userId;
+                const userName = this.dataset.userName;
+                const userEmail = this.dataset.userEmail;
+                
+                userSearch.value = `${userName} (${userEmail})`;
+                userIdInput.value = userId;
+                userDropdown.style.display = 'none';
+                
+                // Remove any validation classes
+                userSearch.classList.remove('is-invalid');
+            });
+        });
+        
+        // Clear selection when input is manually cleared
+        userSearch.addEventListener('input', function() {
+            if (this.value === '') {
+                userIdInput.value = '';
+            }
+        });
+        
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!userIdInput.value) {
+                e.preventDefault();
+                userSearch.classList.add('is-invalid');
+                userSearch.focus();
+            }
+        });
+        
+        // Add select2 for subscription dropdown if available
+        if (typeof $.fn.select2 !== 'undefined') {
+            $('#subscription_id').select2({
+                placeholder: 'Select a plan',
+                allowClear: true,
+                width: '100%'
+            });
+        }
+        
+        // Keyboard navigation for dropdown
+        userSearch.addEventListener('keydown', function(e) {
+            const visibleOptions = Array.from(userOptions).filter(option => option.style.display !== 'none');
+            const currentActive = userDropdown.querySelector('.dropdown-item.active');
+            let newActive;
+            
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (currentActive) {
+                        currentActive.classList.remove('active');
+                        newActive = currentActive.nextElementSibling;
+                        while (newActive && newActive.style.display === 'none') {
+                            newActive = newActive.nextElementSibling;
+                        }
+                    }
+                    if (!newActive) {
+                        newActive = visibleOptions[0];
+                    }
+                    if (newActive) {
+                        newActive.classList.add('active');
+                    }
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (currentActive) {
+                        currentActive.classList.remove('active');
+                        newActive = currentActive.previousElementSibling;
+                        while (newActive && newActive.style.display === 'none') {
+                            newActive = newActive.previousElementSibling;
+                        }
+                    }
+                    if (!newActive) {
+                        newActive = visibleOptions[visibleOptions.length - 1];
+                    }
+                    if (newActive) {
+                        newActive.classList.add('active');
+                    }
+                    break;
+                    
+                case 'Enter':
+                    e.preventDefault();
+                    if (currentActive) {
+                        currentActive.click();
+                    }
+                    break;
+                    
+                case 'Escape':
+                    userDropdown.style.display = 'none';
+                    break;
+            }
+        });
+    });
+</script>
+
+<style>
+.dropdown-item:hover,
+.dropdown-item.active {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+.dropdown-item.active {
+    background-color: #e9ecef;
+}
+
+.position-relative .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}

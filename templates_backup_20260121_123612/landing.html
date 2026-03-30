@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-PM5LKV7D');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Your SEO Analytics Isn’t Telling You (Until Now)</title>
+    <meta name="description" content="See the insights your usual SEO tools miss. Track performance, spot issues, and find growth opportunities with clear, real SEO analytics.">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bootstrap CSS for dropdown -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#273879',
+                        'primary-dark': '#1f2d5f',
+                        'primary-light': '#0f74b2',
+                        secondary: '#0f74b2',
+                        accent: '#0891b2',
+                        background: '#f8fafc',
+                        surface: '#ffffff',
+                        text: '#1e293b',
+                        'text-light': '#64748b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+        .logo-carousel {
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+        }
+
+        .logo-track {
+            display: flex;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .logo-item {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 2rem;
+        }
+        .logo-item.center {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+        .logo-item.center img {
+            filter: grayscale(0%);
+        }
+        
+
+        .logo-item img {
+            height: 70px;   /* all logos uniform */
+            width: auto;
+            object-fit: contain;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .logo-item img:hover {
+            filter: grayscale(0%);
+        }
+        .special-logo img {
+        height: 50px !important;  /* slightly smaller */
+        width: auto !important;
+        }
+
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* shift half (since duplicated) */
+        }
+
+        .logo-carousel:hover .logo-track {
+            animation-play-state: paused;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in forwards;
+        }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .text-text-light {
+            color: #6b7280;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-item {
+                margin: 0 1rem;
+            }
+            
+            .logo-item img {
+                height: 40px;
+                width: 80px;
+            }
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #273879, #0f74b2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .card-hover {
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px -5px rgba(39, 56, 121, 0.1), 0 8px 10px -5px rgba(39, 56, 121, 0.04);
+        }
+        
+        .subtle-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(180deg, rgba(39, 56, 121, 0.06) 0%, rgba(15, 116, 178, 0.06) 100%);
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            filter: blur(50px);
+            z-index: 0;
+            animation: subtle-blob-animation 25s infinite alternate;
+        }
+        
+        @keyframes subtle-blob-animation {
+            0% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                transform: rotate(0deg);
+            }
+            50% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: rotate(1deg);
+            }
+            100% {
+                border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+                transform: rotate(0deg);
+            }
+        }
+        
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        /* CSS Variables - Matching base.html */
+        :root {
+            --seodada-gradient: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+            --seodada-gradient-hover: linear-gradient(135deg, #1e2a5a 0%, #0c5a8b 100%);
+            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+        }
+
+        /* Button Base Styling - Matching base.html */
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: transform 0.5s ease;
+            transform: skewX(-15deg);
+        }
+
+        .btn:hover::before {
+            transform: translateX(200%) skewX(-15deg);
+        }
+
+        .btn-primary {
+            background: var(--seodada-gradient);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--seodada-gradient-hover);
+            transform: translateY(-0.1875rem);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0.0625rem);
+        }
+
+        /* User Dropdown Styling - Matching base.html */
+        .user-dropdown .btn {
+            max-width: 200px;
+            overflow: hidden;
+        }
+
+        .user-dropdown .btn .user-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100px;
+            display: inline-block;
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+            border: none;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, #273879, #0f74b2);
+            color: white !important;
+        }
+
+        .dropdown-item:active,
+        .dropdown-item:focus {
+            background: linear-gradient(135deg, #273879, #0f74b2);
+            color: white !important;
+        }
+
+        .user-dropdown .dropdown-item:active {
+            background: linear-gradient(135deg, #273879 0%, #0f74b2 100%) !important;
+            color: white !important;
+        }
+
+        .user-dropdown .dropdown-item:focus {
+            background: linear-gradient(135deg, #273879 0%, #0f74b2 100%) !important;
+            color: white !important;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 1024px) {
+            .user-dropdown .btn {
+                max-width: 120px;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .user-dropdown .btn .user-name {
+                max-width: 60px;
+                font-size: 0.75rem;
+            }
+        }
+        /* Logo container styling */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100px;
+            min-height: 100px;
+        }
+        
+        .logo-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container img {
+            max-width: 120px;
+            max-height: 60px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            filter: grayscale(0.7);
+            transition: filter 0.3s ease;
+        }
+        
+        .logo-container:hover img {
+            filter: grayscale(0);
+        }
+
+        /* Logo consistency improvements - MODIFIED FOR LOGO ONLY */
+        .logo-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .logo-image {
+            object-fit: contain;
+            max-width: 100%;
+            height: auto;
+            flex-shrink: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .logo-icon {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-fallback {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            border-radius: 0.5rem;
+        }
+
+        .logo-error-fallback {
+            background-color: #273879;
+            color: white;
+            border-radius: 0.5rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Hide website name - NEW STYLES */
+        .website-name {
+            display: none !important;
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+                line-height: 1.2;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem;
+            }
+            
+            .subtle-blob {
+                width: 400px;
+                height: 400px;
+            }
+            
+            .logo-container {
+                padding: 1rem;
+                height: 80px;
+                min-height: 80px;
+            }
+            
+            .logo-container img {
+                max-width: 100px;
+                max-height: 50px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-description {
+                font-size: 1rem;
+            }
+            
+            .logo-container {
+                padding: 0.75rem;
+                height: 70px;
+                min-height: 70px;
+            }
+            
+            .logo-container img {
+                max-width: 80px;
+                max-height: 40px;
+            }
+            
+            /* Mobile menu improvements for small screens */
+            .mobile-menu {
+                width: 280px;
+                max-width: 85vw;
+            }
+            
+            /* Ensure no horizontal overflow */
+            .container {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+        }
+        
+        /* Additional mobile fixes */
+        @media (max-width: 480px) {
+            .mobile-menu {
+                width: 260px;
+                max-width: 90vw;
+            }
+            
+            .mobile-menu .p-4 {
+                padding: 1rem;
+            }
+        }
+        
+        /* Force full width on mobile */
+        @media (max-width: 768px) {
+            body, html {
+                width: 100% !important;
+                overflow-x: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            footer {
+                width: 100vw !important;
+                margin-left: calc(-50vw + 50%) !important;
+                margin-right: calc(-50vw + 50%) !important;
+                position: relative !important;
+                left: 50% !important;
+                right: 50% !important;
+                transform: translateX(-50%) !important;
+            }
+            
+            /* Ensure footer content stays centered */
+            footer > div {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+        }
+        
+        /* Force full width on mobile */
+        @media (max-width: 768px) {
+            body, html {
+                width: 100% !important;
+                overflow-x: hidden !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            footer {
+                width: 100vw !important;
+                margin-left: calc(-50vw + 50%) !important;
+                margin-right: calc(-50vw + 50%) !important;
+            }
+        }
+        
+        /* Mobile Menu Styles */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height for mobile */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: right 0.3s ease;
+            z-index: 9999;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; /* Dynamic viewport height for mobile */
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 9998;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            width: 24px;
+            height: 18px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .hamburger span {
+            width: 100%;
+            height: 2px;
+            background: #1e293b;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        
+        .hamburger span:nth-child(1) {
+            margin-bottom: 6px;
+        }
+        
+        .hamburger span:nth-child(2) {
+            margin-bottom: 6px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+        
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+        
+        /* Mobile menu items animation */
+        .mobile-menu-item {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        
+        .mobile-menu.active .mobile-menu-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .mobile-menu.active .mobile-menu-item:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-menu.active .mobile-menu-item:nth-child(2) { transition-delay: 0.2s; }
+        .mobile-menu.active .mobile-menu-item:nth-child(3) { transition-delay: 0.3s; }
+        .mobile-menu.active .mobile-menu-item:nth-child(4) { transition-delay: 0.4s; }
+        .mobile-menu.active .mobile-menu-item:nth-child(5) { transition-delay: 0.5s; }
+        .mobile-menu.active .mobile-menu-item:nth-child(6) { transition-delay: 0.6s; }
+        
+        /* Formal animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-item {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        /* Elegant underline animation */
+        .elegant-link {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .elegant-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1.5px;
+            bottom: -2px;
+            left: 0;
+            background-color: #273879;
+            transition: width 0.3s ease;
+        }
+        
+        .elegant-link:hover::after {
+            width: 100%;
+        }
+
+        /* Fix for dropdown toggle - hide Bootstrap's default caret */
+        .dropdown-toggle::after {
+            display: none !important;
+        }
+
+        /* Custom dropdown caret icon */
+        .dropdown-caret {
+            font-size: 0.6rem;
+            transition: transform 0.3s ease;
+            margin-left: 0.35rem;
+        }
+
+        .dropdown-toggle[aria-expanded="true"] .dropdown-caret {
+            transform: rotate(180deg);
+        }
+
+        /* Custom underline wrapper for dropdown - same as elegant-link */
+        .nav-link-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .nav-link-wrapper::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1.5px;
+            bottom: -2px;
+            left: 0;
+            background-color: #273879;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link-wrapper:hover::after {
+            width: 100%;
+        }
+
+        /* Services dropdown hover effect */
+        .services-dropdown {
+            position: relative;
+        }
+
+        .services-dropdown .dropdown-menu {
+            display: block;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .services-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .services-dropdown:hover .dropdown-caret {
+            transform: rotate(180deg);
+        }
+
+        /* Fix dropdown-toggle to match elegant-link hover */
+        .dropdown-toggle.elegant-link::after {
+            content: '' !important; /* Override Bootstrap's arrow content */
+            border: none !important; /* Remove arrow borders */
+            position: absolute !important;
+            width: 0 !important;
+            height: 1.5px !important;
+            bottom: -2px !important;
+            left: 0 !important;
+            background-color: #273879 !important;
+            transition: width 0.3s ease !important;
+            display: block !important;
+        }
+	.dropdown-toggle.elegant-link:hover::after {
+            width: 100% !important;
+        }
+
+        .dropdown-toggle.elegant-link:hover {
+            text-decoration: none !important; /* Remove any default underline */
+        }
+
+        /* Subtle shadow effect for depth */
+        .depth-card {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
+        }
+        
+        .depth-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-4px);
+        }
+        
+        /* 3D floating effect */
+        .floating-card {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+        
+        /* Border animation */
+        .border-animation {
+            position: relative;
+            border: 1px solid transparent;
+            background-clip: padding-box;
+            transition: all 0.4s ease;
+        }
+        
+        .border-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(to right, #273879, #0f74b2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .border-animation:hover::before {
+            opacity: 0.1;
+        }
+        
+        .border-animation:hover {
+            border: 1px solid #273879;
+            box-shadow: 0 0 20px rgba(39, 56, 121, 0.15);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+                line-height: 1.2;
+            }
+            
+            .hero-description {
+                font-size: 1.1rem;
+            }
+            
+            .subtle-blob {
+                width: 400px;
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-description {
+                font-size: 1rem;
+            }
+        }
+        
+    </style>
+</head>
+<body class="bg-background text-text">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM5LKV7D"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <!-- 3D Canvas Background -->
+    <div id="canvas-container"></div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+    <!-- Mobile Menu - LOGO ONLY VERSION -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="p-4 sm:p-6 min-h-full flex flex-col">
+            <!-- Mobile Menu Header - LOGO ONLY -->
+            <div class="flex justify-between items-center mb-6 flex-shrink-0">
+                <div class="logo-display min-w-0">
+                    {% if website_settings.website_logo_file %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                            alt="{{ website_settings.website_name }}"
+                            class="h-8 w-auto rounded logo-image"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <div class="w-8 h-8 bg-primary rounded-lg logo-error-fallback">
+                            <span class="text-white font-bold text-sm">{{ (website_settings.website_name or 'WA')[:2].upper() }}</span>
+                        </div>
+                    {% elif website_settings.website_icon %}
+                        <div class="w-8 h-8 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center logo-icon">
+                            <i class="{{ website_settings.website_icon }} text-primary text-xl"></i>
+                        </div>
+                    {% else %}
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center logo-fallback">
+                            <span class="text-white font-bold text-sm">{{ (website_settings.website_name or 'WA')[:2].upper() }}</span>
+                        </div>
+                    {% endif %}
+                    <!-- REMOVED: Website name text -->
+                </div>
+
+                <button class="mobile-menu-close text-gray-500 hover:text-gray-700 p-2" id="mobileMenuClose">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation Links -->
+            <nav class="space-y-1 flex-1">
+                <a href="#features" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-cog mr-3 text-primary"></i>Features
+                </a>
+                <a href="#how-it-works" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-tasks mr-3 text-primary"></i>How It Works
+                </a>
+                <a href="#analytics" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-chart-line mr-3 text-primary"></i>Analytics
+                </a>
+                <a href="#clients" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-users mr-3 text-primary"></i>Our Clients
+                </a>
+                <a href="{{ url_for('public_blogs') }}" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                    <i class="fas fa-blog mr-3 text-primary"></i>Blog
+                </a>
+                <!-- Our Services Dropdown for Mobile -->
+                <div class="mobile-services-dropdown">
+                    <button class="mobile-menu-item w-full flex items-center justify-between py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors" id="mobileServicesToggle" type="button">
+                        <span><i class="fas fa-cogs mr-3 text-primary"></i>Our Services</span>
+                        <i class="fas fa-chevron-down text-sm transition-transform duration-300" id="mobileServicesChevron"></i>
+                    </button>
+                    <div class="mobile-services-submenu hidden pl-4 mt-1 space-y-1" id="mobileServicesSubmenu">
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('url_analysis_page') }}"><i class="fas fa-link me-2 text-primary"></i>URL Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('heading_analysis_page') }}"><i class="fas fa-heading me-2 text-primary"></i>Heading Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('keyword_analysis_page') }}"><i class="fas fa-key me-2 text-primary"></i>Keyword Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('image_analysis_page') }}"><i class="fas fa-image me-2 text-primary"></i>Image Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('meta_analysis_page') }}"><i class="fas fa-tags me-2 text-primary"></i>Meta Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2 text-primary"></i>Sitemap Analysis</a>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Mobile Auth Buttons -->
+            <div class="mt-6 space-y-3 flex-shrink-0">
+                {% if current_user.is_authenticated %}
+                <!-- User Info -->
+                <div class="mobile-menu-item block w-full text-center py-3 px-4 bg-primary text-white font-medium rounded-lg" style="background: linear-gradient(135deg, #273879, #0f74b2);">
+                    <i class="fas fa-user me-2"></i>{{ current_user.name|title }}
+                </div>
+                <!-- User Menu Items -->
+                <a href="{{ url_for('index') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                    <i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard
+                </a>
+                <a href="{{ url_for('profile') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                    <i class="fas fa-user-circle me-2 text-primary"></i>Profile
+                </a>
+                <a href="{{ url_for('user_subscriptions') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                    <i class="fas fa-credit-card me-2 text-primary"></i>Subscriptions
+                </a>
+                <a href="{{ url_for('logout') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-red-300 text-red-600 font-medium rounded-lg transition-colors hover:bg-red-50">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+                {% else %}
+                <a href="/login" class="mobile-menu-item block w-full text-center py-3 px-4 border border-primary text-primary font-medium rounded-lg transition-colors hover:bg-primary hover:text-white">
+                    Login
+                </a>
+                
+                <a href="/signup" class="mobile-menu-item block w-full text-center py-3 px-4 bg-primary text-white font-medium rounded-lg transition-colors hover:bg-primary-dark" style="background: linear-gradient(135deg, #273879, #0f74b2);">
+                    Get Started
+                </a>
+                
+                {% endif %}
+            </div>
+            
+            <!-- Mobile Contact Info -->
+            <div class="mt-6 pt-4 border-t border-gray-200 flex-shrink-0">
+                <div class="mobile-menu-item text-center">
+                    <p class="text-sm text-gray-600 mb-2">Need help?</p>
+                    <a href="/contact" class="text-primary font-medium text-sm hover:text-primary-dark">
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header/Navbar - LOGO ONLY VERSION -->
+    <header class="fixed top-0 left-0 right-0 glass-nav" style="z-index: 100; height: 4.375rem;">
+        <nav class="container mx-auto px-4 sm:px-6" style="height: 100%;">
+            <div class="flex justify-between items-center" style="height: 100%;">
+                <!-- Logo Only - MODIFIED -->
+                <div class="logo-display min-w-0">
+                    {% if website_settings.website_logo_file %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                            alt="{{ website_settings.website_name }}"
+                            class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg logo-error-fallback">
+                            <span class="text-white text-sm sm:text-base font-bold">{{ website_settings.website_name[:2].upper() }}</span>
+                        </div>
+                    {% elif website_settings.website_icon %}
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center logo-icon">
+                            <i class="{{ website_settings.website_icon }} text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                    {% else %}
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center logo-fallback">
+                            <span class="text-white text-sm sm:text-base font-bold">{{ website_settings.website_name[:2].upper() }}</span>
+                        </div>
+                    {% endif %}
+                    <!-- REMOVED: Website name text -->
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#features" class="elegant-link font-medium hover:text-primary transition-colors">Features</a>
+                    <a href="#how-it-works" class="elegant-link font-medium hover:text-primary transition-colors">How It Works</a>
+                    <a href="#analytics" class="elegant-link font-medium hover:text-primary transition-colors">Analytics</a>
+                    <a href="#clients" class="elegant-link font-medium hover:text-primary transition-colors">Our Clients</a>
+		    <!-- Our Services Dropdown -->
+                    <div class="dropdown services-dropdown nav-link-wrapper">
+                        <a href="#" class="font-medium hover:text-primary transition-colors dropdown-toggle" id="servicesDropdown" aria-expanded="false">
+                            Our Services <i class="fas fa-chevron-down dropdown-caret"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('url_analysis_page') }}"><i class="fas fa-link me-2"></i>URL Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('heading_analysis_page') }}"><i class="fas fa-heading me-2"></i>Heading Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('keyword_analysis_page') }}"><i class="fas fa-key me-2"></i>Keyword Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('image_analysis_page') }}"><i class="fas fa-image me-2"></i>Image Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('meta_analysis_page') }}"><i class="fas fa-tags me-2"></i>Meta Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2"></i>Sitemap Analysis</a></li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('public_blogs') }}" class="elegant-link font-medium hover:text-primary transition-colors">Blog</a>
+                </div>
+
+                <!-- Desktop Auth Buttons -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                    <!-- User Dropdown -->
+                    <div class="user-dropdown dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                            <span class="user-name">{{ current_user.name|title }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown" role="menu">
+                            {% if request.endpoint != 'index' %}
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('index') }}" role="menuitem" tabindex="0">
+                                    <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Dashboard
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% if request.endpoint != 'profile' %}
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}" role="menuitem" tabindex="0">
+                                    <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% if request.endpoint != 'user_subscriptions' %}
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+                                    <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}" role="menuitem" tabindex="0">
+                                    <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    {% else %}
+                    <a href="/login" class="elegant-link font-medium hover:text-primary transition-colors">Login</a>
+                    <a href="/signup" class="text-white font-medium px-5 py-2 rounded-lg transition-colors" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">Get Started</a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="lg:hidden hamburger" id="mobileMenuToggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen pt-32 pb-24 overflow-hidden">
+        <div class="subtle-blob top-0 right-0"></div>
+        <div class="subtle-blob bottom-0 left-0"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="lg:w-1/2 mb-12 lg:mb-0 relative z-20">
+                    <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 fade-in">
+                        <span class="gradient-text" id="main-headline">Enterprise SEO Analytics</span> 
+                        <span>for Data-Driven Organizations</span>
+                    </h1>
+                    <p class="hero-description text-text-light text-lg md:text-xl mb-8 max-w-2xl fade-in" id="hero-description" style="transition-delay: 0.2s;">
+                       We built Seodada for teams that need clear, reliable seo analytics at scale. Our platform helps you understand what is working on your site, what is holding you back, and what to fix next. Every insight is based on real data from your pages, so your decisions are backed by facts, not guesswork. This is built for deep search engine optimization analysis across large websites.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 fade-in" style="transition-delay: 0.4s;">
+                        {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('index') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
+                            <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
+                        </a>
+                        {% else %}
+                        <a href="{{ url_for('signup') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
+                            <i class="fas fa-user-plus mr-2"></i>Sign up for free
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-12 flex flex-col sm:flex-row sm:items-center fade-in" style="transition-delay: 0.6s;">
+                        <div class="flex -space-x-2 mb-4 sm:mb-0">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client">
+                            <img src="https://randomuser.me/api/portraits/men/86.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client">
+                            <img src="https://randomuser.me/api/portraits/women/63.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client">
+                        </div>
+                        <div class="sm:ml-4">
+                            <p class="text-sm font-medium">Trusted by <span class="text-primary font-bold">2,000+</span> enterprise clients</p>
+                            <div class="flex items-center mt-1">
+                                <div class="flex">
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                    <i class="fas fa-star text-yellow-400"></i>
+                                </div>
+                                <span class="ml-2 text-sm text-text-light">4.9/5 from 500+ reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 relative z-10">
+                    <div class="relative w-full h-[400px] sm:h-[500px] perspective-1000 fade-in" style="transition-delay: 0.5s;">
+                        <div id="floating-dashboard" class="absolute inset-0 rounded-xl shadow-2xl border border-gray-200 overflow-hidden floating-card">
+                            <img src="static\images\screencapture-127-0-0-1-5000-dashboard-2025-05-07-10_30_34.png" alt="SEO analytics Dashboard Preview" class="w-full h-full object-cover" />
+                        </div>
+                        <div class="absolute top-10 -right-8 sm:-right-16 w-32 sm:w-48 h-32 sm:h-48 bg-accent rounded-full opacity-10 filter blur-3xl"></div>
+                        <div class="absolute -bottom-10 -left-8 sm:-left-16 w-48 sm:w-72 h-48 sm:h-72 bg-primary rounded-full opacity-5 filter blur-3xl"></div>
+                    </div>
+                    
+                    <!-- Floating data points -->
+                    <div class="absolute top-5 -left-2 sm:-left-4 bg-white p-3 rounded-lg shadow-lg z-20 fade-in" style="transition-delay: 0.7s;">
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fas fa-arrow-up text-xs sm:text-sm"></i>
+                            </div>
+                            <div class="ml-2">
+                                <p class="text-xs font-medium">Organic Traffic</p>
+                                <p class="text-sm font-bold">+127%</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="absolute bottom-5 -right-2 sm:-right-4 bg-white p-3 rounded-lg shadow-lg z-20 fade-in" style="transition-delay: 0.9s;">
+                        <div class="flex items-center">
+                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                <i class="fas fa-chart-line text-xs sm:text-sm"></i>
+                            </div>
+                            <div class="ml-2">
+                                <p class="text-xs font-medium">Keywords Ranked</p>
+                                <p class="text-sm font-bold">432</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
+                    <i class="fas fa-search text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
+                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">1.2M+</div>
+                    <p class="text-text-light text-sm sm:text-base">URLs Analyzed</p>
+                </div>
+                
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
+                    <i class="fas fa-chart-line text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
+                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">98%</div>
+                    <p class="text-text-light text-sm sm:text-base">Client Success Rate</p>
+                </div>
+                
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
+                    <i class="fas fa-bolt text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
+                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">3.5x</div>
+                    <p class="text-text-light text-sm sm:text-base">Traffic Increase</p>
+                </div>
+                
+                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
+                    <i class="fas fa-globe text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
+                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">50k+</div>
+                    <p class="text-text-light text-sm sm:text-base">Global Clients</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 relative">
+        <div class="subtle-blob top-1/4 left-0"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Comprehensive SEO Analytics</h2>
+                <p class="text-text-light text-lg ">
+                    Seodada brings together accurate seo analytics and practical checks in one place. 
+                    We run full web seo analytics across your site to surface issues in content, structure, 
+                    and performance. Think of it as a complete seo analytics tools suite that shows what 
+                    needs attention and why. If you want an all-in-one seo analytics website view, this is 
+                    where it starts.
+                </p>
+
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-link text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">URL Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                         We scan your URLs to understand structure, internal links, and crawl paths. Our web page seo analysis checks help you spot issues that slow down indexing or confuse users. You get a clean web seo analysis view of how pages connect and where flow breaks.
+
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Internal & External Link Discovery</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Broken Link Detection</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Robots.txt Compliance Check</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-key text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Keyword Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                            We pull keywords from your pages and show what your content is really targeting. This supports everyday analytics for seo decisions and helps you build better content plans. You also get clear seo analytics reporting to see which themes drive visibility.</p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Density & Distribution Analysis</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Semantic Relevance Scoring</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Competitor Keyword Comparison</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-image text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Image Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                            Images impact load speed and rankings more than most sites realize. We flag missing details and heavy files as part of your seo analytics review. This fits into any serious web seo analysis or online audit.
+                         </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Alt Text Analysis</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Image Size & Format Recommendations</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Loading Speed Impact Assessment</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-heading text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Heading Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                            Headings tell search engines what your page is about. We check your H1 to H6 flow so content stays clear for readers and crawlers. This is part of a complete seo site analysis.
+
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>H1-H6 Hierarchy Analysis</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Keyword Placement Recommendations</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Content Structure Visualization</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-code text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Meta Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                            We review titles, descriptions, and schema so your pages show up properly and earn clicks. This is a key part of any seo and analytics setup and supports a clean seo analytics report output.
+
+                          </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Title & Description Evaluation</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Schema Markup Validation</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Social Media Optimization</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
+                    <div class="relative z-10">
+                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
+                            <i class="fas fa-sitemap text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Sitemap Analysis</h3>
+                        <p class="text-text-light mb-4 text-sm sm:text-base">
+                            Your site layout decides how easily search engines understand your content. We map your structure and highlight crawl gaps using website analysis tool logic and a modern technical seo analysis approach.
+
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Interactive Site Maps</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Navigation Flow Analysis</span>
+                            </li>
+                            <li class="flex items-center text-xs sm:text-sm">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                <span>Sitemap.xml Validation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works Section -->
+    <section id="how-it-works" class="py-24 bg-gradient-to-b from-background to-gray-50">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+                <p class="text-text-light text-lg">
+                    We keep seo analytics simple for large teams. Our three-step flow is built so you can audit fast, share results, and act without delays. It also supports structured seo analytics and reporting for stakeholders.
+
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
+                <div class="fade-in">
+                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center depth-card relative">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold shadow-md">1</div>
+                        <div class="w-12 sm:w-16 h-12 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 sm:mb-6 mt-2">
+                            <i class="fas fa-link text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Data Collection</h3>
+                        <p class="text-text-light text-sm sm:text-base">
+                             We collect data from your pages and run a full web seo analysis online scan of content, layout, and technical signals.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fade-in" style="transition-delay: 0.2s;">
+                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center depth-card relative">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold shadow-md">2</div>
+                        <div class="w-12 sm:w-16 h-12 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 sm:mb-6 mt-2">
+                            <i class="fas fa-chart-bar text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Analysis and Report</h3>
+                        <p class="text-text-light text-sm sm:text-base">
+                            Our system processes everything into one clear seo analytics report. You get ranking signals, page health, keyword patterns, and priority fixes.</p>
+                    </div>
+                </div>
+
+                <div class="fade-in" style="transition-delay: 0.4s;">
+                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center depth-card relative">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center text-lg font-bold shadow-md">3</div>
+                        <div class="w-12 sm:w-16 h-12 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4 sm:mb-6 mt-2">
+                            <i class="fas fa-rocket text-primary text-xl sm:text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg sm:text-xl font-bold mb-3">Strategic Implementation</h3>
+                        <p class="text-text-light text-sm sm:text-base">
+                             We work with your team to turn insights into actions, supported by seo analytics report outputs you can track over time.
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- <div class="mt-16 text-center fade-in" style="transition-delay: 0.6s;">
+                <a href="#demo" class="inline-flex items-center text-primary font-medium hover:text-primary-dark elegant-link">
+                    <span>See it in action</span>
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Analytics Showcase Section -->
+    <section id="analytics" class="py-24 relative bg-white">
+        <div class="subtle-blob top-1/3 right-0"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Enterprise Analytics Dashboard</h2>
+                <p class="text-text-light text-lg">
+                    Your dashboard gives a complete seo analytics view in real time. You can track growth, dropdowns, and changes across the site in one place. It is designed for analytics seo teams who need fast answers and reliable numbers. You also get a built-in online seo analysis tool and on page seo checker for daily checks.
+
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+                <div class="fade-in order-2 lg:order-1">
+                    <div class="bg-white rounded-xl overflow-hidden shadow-xl border border-gray-100">
+                        <img src="static\images\screencapture-127-0-0-1-5000-dashboard-2025-05-07-10_30_34.png" alt="SEO Analytics Dashboard" class="w-full h-auto" />
+                    </div>
+                </div>
+                
+                <div class="space-y-4 sm:space-y-6 fade-in order-1 lg:order-2" style="transition-delay: 0.3s;">
+                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
+                        <div class="flex items-start">
+                            <div class="bg-blue-50 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
+                                <i class="fas fa-chart-line text-primary text-lg sm:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold mb-2">Real-time Performance Tracking</h3>
+                                <p class="text-text-light text-sm sm:text-base">
+                                    Monitor rankings, traffic trends, and page health with historical comparison. This works like a live seo analytics report you can check anytime.
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
+                        <div class="flex items-start">
+                            <div class="bg-blue-50 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
+                                <i class="fas fa-users text-primary text-lg sm:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold mb-2">Competitor Analysis</h3>
+                                <p class="text-text-light text-sm sm:text-base">
+                                    Compare your pages with competitors using side-by-side data. It supports clear seo analytics and reporting for leadership, plus deeper web seo analytics insights for your team. </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
+                        <div class="flex items-start">
+                            <div class="bg-blue-50 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
+                                <i class="fas fa-file-export text-primary text-lg sm:text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base sm:text-lg font-bold mb-2">Customizable Reports</h3>
+                                <p class="text-text-light text-sm sm:text-base">
+                                   Create export-ready reports for different teams and stakeholders. This includes seo analytics reporting and shareable results for audits and reviews.
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <!-- <section id="demo" class="py-24 relative bg-gray-50">
+        <div class="subtle-blob bottom-0 right-0"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">See It In Action</h2>
+                <p class="text-text-light text-lg">
+                    Watch how our platform can transform your organization's SEO strategy with enterprise-grade analytics.
+                </p>
+            </div>
+            
+            <div class="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video fade-in">
+                <div class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="w-16 sm:w-20 h-16 sm:h-20 mx-auto bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors">
+                            <i class="fas fa-play text-white text-xl sm:text-2xl"></i>
+                        </div>
+                        <p class="mt-4 text-text-light text-sm sm:text-base">Watch Product Demo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Combined Testimonials and Logo Section -->
+    <section id="clients" class="py-24 relative">
+        <div class="subtle-blob top-1/4 right-0"></div>
+        
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Enterprise Clients</h2>
+                <p class="text-text-light text-lg">
+                    Discover how SEO Dada has helped organizations improve their SEO performance through advanced web SEO analysis capabilities.
+
+                </p>
+            </div>
+            
+            <!-- Testimonials -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.1s;">
+                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
+                        "Before using this tool, we were mostly guessing which pages worked best for each state or vehicle. Now we clearly see what's ranking and what's bringing in leads. For example, we noticed that 'Ranger vs Petrol Bike' performs better in Gujarat than in Delhi. These insights helped our team focus efforts more sharply and stop wasting time on guesswork."</p>
+                    <div class="flex items-center">
+                        <img src="static/images/Artboard 7.png" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Testimonial Author">
+                        <div>
+                            <h4 class="font-bold text-sm sm:text-base">Komaki (Electric Vehicles Brand)</h4>
+                            <p class="text-text-light text-xs sm:text-sm">Marketing Lead, Komaki Electric Vehicles
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.3s;">
+                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
+                        "We offer different solar pumps depending on the state and usage. This tool helped us understand exactly what farmers are searching for. In Maharashtra, we found more interest in borewell pump subsidies. That kind of clarity helped us build the right pages and get real leads instead of just relying on dealers."</p>
+                    <div class="flex items-center">
+                        <img src="static/images/Artboard 8.png" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Testimonial Author">
+                        <div>
+                            <h4 class="font-bold text-sm sm:text-base">Morca (Solar Pump Brand)</h4>
+                            <p class="text-text-light text-xs sm:text-sm">Founder, Morca Pumps</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.5s;">
+                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
+                       "We didn't expect SEO to work this well for shirts. But the tool showed us that people do search for very specific terms like 'checked shirts in Pune' or 'cotton office shirts'. We used that insight to build pages that actually bring traffic and orders. The best part is our team could handle it without needing tech support every time."</p>
+                    <div class="flex items-center">
+                        <img src="static/images/Artboard 5.png" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Testimonial Author">
+                        <div>
+                            <h4 class="font-bold text-sm sm:text-base">Botticelli (Men's Fashion Brand)</h4>
+                            <p class="text-text-light text-xs sm:text-sm">Ecommerce Head, Botticelli</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trusted by section with logo carousel -->
+            <div class="fade-in">
+                <p class="text-center text-text-light mb-8 sm:mb-12 text-base font-medium">
+                    Trusted by leading enterprises worldwide
+                </p>
+                
+                <div class="logo-carousel max-w-7xl mx-auto">
+                    <div class="logo-track" id="logoTrack">
+                    <!-- First set of 12 logos -->
+                    <div class="logo-item"><img src="static/images/Artboard 7.png" alt="Komaki Electric Vehicles" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 5.png" alt="Botticelli" /></div>
+                    <div class="logo-item special-logo"><img src="static/images/Veegaland Homes.png" alt="Veegaland Homes" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 3.png" alt="Seven Doors to Heaven" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 4.png" alt="SGR 777 Foods" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 2.png" alt="SRM University Online" /></div>
+                    <div class="logo-item"><img src="static/images/deepee.jpg" alt="Deepee Rubber" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 9.png" alt="Tabbi" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 8.png" alt="Morca Solar Pumps" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 1.png" alt="SRM School of Banking" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 6.png" alt="Fybros" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 10.png" alt="Pepyogi" /></div>
+
+                    <!-- Duplicate set for infinite scroll -->
+                    <div class="logo-item"><img src="static/images/Artboard 7.png" alt="Komaki Electric Vehicles" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 5.png" alt="Botticelli" /></div>
+                    <div class="logo-item special-logo"><img src="static/images/Veegaland Homes.png" alt="Veegaland Homes" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 3.png" alt="Seven Doors to Heaven" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 4.png" alt="SGR 777 Foods" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 2.png" alt="SRM University Online" /></div>
+                    <div class="logo-item"><img src="static/images/deepee.jpg" alt="Deepee Rubber" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 9.png" alt="Tabbi" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 8.png" alt="Morca Solar Pumps" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 1.png" alt="SRM School of Banking" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 6.png" alt="Fybros" /></div>
+                    <div class="logo-item"><img src="static/images/Artboard 10.png" alt="Pepyogi" /></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 sm:py-20 relative">
+        <div class="absolute inset-0 bg-primary opacity-5"></div>
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border-animation fade-in">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2 p-8 sm:p-12 flex flex-col justify-center">
+                        <h2 class="text-2xl sm:text-3xl font-bold mb-4">Ready to Transform Your SEO Strategy?</h2>
+                        <p class="text-text-light mb-6 sm:mb-8 text-sm sm:text-base">
+                            Request a personalized consultation with our SEO analysts to discuss your organization's needs.
+                        </p>
+                        <a href="/contact" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors inline-block text-center text-sm sm:text-base" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
+                            Request Consultation
+                        </a>
+                    </div>
+                    <div class="md:w-1/2 p-8 sm:p-12 text-white" style="background: linear-gradient(135deg, #273879, #0f74b2);">
+                        <h3 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Our Enterprise Solution Includes:</h3>
+                        <ul class="space-y-3 sm:space-y-4">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
+                                <span class="text-sm sm:text-base">Dedicated Account Manager</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
+                                <span class="text-sm sm:text-base">Custom Implementation Strategy</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
+                                <span class="text-sm sm:text-base">Comprehensive Analytics Dashboard</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
+                                <span class="text-sm sm:text-base">Strategic Quarterly Reviews</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer - LOGO ONLY VERSION -->
+    <footer class="bg-text py-12 text-white w-full m-0 p-0">
+        <div class="w-full py-12 px-4 sm:px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                    <div class="sm:col-span-2 lg:col-span-1 text-left">
+                        <!-- Footer Logo Only - MODIFIED -->
+                        <div class="logo-display mb-6 justify-start">
+                            {% if website_settings.website_logo_file %}
+                                <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+
+                                    class="h-10 w-auto rounded logo-image"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                <div class="w-10 h-10 bg-white rounded-lg logo-error-fallback">
+                                    <!-- <span class="text-primary font-bold text-base">{{ website_settings.website_name[:2].upper() }}</span> -->
+                                </div>
+                            {% elif website_settings.website_icon %}
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center logo-icon">
+                                    <i class="{{ website_settings.website_icon }} text-primary text-xl"></i>
+                                </div>
+                            {% else %}
+                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center logo-fallback">
+                                    <!-- <span class="text-primary font-bold text-base">{{ website_settings.website_name[:2].upper() }}</span> -->
+                                </div>
+                            {% endif %}
+                            <!-- REMOVED: Website name text -->
+                        </div>
+                        <!-- <p class="text-gray-400 mb-6 text-sm sm:text-base text-center sm:text-left">
+                            {{ website_settings.website_tagline or "Enterprise SEO analytics platform for data-driven organizations. Unlock insights, improve digital presence." }}
+                        </p> -->
+                        <div class="flex space-x-4 justify-start">
+                            <!-- <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-twitter"></i>
+                            </a> -->
+                            <a href="https://www.facebook.com/profile.php?id=61584072508577&mibextid=rS40aB7S9Ucbxw6v" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/company/seodada/" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a href="https://www.instagram.com/seodada1?igsh=cmwxb3VueXVjbnUz" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold mb-4">Solutions</h3>
+                        <ul class="space-y-2">
+                            <li><a href="{{ url_for('url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
+                            <li><a href="{{ url_for('keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
+                            <li><a href="{{ url_for('image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
+                            <li><a href="{{ url_for('h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
+                            <li><a href="{{ url_for('meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
+                            <li><a href="{{ url_for('site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold mb-4">Resources</h3>
+                        <ul class="space-y-2">
+                            <li><a href="{{ url_for('public_blogs') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
+                            <li><a href="{{ url_for('public_webstories') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
+                            <li><a href="{{ url_for('help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="text-left">
+                        <h3 class="text-lg font-bold mb-4">Company</h3>
+                        <ul class="space-y-2">
+                            <li><a href="/about" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">About Us</a></li>
+                            <li><a href="/pricing" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Pricing</a></li>
+                            <li><a href="/contact" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-800 mt-8 lg:mt-12 pt-6 lg:pt-8 flex flex-col md:flex-row justify-between items-center text-left">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                        &copy; 2025 SEO Dada. All rights reserved.
+                    </p>
+                    <div class="flex flex-wrap justify-start gap-4">
+                        <a href="/privacy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+                        <a href="/terms" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+                        <a href="/cookie-policy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie & Policy</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <style>
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(39, 56, 121, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Scroll to Top Button Functionality
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.classList.add('visible');
+                } else {
+                    scrollToTopBtn.classList.remove('visible');
+                }
+            });
+
+            scrollToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Mobile Menu Functionality
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+            const mobileMenuClose = document.getElementById('mobileMenuClose');
+            const hamburger = document.querySelector('.hamburger');
+
+            function openMobileMenu() {
+                mobileMenu.classList.add('active');
+                mobileMenuOverlay.classList.add('active');
+                hamburger.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
+                hamburger.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            mobileMenuToggle.addEventListener('click', openMobileMenu);
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+            // Close mobile menu when clicking on navigation links
+            const mobileNavLinks = document.querySelectorAll('.mobile-menu a[href^="#"]');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            // Close mobile menu on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Mobile Services Dropdown Toggle
+            const mobileServicesToggle = document.getElementById('mobileServicesToggle');
+            const mobileServicesSubmenu = document.getElementById('mobileServicesSubmenu');
+            const mobileServicesChevron = document.getElementById('mobileServicesChevron');
+
+            if (mobileServicesToggle && mobileServicesSubmenu && mobileServicesChevron) {
+                mobileServicesToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mobileServicesSubmenu.classList.toggle('hidden');
+                    mobileServicesChevron.style.transform = mobileServicesSubmenu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                });
+
+                // Close submenu links should close mobile menu
+                const submenuLinks = mobileServicesSubmenu.querySelectorAll('a');
+                submenuLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        closeMobileMenu();
+                    });
+                });
+            }
+
+            // Initialize GSAP
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // 3D Animation with Three.js - More subtle/formal
+            const container = document.getElementById('canvas-container');
+            
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+            
+            // Create particles - reduced count for more subtle effect
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 1200; // Reduced from 2000
+            
+            const posArray = new Float32Array(particlesCount * 3);
+            const colors = new Float32Array(particlesCount * 3);
+            
+            for (let i = 0; i < particlesCount * 3; i += 3) {
+                // Position - more spread out
+                posArray[i] = (Math.random() - 0.5) * 20;
+                posArray[i + 1] = (Math.random() - 0.5) * 20;
+                posArray[i + 2] = (Math.random() - 0.5) * 20;
+                
+                // Color - updated to match new color scheme
+                colors[i] = 0.15 + Math.random() * 0.2; // R (darker blue range)
+                colors[i + 1] = 0.22 + Math.random() * 0.2; // G
+                colors[i + 2] = 0.47 + Math.random() * 0.3; // B (brighter blue range)
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.012, // Smaller particles
+                transparent: true,
+                opacity: 0.6, // More subtle
+                vertexColors: true,
+                sizeAttenuation: true
+            });
+            
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+            
+            camera.position.z = 5;
+            
+            // Animation - slower rotation for more formal/professional feel
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                particlesMesh.rotation.x += 0.0001; // Slower rotation
+                particlesMesh.rotation.y += 0.0002; // Slower rotation
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+            
+            // 3D card effect for dashboard preview - more subtle movement
+            const dashboard = document.getElementById('floating-dashboard');
+            if (dashboard) {
+                document.addEventListener('mousemove', (e) => {
+                    const xAxis = (window.innerWidth / 2 - e.pageX) / 40; // More subtle movement
+                    const yAxis = (window.innerHeight / 2 - e.pageY) / 40; // More subtle movement
+                    dashboard.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+                });
+            }
+            
+            // Initial animation for hero section
+            // Activate initial fade-in elements
+            document.querySelectorAll('.fade-in').forEach(el => {
+                el.classList.add('active');
+            });
+            
+            // Scroll animations - more formal/subtle
+            ScrollTrigger.batch('.fade-in:not(.active)', {
+                start: "top 85%",
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        opacity: 1,
+                        y: 0,
+                        stagger: 0.1,
+                        duration: 0.8,
+                        ease: "power2.out"
+                    });
+                },
+                once: true
+            });
+            
+            // Staggered animations for cards and stats
+            const staggerItems = document.querySelectorAll('.stagger-item');
+            gsap.set(staggerItems, { opacity: 0, y: 20 });
+            
+            ScrollTrigger.batch(staggerItems, {
+                start: "top 85%",
+                onEnter: batch => {
+                    gsap.to(batch, {
+                        opacity: 1, 
+                        y: 0,
+                        stagger: 0.08, // Faster stagger for more formal feel
+                        duration: 0.6, // Quicker animation
+                        ease: "power2.out"
+                    });
+                },
+                once: true
+            });
+            
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({
+                            top: target.offsetTop - 80, // Account for fixed header
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+        function updateCenterLogo() {
+            const track = document.getElementById('logoTrack');
+            const logos = track.querySelectorAll('.logo-item');
+            const carousel = document.querySelector('.logo-carousel');
+            const carouselRect = carousel.getBoundingClientRect();
+            const centerX = carouselRect.left + carouselRect.width / 2;
+            
+            let closestLogo = null;
+            let closestDistance = Infinity;
+            
+            logos.forEach(logo => {
+                const logoRect = logo.getBoundingClientRect();
+                const logoCenter = logoRect.left + logoRect.width / 2;
+                const distance = Math.abs(centerX - logoCenter);
+                
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestLogo = logo;
+                }
+                
+                // Remove center class from all logos
+                logo.classList.remove('center');
+            });
+            
+            // Add center class to the closest logo
+            if (closestLogo) {
+                closestLogo.classList.add('center');
+            }
+        }
+        
+        // Update center logo periodically
+        setInterval(updateCenterLogo, 100);
+        
+        // Initial update
+        setTimeout(updateCenterLogo, 500);
+        
+        // Update on window resize
+        window.addEventListener('resize', updateCenterLogo);
+    </script>
+    <!-- Bootstrap JS for dropdown -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

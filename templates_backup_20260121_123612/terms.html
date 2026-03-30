@@ -1,0 +1,602 @@
+{% extends "base2.html" %}
+
+{% block title %}Terms of Service | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<style>
+  /* CSS Variables from base.html */
+  :root {
+    /* Colors */
+    --primary: #273879;
+    --primary-dark: #4338ca;
+    --primary-light: #6366f1;
+    --secondary: #0f74b2;
+    --accent: #38bdf8;
+    --background: #f8fafc;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --text-muted: #9ca3af;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+
+    /* Layout Dimensions */
+    --border-radius: 0.75rem;
+    --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+  }
+
+  /* Global Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Container */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* Back to site button */
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+  }
+
+  .back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+    text-decoration: none;
+  }
+
+  .back-button:active {
+    transform: translateY(0);
+  }
+
+  /* Main content card */
+  .content-card {
+    background: var(--surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .content-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+
+  /* Header section */
+  .content-header {
+    padding: 3rem 3rem 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(14, 165, 233, 0.05));
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+
+  .page-subtitle {
+    color: var(--text-light);
+    font-size: 1.125rem;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Content body */
+  .content-body {
+    padding: 2rem 3rem 3rem;
+  }
+
+  /* Typography */
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 2.5rem 0 1rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 4rem;
+    height: 3px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+  }
+
+  .section-title:first-child {
+    margin-top: 0;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    color: var(--text);
+    font-size: 1rem;
+  }
+
+  /* Enhanced info boxes */
+  .info-box {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(14, 165, 233, 0.05));
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .info-box::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+  }
+
+  .info-box-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info-box li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text);
+  }
+
+  .info-box li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.75rem;
+    width: 6px;
+    height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+  }
+
+  /* Alert boxes */
+  .alert-box {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .alert-box.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .alert-box.info {
+    background: rgba(14, 165, 233, 0.1);
+    border-color: rgba(14, 165, 233, 0.3);
+  }
+
+  .alert-box.danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+  }
+
+  .alert-icon {
+    font-size: 1.25rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+  }
+
+  .alert-icon.success {
+    color: var(--success);
+  }
+
+  .alert-icon.warning {
+    color: var(--warning);
+  }
+
+  .alert-icon.info {
+    color: var(--secondary);
+  }
+
+  .alert-icon.danger {
+    color: var(--danger);
+  }
+
+  .alert-content h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  .alert-content p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  /* Restriction box */
+  .restriction-box {
+    background: rgba(239, 68, 68, 0.05);
+    border: 2px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .restriction-box h3 {
+    color: var(--danger);
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .restriction-box ul {
+    margin-left: 1.5rem;
+    margin-bottom: 0;
+  }
+
+  .restriction-box li {
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+
+  /* Last updated */
+  .last-updated {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin-left: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Strong text emphasis */
+  strong {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* Contact notice */
+  .contact-notice {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(14, 165, 233, 0.02));
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: center;
+    color: var(--text-light);
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .content-header {
+      padding: 2rem 1.5rem 1.5rem;
+    }
+
+    .content-body {
+      padding: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .info-box,
+    .restriction-box,
+    .contact-notice {
+      padding: 1.5rem;
+    }
+
+    .back-button {
+      padding: 0.625rem 1.25rem;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: 1.75rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+    }
+
+    .info-box,
+    .alert-box,
+    .restriction-box,
+    .contact-notice {
+      padding: 1rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+  <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+    <!-- Header Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+      <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-4">Terms of Service</h1>
+        <p class="text-lg text-white/90">
+          This Terms and Conditions of Use ("Agreement") is entered into between you (either as an individual user or as an authorized representative of an organization) and Fourth Dimension SEO Dada ("Company", "we", "us", or "our"), and governs your access to and use of our services.
+        </p>
+      </div>
+
+      <!-- Content -->
+      <div class="p-8 sm:p-12">
+        <p>
+          By accessing or using Fourth Dimension SEO Dada, you acknowledge that you have read, understood, and agree to be bound by the terms of this Agreement. If you do not agree, you should not use the Service.
+        </p>
+
+        <!-- Key Definitions -->
+        <div class="bg-blue-50 border-l-4 border-primary rounded-lg p-6 mb-8">
+          <h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-3">
+            <i class="fas fa-book"></i>
+            Key Definitions
+          </h2>
+          <ul class="space-y-2 text-gray-700">
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check text-primary mt-1"></i>
+              <span><strong>Account:</strong> Your registered access to Fourth Dimension SEO Dada Services</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check text-primary mt-1"></i>
+              <span><strong>User:</strong> Any individual or entity accessing or using the Service</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check text-primary mt-1"></i>
+              <span><strong>Audit:</strong> Any scan or analysis initiated using Fourth Dimension SEO Dada</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fas fa-check text-primary mt-1"></i>
+              <span><strong>Content:</strong> Data input, scanned, or otherwise processed using Fourth Dimension SEO Dada</span>
+            </li>
+          </ul>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+          <i class="fas fa-server text-primary"></i>
+          Description of Service
+        </h2>
+        <p>
+          Fourth Dimension SEO Dada is a real-time SEO clarity tool that allows users to analyze publicly accessible webpages. It provides insights into keyword usage, heading hierarchy, metadata presence, image alt attributes, link structure, and sitemap connections. The Service is designed to support users in planning, auditing, and optimizing content strategy and technical structure.
+        </p>
+
+        <h2 class="section-title">Eligibility</h2>
+        <p>
+          To use the Service, you must be:
+        </p>
+        <ol>
+          <li>At least 18 years of age or the legal age of majority in your jurisdiction</li>
+          <li>Legally capable of entering into a binding agreement</li>
+          <li>Providing accurate, truthful account information</li>
+        </ol>
+        <p>
+          If you are using the Service on behalf of an organization, you represent and warrant that you have the authority to bind that entity to this Agreement.
+        </p>
+
+        <h2 class="section-title">Account Registration and Security</h2>
+        <p>
+          You must register for an account to use Fourth Dimension SEO Dada. You agree to:
+        </p>
+        <ol>
+          <li>Provide accurate and complete information during sign-up</li>
+          <li>Maintain the security of your login credentials</li>
+          <li>Accept full responsibility for all activities under your account</li>
+        </ol>
+        <p>
+          You must not share your login credentials or allow others to access your account unless authorized through a team or agency plan.
+        </p>
+
+        <h2 class="section-title">Acceptable Use</h2>
+        <div class="restriction-box">
+          <h3>By using Fourth Dimension SEO Dada, you agree NOT to:</h3>
+          <ul>
+            <li>Scan or attempt to scan websites you do not have the right to access</li>
+            <li>Use the Service to bypass robots.txt or similar restrictions</li>
+            <li>Reproduce, resell, or commercially redistribute audit outputs unless permitted</li>
+            <li>Reverse-engineer, duplicate, or clone the Fourth Dimension SEO Dada platform</li>
+            <li>Introduce malware, interfere with systems, or disrupt the Service</li>
+            <li>Misrepresent your identity or relationship to scanned websites</li>
+          </ul>
+        </div>
+
+        <h2 class="section-title">Subscriptions and Payment</h2>
+        <p>
+          Fourth Dimension SEO Dada offers multiple subscription plans. By subscribing to a paid plan, you agree to:
+        </p>
+        <ol>
+          <li>Pay all fees associated with your selected plan</li>
+          <li>Allow automatic billing at the start of each billing cycle unless canceled in advance</li>
+          <li>Pay applicable taxes</li>
+        </ol>
+        <p>
+          You are responsible for updating your billing information.
+        </p>
+
+        <h2 class="section-title">Data Privacy</h2>
+        <p>
+          Your use of the Service is also governed by our Privacy Policy. Key points:
+        </p>
+        <ol>
+          <li>We do not store full-page content beyond the scope of each audit</li>
+          <li>We do not sell or share your data with third-party advertisers</li>
+          <li>You retain ownership of your scanned URLs and audit reports</li>
+        </ol>
+        <p>
+          You may request deletion of your account and associated data at any time.
+        </p>
+
+        <h2 class="section-title">Intellectual Property</h2>
+        <p>
+          All rights, title, and interest in Fourth Dimension SEO Dada, including software, interface, visual elements, logic, and brand assets, are the exclusive property of Fourth Dimension SEO Dada. You may not:
+        </p>
+        <ul>
+          <li>Copy, reproduce, or adapt any part of the platform</li>
+          <li>Claim ownership over generated reports</li>
+          <li>Use Fourth Dimension SEO Dada's name, logo, or branding without written permission</li>
+        </ul>
+
+        <h2 class="section-title">Termination</h2>
+        <p>
+          You may terminate your account at any time through the dashboard or by contacting support. We may terminate or suspend your account if:
+        </p>
+        <ul>
+          <li>You breach any provision of this Agreement</li>
+          <li>Your use creates risk to other users or the system</li>
+          <li>As required by law</li>
+        </ul>
+        <p>
+          Upon termination, your access will be revoked and stored data may be deleted.
+        </p>
+
+        <h2 class="section-title">Disclaimers</h2>
+        <p>
+          Fourth Dimension SEO Dada is provided on an "as is" and "as available" basis. We make no guarantees regarding:
+        </p>
+        <ul>
+          <li>SEO rankings, traffic, or visibility outcomes</li>
+          <li>Platform compatibility with all CMS or web systems</li>
+          <li>Uptime or error-free operation</li>
+        </ul>
+        <p>
+          You acknowledge that insights provided are based on live data and public structures, and may change as websites are updated.
+        </p>
+
+        <h2 class="section-title">Limitation of Liability</h2>
+        <p>
+          To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages, including:
+        </p>
+        <ul>
+          <li>Loss of revenue or business opportunities</li>
+          <li>Damaged reputation or client relations</li>
+          <li>Data loss or inaccurate insights</li>
+        </ul>
+        <p>
+          In all cases, our total liability shall not exceed the amount you have paid to Fourth Dimension SEO Dada in the previous twelve (12) months.
+        </p>
+
+        <h2 class="section-title">Governing Law</h2>
+        <p>
+          This Agreement shall be governed by applicable laws. Any disputes shall be subject to the appropriate jurisdiction of competent courts.
+        </p>
+
+        <h2 class="section-title">Changes to Terms</h2>
+        <p>
+          We may update this Agreement to reflect changes in law, platform features, or internal policies. You will be notified of material changes by email or via the platform. Continued use of the Service after such changes constitutes acceptance.
+        </p>
+
+        <div class="alert-box warning">
+          <i class="alert-icon warning fas fa-exclamation-triangle"></i>
+          <div class="alert-content">
+            <h3>Important Note</h3>
+            <p>By using our services, you acknowledge that you have read and understood these Terms of Service and agree to be bound by them. We reserve the right to suspend or terminate accounts that engage in prohibited activity.</p>
+          </div>
+        </div>
+
+        <div class="contact-notice">
+          <p>For questions regarding these Terms, please contact our support team.</p>
+          <a href="mailto:support@seodada.com" class="contact-email" style="color: #273879;">
+            <i class="fas fa-envelope"></i>
+            support@seodada.com
+          </a>
+        </div>
+
+        <!-- Last updated -->
+        <div class="last-updated">
+          <p>Last Updated: June 12, 2025</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Page-specific JavaScript (if needed in the future) -->
+{% endblock %}

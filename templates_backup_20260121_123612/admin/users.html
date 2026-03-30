@@ -1,0 +1,1152 @@
+
+{% extends "admin/base.html" %}
+
+{% block title %}User Management{% endblock %}
+
+{% block page_title %}
+User Management
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-start mb-3">
+    <button type="button" class="btn btn-primary d-none d-lg-inline-block" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="fas fa-user-plus me-1"></i> Add New User
+    </button>
+    <button type="button" class="btn btn-primary w-100 d-lg-none" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="fas fa-user-plus me-1"></i> Add User
+    </button>
+</div>
+
+<div class="row dashboard-stats-row">
+    <!-- Statistics Cards -->
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-users">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Total Users</div>
+                    <div class="stat-value">{{ "{:,}".format(total_users) }}</div>
+                    <div class="stat-desc">Registered accounts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-subscriptions">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Active Users</div>
+                    <div class="stat-value">{{ "{:,}".format(active_users) }}</div>
+                    <div class="stat-desc">Email confirmed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-expiring">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Unconfirmed Users</div>
+                    <div class="stat-value">{{ "{:,}".format(unconfirmed_users) }}</div>
+                    <div class="stat-desc">Pending verification</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+        <div class="stat-card">
+            <div class="stat-card-body">
+                <div class="icon icon-revenue">
+                    <i class="fas fa-crown"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-title">Subscribers</div>
+                    <div class="stat-value">{{ "{:,}".format(users_with_active_subscriptions) }}</div>
+                    <div class="stat-desc">Active subscriptions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-header bg-transparent border-0">
+            <h5 class="card-title mb-0">Filter & Search Users</h5>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ url_for('admin_users') }}" class="row align-items-end">
+                <div class="col-lg-3 col-md-6 mb-3">
+                    <label for="status" class="form-label">User Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Users</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active (Confirmed)</option>
+                        <option value="unconfirmed" {% if status_filter == 'unconfirmed' %}selected{% endif %}>Unconfirmed</option>
+                        <option value="admin" {% if status_filter == 'admin' %}selected{% endif %}>Administrators</option>
+                    </select>
+                </div>
+                <div class="col-lg-6 col-md-6 mb-3">
+                    <label for="search" class="form-label">Search</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" name="search" id="search" class="form-control" 
+                               placeholder="Search by name or email..." 
+                               value="{{ search_query }}">
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-12 mb-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-0 d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
+            <h5 class="card-title mb-0">
+                Users List
+                {% if status_filter != 'all' or search_query %}
+                <span class="badge bg-primary ms-2">Filtered</span>
+                {% endif %}
+            </h5>
+            <div class="text-muted">
+                Showing {{ users|length }} of {{ pagination.total }} users
+            </div>
+        </div>
+        <div class="card-body p-0">
+            {% if users %}
+            <!-- Desktop Table View -->
+            <div class="desktop-table-view">
+                <div style="overflow-x: auto; max-width: 100%;">
+                    <table class="table table-hover align-middle mb-0" style="min-width: 1000px;">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Joined</th>
+                                <th>Account Status</th>
+                                <th>Subscription</th>
+                                <th>Role</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td><span class="fw-medium">#{{ user.id }}</span></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-circle bg-primary-subtle text-primary me-2">
+                                            {{ user.name[:1]|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">{{ user.name }}</div>
+                                            <div class="small text-muted">
+                                                {% if user.is_admin %}
+                                                    <i class="fas fa-shield-alt text-warning"></i> Administrator
+                                                {% else %}
+                                                    <i class="fas fa-user text-muted"></i> Regular User
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>{{ user.company_email }}</div>
+                                    <div class="small text-muted">
+                                        {% if user.email_confirmed %}
+                                            <i class="fas fa-check-circle text-success"></i> Verified
+                                        {% else %}
+                                            <i class="fas fa-clock text-warning"></i> Unverified
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>{{ user.created_at.strftime('%d %b %Y') }}</div>
+                                    <div class="small text-muted">{{ user.created_at.strftime('%I:%M %p') }}</div>
+                                </td>
+                                <td>
+                                    {% set user_status, badge_class, icon_class = get_user_status_display(user) %}
+                                    <span class="badge {{ badge_class }}">
+                                        <i class="{{ icon_class }} me-1"></i>{{ user_status }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if user.id in user_subscriptions and user_subscriptions[user.id] %}
+                                        {% set sub_user, subscription = user_subscriptions[user.id] %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-crown me-1"></i>{{ subscription.plan }}
+                                        </span>
+                                        <div class="small text-muted">
+                                            Expires: {{ sub_user.end_date.strftime('%d %b %Y') }}
+                                        </div>
+                                    {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="fas fa-times me-1"></i>No Active Plan
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if user.is_admin %}
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fas fa-shield-alt me-1"></i>Admin
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">
+                                            <i class="fas fa-user me-1"></i>User
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ url_for('admin_user_details', user_id=user.id) }}">
+                                                    <i class="fas fa-eye me-2 text-primary"></i> View Details
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">
+                                                    <i class="fas fa-edit me-2 text-success"></i> Edit User
+                                                </button>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}">
+                                                    <i class="fas fa-trash me-2"></i> Delete User
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Card View -->
+            <div class="mobile-card-view">
+                {% for user in users %}
+                <div class="mobile-data-card">
+                    <div class="card-header-mobile">
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <div class="avatar-circle bg-primary-subtle text-primary me-3">
+                                {{ user.name[:1]|upper }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-medium">{{ user.name }}</div>
+                                <div class="small text-muted">{{ user.company_email }}</div>
+                                <div class="small">
+                                    {% if user.email_confirmed %}
+                                        <i class="fas fa-check-circle text-success"></i> Verified
+                                    {% else %}
+                                        <i class="fas fa-clock text-warning"></i> Unverified
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <div class="small text-muted">#{{ user.id }}</div>
+                            {% if user.is_admin %}
+                                <span class="badge bg-warning text-dark">Admin</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">User</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-body-mobile">
+                        <div class="data-label">Joined:</div>
+                        <div class="data-value">{{ user.created_at.strftime('%d %b %Y') }}</div>
+                        
+                        <div class="data-label">Subscription:</div>
+                        <div class="data-value">
+                            {% if user.id in user_subscriptions and user_subscriptions[user.id] %}
+                                {% set sub_user, subscription = user_subscriptions[user.id] %}
+                                <span class="badge bg-success">{{ subscription.plan }}</span>
+                                <div class="small text-muted">Expires: {{ sub_user.end_date.strftime('%d %b %Y') }}</div>
+                            {% else %}
+                                <span class="badge bg-secondary">No Active Plan</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions-mobile">
+                        <a href="{{ url_for('admin_user_details', user_id=user.id) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <button class="btn btn-sm btn-outline-success flex-fill" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <div class="dropdown flex-fill">
+                            <button class="btn btn-sm btn-outline-secondary w-100 dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-h"></i> More
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li>
+                                    <button class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteUserModal{{ user.id }}">
+                                        <i class="fas fa-trash me-2"></i> Delete User
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h5>No users found</h5>
+                <p class="text-muted">Try adjusting your search or filter criteria</p>
+                <a href="{{ url_for('admin_users') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-redo me-1"></i> Reset Filters
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if users and pagination.pages > 1 %}
+        <div class="card-footer bg-transparent d-flex flex-column flex-lg-row justify-content-between align-items-center gap-3">
+            <div class="text-muted">
+                Showing {{ pagination.per_page * (pagination.page - 1) + 1 }} to 
+                {{ pagination.per_page * (pagination.page - 1) + users|length }} 
+                of {{ "{:,}".format(pagination.total) }} users
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm mb-0 flex-wrap">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin_users', page=pagination.prev_num, status=status_filter, search=search_query) if pagination.has_prev else '#' }}">
+                            <i class="fas fa-chevron-left"></i>
+                            <span class="d-none d-sm-inline ms-1">Previous</span>
+                        </a>
+                    </li>
+                    
+                    {% for page_num in pagination.iter_pages() %}
+                        {% if page_num %}
+                            {% if page_num != pagination.page %}
+                                <li class="page-item d-none d-md-block">
+                                    <a class="page-link" href="{{ url_for('admin_users', page=page_num, status=status_filter, search=search_query) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ page_num }}</span>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <li class="page-item disabled d-none d-md-block">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin_users', page=pagination.next_num, status=status_filter, search=search_query) if pagination.has_next else '#' }}">
+                            <span class="d-none d-sm-inline me-1">Next</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add User Modal with Live Validation -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">
+                    <i class="fas fa-user-plus me-2"></i>Add New User
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin_add_user') }}" method="POST" id="addUserForm" novalidate>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="modal-body">
+                    <!-- Form Validation Status -->
+                    <div id="formValidationStatus" class="alert alert-info d-none mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="spinner-border spinner-border-sm me-2" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <span>Validating form...</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Full Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="addName" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="addName" name="name" required 
+                                   minlength="2" maxlength="100" autocomplete="name">
+                            <div class="valid-feedback">
+                                <i class="fas fa-check-circle me-1"></i>Name looks good!
+                            </div>
+                            <div class="invalid-feedback" id="addNameError">
+                                Name must be between 2-100 characters and contain only letters and spaces.
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <span id="nameCharCount">0</span>/100 characters
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="col-md-6 mb-3">
+                            <label for="addEmail" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="addEmail" name="company_email" required 
+                                   maxlength="255" autocomplete="email">
+                            <div class="valid-feedback">
+                                <i class="fas fa-check-circle me-1"></i>Email format is valid!
+                            </div>
+                            <div class="invalid-feedback" id="addEmailError">
+                                Please enter a valid email address.
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">
+                                    <span id="emailStatus">Enter a valid email address</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Password -->
+                        <div class="col-md-6 mb-3">
+                            <label for="addPassword" class="form-label">Password *</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="addPassword" name="password" required 
+                                       minlength="8" maxlength="128" autocomplete="new-password">
+                                <button class="btn btn-outline-secondary" type="button" id="toggleAddPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="valid-feedback">
+                                <i class="fas fa-check-circle me-1"></i>Strong password!
+                            </div>
+                            <div class="invalid-feedback" id="addPasswordError">
+                                Password must meet all requirements.
+                            </div>
+                            
+                            <!-- Password Strength Indicator -->
+                            <div class="password-strength mt-2">
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" role="progressbar" id="passwordStrengthBar"></div>
+                                </div>
+                                <small class="text-muted" id="passwordStrengthText">Enter password to see strength</small>
+                            </div>
+
+                            <!-- Password Requirements -->
+                            <div class="password-requirements mt-2">
+                                <small class="text-muted d-block">Password must contain:</small>
+                                <div class="requirements-list">
+                                    <small class="requirement" id="req-length">
+                                        <i class="fas fa-times text-danger me-1"></i>At least 8 characters
+                                    </small>
+                                    <small class="requirement" id="req-uppercase">
+                                        <i class="fas fa-times text-danger me-1"></i>One uppercase letter
+                                    </small>
+                                    <small class="requirement" id="req-lowercase">
+                                        <i class="fas fa-times text-danger me-1"></i>One lowercase letter
+                                    </small>
+                                    <small class="requirement" id="req-number">
+                                        <i class="fas fa-times text-danger me-1"></i>One number
+                                    </small>
+                                    <small class="requirement" id="req-special">
+                                        <i class="fas fa-times text-danger me-1"></i>One special character
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="col-md-6 mb-3">
+                            <label for="addPasswordConfirm" class="form-label">Confirm Password *</label>
+                            <input type="password" class="form-control" id="addPasswordConfirm" name="password_confirm" required>
+                            <div class="valid-feedback">
+                                <i class="fas fa-check-circle me-1"></i>Passwords match!
+                            </div>
+                            <div class="invalid-feedback" id="addPasswordConfirmError">
+                                Passwords do not match.
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted" id="confirmPasswordStatus">
+                                    Re-enter the password above
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Account Settings -->
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="addEmailConfirmed" name="email_confirmed" checked>
+                                <label class="form-check-label" for="addEmailConfirmed">
+                                    <i class="fas fa-envelope-check me-1"></i>Email Confirmed (Active Account)
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">User can login immediately</small>
+                            </div>
+                        </div>
+
+                        <!-- <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="addIsAdmin" name="is_admin">
+                                <label class="form-check-label" for="addIsAdmin">
+                                    <i class="fas fa-shield-alt me-1"></i>Administrator Privileges
+                                </label>
+                            </div>
+                            <div class="form-text">
+                                <small class="text-muted">Grant admin access to dashboard</small>
+                            </div>
+                        </div>-->
+                    </div> 
+
+                    <!-- Overall Form Status -->
+                    <div class="form-status mt-3">
+                        <div class="alert alert-warning d-none" id="formWarning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span id="formWarningText">Please fix the errors above</span>
+                        </div>
+                        <div class="alert alert-success d-none" id="formSuccess">
+                            <i class="fas fa-check-circle me-2"></i>
+                            All fields are valid! Ready to create user.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="addUserSubmitBtn" disabled>
+                        <i class="fas fa-user-plus me-1"></i> Add User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit/Delete modals would go here - keeping original structure -->
+{% for user in users %}
+<!-- Edit User Modal -->
+<div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1" aria-labelledby="editUserModalLabel{{ user.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel{{ user.id }}">
+                    <i class="fas fa-user-edit me-2"></i>Edit User: {{ user.name }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('admin_edit_user', user_id=user.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="editName{{ user.id }}" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" id="editName{{ user.id }}" name="name" value="{{ user.name }}" required minlength="2" maxlength="100">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="editEmail{{ user.id }}" class="form-label">Email Address *</label>
+                            <input type="email" class="form-control" id="editEmail{{ user.id }}" name="company_email" value="{{ user.company_email }}" required maxlength="255">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPassword{{ user.id }}" class="form-label">New Password (leave blank to keep current)</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="editPassword{{ user.id }}" name="password" minlength="8" maxlength="128">
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('editPassword{{ user.id }}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Only enter if you want to change the password</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editEmailConfirmed{{ user.id }}" name="email_confirmed" {% if user.email_confirmed %}checked{% endif %}>
+                                <label class="form-check-label" for="editEmailConfirmed{{ user.id }}">
+                                    Email Confirmed (Active Account)
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editIsAdmin{{ user.id }}" name="is_admin" {% if user.is_admin %}checked{% endif %}>
+                                <label class="form-check-label" for="editIsAdmin{{ user.id }}">
+                                    Administrator Privileges
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteUserModalLabel{{ user.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel{{ user.id }}">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Confirm User Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-user-times fa-4x text-danger mb-3"></i>
+                    <h5>Delete User: {{ user.name }}?</h5>
+                    <p class="text-muted">Email: {{ user.company_email }}</p>
+                    
+                    {% if user.id in user_subscriptions and user_subscriptions[user.id] %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This user has active subscriptions. You must cancel their subscriptions before deleting the user account.
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning:</strong> This action cannot be undone. All user data including search history and payment records will be permanently deleted.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('remove_user', user_id=user.id) }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <button type="submit" class="btn btn-danger" {% if user.id in user_subscriptions and user_subscriptions[user.id] %}disabled{% endif %}>
+                        <i class="fas fa-trash me-1"></i> Delete User
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get form elements
+    const addUserForm = document.getElementById('addUserForm');
+    const nameInput = document.getElementById('addName');
+    const emailInput = document.getElementById('addEmail');
+    const passwordInput = document.getElementById('addPassword');
+    const confirmPasswordInput = document.getElementById('addPasswordConfirm');
+    const submitBtn = document.getElementById('addUserSubmitBtn');
+
+    // Validation state
+    let validation = {
+        name: false,
+        email: false,
+        password: false,
+        confirmPassword: false
+    };
+
+    // Live validation for name
+    nameInput.addEventListener('input', function() {
+        const value = this.value.trim();
+        const charCount = document.getElementById('nameCharCount');
+        charCount.textContent = value.length;
+
+        if (value.length === 0) {
+            setFieldState(this, 'neutral');
+            validation.name = false;
+        } else if (value.length < 2) {
+            setFieldState(this, 'invalid', 'Name must be at least 2 characters');
+            validation.name = false;
+        } else if (value.length > 100) {
+            setFieldState(this, 'invalid', 'Name cannot exceed 100 characters');
+            validation.name = false;
+        } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+            setFieldState(this, 'invalid', 'Name can only contain letters and spaces');
+            validation.name = false;
+        } else {
+            setFieldState(this, 'valid');
+            validation.name = true;
+        }
+        updateFormState();
+    });
+
+    // Live validation for email
+    emailInput.addEventListener('input', function() {
+        const value = this.value.trim();
+        const emailStatus = document.getElementById('emailStatus');
+        
+        if (value.length === 0) {
+            setFieldState(this, 'neutral');
+            emailStatus.textContent = 'Enter a valid email address';
+            validation.email = false;
+        } else if (!isValidEmail(value)) {
+            setFieldState(this, 'invalid', 'Please enter a valid email address');
+            emailStatus.textContent = 'Invalid email format';
+            validation.email = false;
+        } else if (value.length > 255) {
+            setFieldState(this, 'invalid', 'Email cannot exceed 255 characters');
+            emailStatus.textContent = 'Email too long';
+            validation.email = false;
+        } else {
+            setFieldState(this, 'valid');
+            emailStatus.textContent = 'Email format is valid';
+            validation.email = true;
+        }
+        updateFormState();
+    });
+
+    // Live validation for password
+    passwordInput.addEventListener('input', function() {
+        const value = this.value;
+        const strength = checkPasswordStrength(value);
+        
+        updatePasswordStrength(strength);
+        updatePasswordRequirements(value);
+
+        if (value.length === 0) {
+            setFieldState(this, 'neutral');
+            validation.password = false;
+        } else if (strength.score < 4) {
+            setFieldState(this, 'invalid', 'Password must meet all requirements');
+            validation.password = false;
+        } else {
+            setFieldState(this, 'valid');
+            validation.password = true;
+        }
+
+        // Also check confirm password if it has a value
+        if (confirmPasswordInput.value) {
+            validateConfirmPassword();
+        }
+        updateFormState();
+    });
+
+    // Live validation for confirm password
+    confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+
+    function validateConfirmPassword() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        const confirmStatus = document.getElementById('confirmPasswordStatus');
+
+        if (confirmPassword.length === 0) {
+            setFieldState(confirmPasswordInput, 'neutral');
+            confirmStatus.textContent = 'Re-enter the password above';
+            validation.confirmPassword = false;
+        } else if (password !== confirmPassword) {
+            setFieldState(confirmPasswordInput, 'invalid', 'Passwords do not match');
+            confirmStatus.textContent = 'Passwords do not match';
+            validation.confirmPassword = false;
+        } else {
+            setFieldState(confirmPasswordInput, 'valid');
+            confirmStatus.textContent = 'Passwords match!';
+            validation.confirmPassword = true;
+        }
+        updateFormState();
+    }
+
+    // Password strength checking
+    function checkPasswordStrength(password) {
+        let score = 0;
+        const checks = {
+            length: password.length >= 8,
+            uppercase: /[A-Z]/.test(password),
+            lowercase: /[a-z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        Object.values(checks).forEach(check => {
+            if (check) score++;
+        });
+
+        return { score, checks };
+    }
+
+    // Update password strength bar
+    function updatePasswordStrength(strength) {
+        const bar = document.getElementById('passwordStrengthBar');
+        const text = document.getElementById('passwordStrengthText');
+        
+        const percentage = (strength.score / 5) * 100;
+        bar.style.width = `${percentage}%`;
+
+        if (strength.score === 0) {
+            bar.className = 'progress-bar bg-secondary';
+            text.textContent = 'Enter password to see strength';
+        } else if (strength.score <= 2) {
+            bar.className = 'progress-bar bg-danger';
+            text.textContent = 'Weak password';
+        } else if (strength.score <= 3) {
+            bar.className = 'progress-bar bg-warning';
+            text.textContent = 'Fair password';
+        } else if (strength.score <= 4) {
+            bar.className = 'progress-bar bg-info';
+            text.textContent = 'Good password';
+        } else {
+            bar.className = 'progress-bar bg-success';
+            text.textContent = 'Strong password';
+        }
+    }
+
+    // Update password requirements display
+    function updatePasswordRequirements(password) {
+        const requirements = {
+            'req-length': password.length >= 8,
+            'req-uppercase': /[A-Z]/.test(password),
+            'req-lowercase': /[a-z]/.test(password),
+            'req-number': /\d/.test(password),
+            'req-special': /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        };
+
+        Object.entries(requirements).forEach(([id, met]) => {
+            const element = document.getElementById(id);
+            const icon = element.querySelector('i');
+            
+            if (met) {
+                icon.className = 'fas fa-check text-success me-1';
+                element.classList.remove('text-muted');
+                element.classList.add('text-success');
+            } else {
+                icon.className = 'fas fa-times text-danger me-1';
+                element.classList.remove('text-success');
+                element.classList.add('text-muted');
+            }
+        });
+    }
+
+    // Set field validation state
+    function setFieldState(field, state, message = '') {
+        field.classList.remove('is-valid', 'is-invalid');
+        
+        if (state === 'valid') {
+            field.classList.add('is-valid');
+        } else if (state === 'invalid') {
+            field.classList.add('is-invalid');
+            if (message) {
+                const errorElement = document.getElementById(field.id + 'Error');
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+            }
+        }
+    }
+
+    // Update overall form state
+    function updateFormState() {
+        const allValid = Object.values(validation).every(v => v);
+        const hasErrors = Object.values(validation).some(v => v === false && hasValue());
+        
+        submitBtn.disabled = !allValid;
+        
+        const formWarning = document.getElementById('formWarning');
+        const formSuccess = document.getElementById('formSuccess');
+        
+        if (allValid) {
+            formWarning.classList.add('d-none');
+            formSuccess.classList.remove('d-none');
+            submitBtn.classList.remove('btn-secondary');
+            submitBtn.classList.add('btn-primary');
+        } else if (hasErrors) {
+            formSuccess.classList.add('d-none');
+            formWarning.classList.remove('d-none');
+            submitBtn.classList.remove('btn-primary');
+            submitBtn.classList.add('btn-secondary');
+        } else {
+            formWarning.classList.add('d-none');
+            formSuccess.classList.add('d-none');
+        }
+    }
+
+    function hasValue() {
+        return nameInput.value.trim() || emailInput.value.trim() || 
+               passwordInput.value || confirmPasswordInput.value;
+    }
+
+    // Email validation helper
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    // Password toggle functionality
+    document.getElementById('toggleAddPassword').addEventListener('click', function() {
+        togglePassword('addPassword');
+    });
+
+    // Form submission
+    addUserForm.addEventListener('submit', function(e) {
+        // Final validation check
+        const allValid = Object.values(validation).every(v => v);
+        
+        if (!allValid) {
+            e.preventDefault();
+            alert('Please fix all validation errors before submitting.');
+            return false;
+        }
+
+        // Add loading state to submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Creating User...';
+    });
+
+    // Reset form when modal is hidden
+    document.getElementById('addUserModal').addEventListener('hidden.bs.modal', function() {
+        addUserForm.reset();
+        
+        // Reset all validation states
+        validation = {
+            name: false,
+            email: false,
+            password: false,
+            confirmPassword: false
+        };
+        
+        // Reset field states
+        [nameInput, emailInput, passwordInput, confirmPasswordInput].forEach(field => {
+            setFieldState(field, 'neutral');
+        });
+        
+        // Reset counters and status
+        document.getElementById('nameCharCount').textContent = '0';
+        document.getElementById('emailStatus').textContent = 'Enter a valid email address';
+        document.getElementById('confirmPasswordStatus').textContent = 'Re-enter the password above';
+        
+        // Reset password strength
+        updatePasswordStrength({ score: 0 });
+        updatePasswordRequirements('');
+        
+        // Reset form state
+        updateFormState();
+        
+        // Reset submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-user-plus me-1"></i> Add User';
+        submitBtn.classList.remove('btn-secondary');
+        submitBtn.classList.add('btn-primary');
+    });
+});
+
+// Global toggle password function for edit modals
+function togglePassword(inputId) {
+    const input = document.getElementById(inputId);
+    const button = input.nextElementSibling;
+    const icon = button.querySelector('i');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Card animations
+const cards = document.querySelectorAll('.card, .mobile-data-card');
+cards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    
+    setTimeout(() => {
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+    }, 100 + (index * 50));
+});
+</script>
+
+<style>
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.icon-wrapper {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Password Requirements Styling */
+.password-requirements {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    border: 1px solid #e9ecef;
+}
+
+.requirements-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+.requirement {
+    display: flex;
+    align-items: center;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.requirement.text-success {
+    font-weight: 500;
+}
+
+/* Form validation enhancements */
+.form-control.is-valid {
+    border-color: #198754;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.94-.94 1.44 1.44.94-.94-1.44-1.44-.94-.94L6.2 3.87l1.44 1.44.94-.94L7.64 3.43 6.2 2l-.94.94L3.82 4.38l-.94-.94L2 3.43z'/%3e%3c/svg%3e");
+}
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 5.8 4.4 4.4m0-4.4-4.4 4.4'/%3e%3c/svg%3e");
+}
+
+/* Password strength bar animations */
+.progress-bar {
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Loading states */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.65;
+}
+
+/* Mobile improvements */
+@media (max-width: 768px) {
+    .requirements-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .icon-wrapper {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .icon-wrapper i {
+        font-size: 1.5rem !important;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .card-actions-mobile {
+        gap: 0.5rem;
+    }
+    
+    .pagination {
+        font-size: 0.875rem;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .card-actions-mobile {
+        flex-direction: column;
+    }
+    
+    .card-actions-mobile .btn,
+    .card-actions-mobile .dropdown {
+        width: 100%;
+    }
+    
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .form-control,
+    .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .password-requirements {
+        padding: 0.5rem;
+    }
+}
+</style>
+{% endblock %}

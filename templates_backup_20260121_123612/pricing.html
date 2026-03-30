@@ -1,0 +1,207 @@
+{% extends "base2.html" %}
+
+{% block title %}Pricing | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* Main content spacing */
+    .main-content {
+        padding-top: 8rem;
+        padding-bottom: 6rem;
+    }
+
+    /* Card styles matching base.html */
+    .plan-card {
+        background: #ffffff;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .plan-card:hover {
+        transform: translateY(-0.3125rem);
+        box-shadow: 0 10px 25px rgba(39, 56, 121, 0.15);
+    }
+
+    /* Gradient header matching base.html */
+    .gradient-header {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        color: white;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    /* Subscribe button - scoped to avoid conflicts */
+    .subscribe-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        text-decoration: none;
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        color: white;
+        width: 100%;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.05);
+    }
+
+    .subscribe-btn:hover {
+        background: linear-gradient(135deg, #1e2a5a 0%, #0c5a8b 100%);
+        transform: translateY(-0.1875rem);
+        box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+        color: white;
+    }
+
+    /* Price gradient text */
+    .price-gradient {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Popular ribbon container */
+    .popular-ribbon-container {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 110px;
+        height: 110px;
+        overflow: hidden;
+        z-index: 10;
+    }
+
+    /* Popular ribbon */
+    .popular-ribbon {
+        position: absolute;
+        top: 22px;
+        right: -32px;
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        color: white;
+        font-weight: bold;
+        padding: 6px 40px;
+        font-size: 0.7rem;
+        transform: rotate(45deg);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .main-content {
+            padding-top: 6rem;
+            padding-bottom: 4rem;
+        }
+
+        .gradient-header h3 {
+            font-size: 1.125rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .main-content {
+            padding-top: 5rem;
+            padding-bottom: 3rem;
+        }
+
+        .plan-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+        <!-- Available Plans Section -->
+        <div class="mb-8" id="available-plans">
+            <div class="plan-card">
+                <div class="gradient-header">
+                    <h3 class="text-lg sm:text-xl font-semibold text-white">
+                        <i class="fas fa-tags mr-2"></i> Available Plans
+                    </h3>
+                </div>
+                <div class="p-4 sm:p-6">
+                    {% if subscriptions %}
+                        <div class="mb-6">
+                            <!-- Grid View - Responsive -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                {% for plan in subscriptions %}
+                                    <div class="plan-card h-full relative border border-gray-200">
+                                        {% if loop.index == 2 %}
+                                            <div class="popular-ribbon-container">
+                                                <span class="popular-ribbon">POPULAR</span>
+                                            </div>
+                                        {% endif %}
+                                        <div class="text-center p-4 sm:p-5 border-b border-gray-200">
+                                            <h4 class="font-bold text-lg sm:text-xl">{{ plan.plan }}</h4>
+                                        </div>
+                                        <div class="p-5 sm:p-6">
+                                            <div class="text-center mb-5 sm:mb-6">
+                                                <h3 class="price-gradient text-2xl sm:text-3xl font-bold">₹{{ plan.price }}</h3>
+                                                <p class="text-gray-500 text-sm sm:text-base mt-1">for {{ plan.days }} days</p>
+                                            </div>
+
+                                            <ul class="space-y-3 mb-6 sm:mb-8">
+                                                {% if plan.usage_per_day and plan.usage_per_day > 0 %}
+                                                    <li class="flex items-center px-3 sm:px-4 py-3 bg-gray-50 rounded-lg text-sm sm:text-base">
+                                                        <i class="fas fa-check-circle text-secondary mr-3"></i> {{ plan.usage_per_day }} operations daily
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if plan.features %}
+                                                    {% set parsed_features = plan.features|parse_json_features %}
+                                                    {% for feature_key, feature_value in parsed_features %}
+                                                        <li class="flex items-center px-3 sm:px-4 py-3 bg-gray-50 rounded-lg text-sm sm:text-base">
+                                                            <i class="fas {{ feature_value|feature_icon }} mr-3"></i>
+                                                            {{ feature_key|format_feature_name }}
+                                                        </li>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    <!-- Default features if not specified -->
+                                                    <li class="flex items-center px-3 sm:px-4 py-3 bg-gray-50 rounded-lg text-sm sm:text-base">
+                                                        <i class="fas fa-check-circle text-secondary mr-3"></i> {{ plan.days // 30 }} month{% if plan.days // 30 > 1 %}s{% endif %} access
+                                                    </li>
+                                                    <li class="flex items-center px-3 sm:px-4 py-3 bg-gray-50 rounded-lg text-sm sm:text-base">
+                                                        <i class="fas fa-check-circle text-secondary mr-3"></i> All SEO tools access
+                                                    </li>
+                                                    <li class="flex items-center px-3 sm:px-4 py-3 bg-gray-50 rounded-lg text-sm sm:text-base">
+                                                        <i class="fas fa-check-circle text-secondary mr-3"></i> Export reports
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+
+                                            <div class="text-center mt-4">
+                                                <a href="{{ url_for('signup') }}" class="subscribe-btn">
+                                                    <i class="fas fa-shopping-cart"></i> Subscribe
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8 sm:py-12">
+                            <i class="fas fa-box-open text-gray-300 text-4xl sm:text-5xl mb-4"></i>
+                            <h4 class="text-lg sm:text-xl font-semibold mb-2">No Available Plans</h4>
+                            <p class="text-gray-500 text-sm sm:text-base">There are no plans available for subscription at this time.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

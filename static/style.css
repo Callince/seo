@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.sidenav {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 100px;
+  background: #f4f4f4;
+}
+
+.nav-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.input-container {
+  text-align: center;
+  margin: 2rem auto;
+  width: 60%;
+}
+
+.data-container {
+  display: flex;
+  gap: 2rem;
+  margin: 2rem;
+}
+
+.link-section {
+  flex: 1;
+}
+
+.scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 1rem;
+}
+
+.link-item {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}

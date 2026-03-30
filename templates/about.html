@@ -1,0 +1,358 @@
+{% extends "base2.html" %}
+
+{% block title %}About Us | SEO Dada{% endblock %}
+{% block head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "@id": "https://seodada.com/about#aboutpage",
+  "url": "https://seodada.com/about",
+  "name": "About SEO Dada",
+  "description": "Learn about SEO Dada, an SEO analysis platform that helps marketers and SEO professionals evaluate website performance, identify on-page issues, uncover keyword opportunities, and improve search visibility through clear, data-driven insights.",
+  "about": {
+    "@type": "Organization",
+    "@id": "https://seodada.com/#organization"
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "@id": "https://seodada.com/#website"
+  }
+}
+</script>
+
+{% endblock %}
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* About page styles - Brand color overrides */
+    .about-content h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #273879 !important;
+        margin-bottom: 1rem !important;
+        margin-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 2px solid #273879 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .about-content h2:first-of-type {
+        margin-top: 0 !important;
+    }
+
+    .about-content h2 i {
+        color: #273879 !important;
+    }
+
+    .about-content h3 {
+        color: #273879 !important;
+    }
+
+    .about-content p {
+        color: #374151 !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .about-content ul,
+    .about-content ol {
+        color: #374151 !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .about-content li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .about-content strong {
+        color: #273879 !important;
+    }
+
+    .about-content .info-box {
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .about-content .info-box.blue {
+        background-color: #eff6ff !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .about-content .info-box.blue h2,
+    .about-content .info-box.blue h3,
+    .about-content .info-box.blue i {
+        color: #273879 !important;
+    }
+
+    .about-content .info-box.green {
+        background-color: #f0fdf4 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .about-content .info-box.green h3,
+    .about-content .info-box.green i {
+        color: #273879 !important;
+    }
+
+    .about-content .info-box h2,
+    .about-content .info-box h3 {
+        border-bottom: none !important;
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .about-content .feature-card {
+        background-color: #f8fafc !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        transition: box-shadow 0.3s ease !important;
+    }
+
+    .about-content .feature-card:hover {
+        box-shadow: 0 4px 12px rgba(39, 56, 121, 0.15) !important;
+    }
+
+    .about-content .feature-icon {
+        width: 3rem !important;
+        height: 3rem !important;
+        background-color: #273879 !important;
+        border-radius: 0.5rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .about-content .feature-icon i {
+        color: white !important;
+    }
+
+    .about-content .feature-card h3 {
+        color: #273879 !important;
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+    }
+
+    .about-content .contact-box {
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;
+        border-radius: 0.75rem !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .about-content .contact-box h3 {
+        color: #273879 !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .about-content .primary-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .about-content .primary-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+    }
+
+    .about-content .outline-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        border: 2px solid #273879 !important;
+        color: #273879 !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .about-content .outline-btn:hover {
+        background-color: #273879 !important;
+        color: white !important;
+    }
+
+    .about-content .last-updated {
+        text-align: center !important;
+        padding-top: 2rem !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    .about-content .last-updated p {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">About SEO Dada</h1>
+                <p class="text-lg text-white/90">
+                    SEO Dada was built to empower developers, marketers, and analysts with fast, insightful tools for website analysis. From heading structure to image audits and keyword density checks, our tools help optimize your web presence effortlessly.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12 about-content">
+                <!-- About Overview -->
+                <div class="info-box blue">
+                    <h2 style="border-bottom: none !important; margin-top: 0 !important; padding-bottom: 0 !important;">
+                        <i class="fas fa-lightbulb"></i>
+                        Our Vision
+                    </h2>
+                    <p>
+                        We believe that website performance and optimization should be accessible to everyone. Our platform provides comprehensive SEO analysis tools that help you understand, optimize, and improve your website's search engine visibility and user experience.
+                    </p>
+                </div>
+
+                <h2>
+                    <i class="fas fa-bullseye"></i>
+                    What We Do
+                </h2>
+                <p>
+                    SEO Dada offers a complete suite of website analysis tools designed to help you optimize every aspect of your online presence. Whether you're a developer, marketer, or SEO professional, our platform provides the insights you need to succeed.
+                </p>
+
+                <h2>
+                    <i class="fas fa-star"></i>
+                    Our Features
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="feature-card">
+                        <div class="flex items-center mb-4">
+                            <div class="feature-icon mr-4">
+                                <i class="fas fa-bolt text-xl"></i>
+                            </div>
+                            <h3>Fast Analysis</h3>
+                        </div>
+                        <p>
+                            Get comprehensive results in seconds with our highly optimized tools. No more waiting hours for analysis reports.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="flex items-center mb-4">
+                            <div class="feature-icon mr-4">
+                                <i class="fas fa-chart-line text-xl"></i>
+                            </div>
+                            <h3>Detailed Insights</h3>
+                        </div>
+                        <p>
+                            Uncover hidden opportunities with our in-depth analytical reports. Understand exactly what needs improvement.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="flex items-center mb-4">
+                            <div class="feature-icon mr-4">
+                                <i class="fas fa-tools text-xl"></i>
+                            </div>
+                            <h3>Powerful Toolset</h3>
+                        </div>
+                        <p>
+                            Access specialized tools for headings, keywords, images, meta tags, and more. Everything you need in one place.
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="flex items-center mb-4">
+                            <div class="feature-icon mr-4">
+                                <i class="fas fa-user-shield text-xl"></i>
+                            </div>
+                            <h3>Privacy Focused</h3>
+                        </div>
+                        <p>
+                            Your data is always secure and we never share it with third parties. Your privacy is our priority.
+                        </p>
+                    </div>
+                </div>
+
+                <h2>
+                    <i class="fas fa-rocket"></i>
+                    Our Mission
+                </h2>
+                <p>
+                    We believe that website performance and optimization should be accessible to everyone. Our mission is to provide tools that simplify complex web analysis tasks and empower users to make data-driven decisions. We're committed to delivering accurate, actionable insights that help businesses of all sizes improve their online presence.
+                </p>
+
+                <div class="info-box green">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-check-circle"></i>
+                        Why Choose SEO Dada?
+                    </h3>
+                    <ul class="space-y-2" style="list-style: none !important; padding-left: 0 !important;">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>Comprehensive analysis tools covering all aspects of SEO</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>Token-based system that's flexible and cost-effective</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>Easy-to-understand reports with actionable recommendations</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>Export data in multiple formats for further analysis</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>Dedicated support team ready to help you succeed</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact section -->
+                <div class="contact-box">
+                    <h3>Get Started Today</h3>
+                    <p>
+                        Ready to optimize your website? Try our tools and see the difference professional SEO analysis can make.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="/signup" class="primary-btn">
+                            <i class="fas fa-search"></i>
+                            Try Our Tools
+                        </a>
+                        <a href="/contact" class="outline-btn">
+                            <i class="fas fa-envelope"></i>
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Last updated -->
+                <div class="last-updated">
+                    <p>Fourth Dimension SEO Dada - Empowering Your SEO Journey</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

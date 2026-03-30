@@ -1,0 +1,480 @@
+{% extends "base1.html" %}
+
+{% block title %}Verify Account | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<style>
+  :root {
+    --primary: #273879;
+    --primary-dark: #3c35b5;
+    --primary-rgb: 79, 70, 229;
+    --secondary: #0f74b2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --surface: #ffffff;
+    --surface-dark: #f9fafb;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --text-muted: #9ca3af;
+    --border-color: #e5e7eb;
+    --header-height: 64px;
+    --border-radius: 10px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease-in-out;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9ff;
+    color: var(--text-dark);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 2rem;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo img {
+    height: 50px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 550px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .auth-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(var(--primary-rgb), 0.1);
+    color: var(--primary);
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .auth-card h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+  }
+
+  .auth-card p {
+    color: var(--text-light);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .verification-email {
+    background-color: rgba(var(--primary-rgb), 0.05);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid var(--primary);
+  }
+
+  .verification-email-address {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    word-break: break-all;
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+  }
+
+  .btn-secondary {
+    color: var(--text-dark);
+    background-color: #e5e7eb;
+    border-color: #e5e7eb;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #d1d5db;
+    border-color: #d1d5db;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .btn-with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-with-icon i {
+    margin-right: 0.5rem;
+  }
+
+  /* Loading button styles */
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-spinner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+
+  .btn-loading .btn-spinner {
+    display: flex;
+  }
+
+  .btn-loading .btn-text {
+    opacity: 0.7;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1.5rem 0;
+    color: var(--text-muted);
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .divider::before {
+    margin-right: 1rem;
+  }
+
+  .divider::after {
+    margin-left: 1rem;
+  }
+
+  .back-to-login {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .back-to-login a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .back-to-login a i {
+    margin-right: 0.5rem;
+  }
+
+  .back-to-login a:hover {
+    color: var(--primary);
+  }
+
+  .timer {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+  }
+
+  .timer-count {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .info-box {
+    background-color: rgba(var(--warning), 0.1);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid var(--warning);
+  }
+
+  .info-box i {
+    color: var(--warning);
+    margin-right: 0.5rem;
+  }
+
+  .info-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: left;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 576px) {
+    .container {
+      padding: 1rem;
+    }
+
+    .auth-card {
+      padding: 2rem 1.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="auth-logo">
+  <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+    <!-- Logo section (left) -->
+    <div class="logo-section">
+      {% if website_settings.website_logo_file %}
+          
+          <!-- Admin uploaded logo -->
+          <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+              alt="Logo"
+              style="max-width: 120px; max-height: 60px; width: auto; height: auto; object-fit: contain; display: block;"
+              id="websiteLogo"
+              onerror="handleLogoError(this)" />
+
+          <!-- Fallback if image breaks -->
+          <div id="logoFallback" 
+              style="display: none; width: 60px; height: 60px; background-color: #4f46e5; border-radius: 12px; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              <!-- {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }} -->
+          </div>
+
+          
+      {% elif website_settings.website_icon %}
+          <!-- FontAwesome icon -->
+          <div style="width: 60px; height: 60px; background-color: #f8fafc; border: 2px solid #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i class="{{ website_settings.website_icon }}" style="color: #4f46e5; font-size: 1.75rem;"></i>
+          </div>
+          
+      {% else %}
+          <!-- Default initials fallback -->
+          <div style="width: 60px; height: 60px; background-color: #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+          </div>
+      {% endif %}
+    </div>
+    
+    <!-- Name and tagline section (right) -->
+    <!-- <div class="name-section" style="text-align: left;">
+      {% if website_settings.website_name %}
+      <div style="color: #1f2937; font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 0.25rem;">
+          {{ website_settings.website_name }}
+      </div>
+      {% endif %}
+      
+      {% if website_settings.website_tagline %}
+      <div style="color: #6b7280; font-size: 0.875rem; line-height: 1.3;">
+          {{ website_settings.website_tagline }}
+      </div>
+      {% endif %}
+    </div> -->
+  </div>
+</div>
+
+  <div class="auth-card">
+    <div class="auth-card-icon">
+      <i class="fas fa-envelope-open-text"></i>
+    </div>
+    <h1>Check Your Email</h1>
+    <p>We've sent a verification link to your email address. Please check your inbox and click the link to activate your account.</p>
+    
+    {% if email %}
+    <div class="verification-email">
+      <div class="verification-email-address">{{ email }}</div>
+    </div>
+    {% endif %}
+
+    <div class="info-box">
+      <i class="fas fa-info-circle"></i>
+      <p><strong>Don't see the email?</strong> Check your spam folder. The email might take a few minutes to arrive.</p>
+    </div>
+
+    <!-- Resend verification form -->
+    <form method="post" action="{{ url_for('resend_verification') }}" id="resendForm">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      {% if email %}
+      <input type="hidden" name="companyEmail" value="{{ email }}">
+      {% endif %}
+      
+      <button type="submit" class="btn btn-primary btn-block btn-with-icon" id="resendBtn" {% if not email %}disabled{% endif %}>
+        <span class="btn-spinner">
+          <div class="spinner"></div>
+        </span>
+        <span class="btn-text">Resend Verification Email</span>
+      </button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <a href="{{ url_for('login') }}" class="btn btn-secondary btn-block btn-with-icon">
+      <i class="fas fa-sign-in-alt"></i>
+      <span>I'll Verify Later - Go to Login</span>
+    </a>
+
+    <div class="timer" id="resendTimer" style="display: none;">
+      You can request another email in <span class="timer-count" id="countdown">60</span> seconds
+    </div>
+  </div>
+
+  <!-- <div class="back-to-login">
+    <a href="{{ url_for('login') }}">
+      <i class="fas fa-arrow-left"></i>
+      Back to Login
+    </a>
+  </div> -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const resendForm = document.getElementById('resendForm');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendTimer = document.getElementById('resendTimer');
+    const countdown = document.getElementById('countdown');
+    
+    let timeLeft = 0;
+    let timer = null;
+
+    // Check if there's a stored timestamp for resend cooldown
+    const lastResendTime = localStorage.getItem('lastResendTime');
+    if (lastResendTime) {
+      const timeDiff = Date.now() - parseInt(lastResendTime);
+      const cooldownPeriod = 60000; // 60 seconds
+      
+      if (timeDiff < cooldownPeriod) {
+        timeLeft = Math.ceil((cooldownPeriod - timeDiff) / 1000);
+        startCooldown();
+      }
+    }
+
+    // Handle form submission
+    resendForm.addEventListener('submit', function(e) {
+      if (timeLeft > 0) {
+        e.preventDefault();
+        return;
+      }
+
+      // Show loading state
+      resendBtn.classList.add('btn-loading');
+      resendBtn.disabled = true;
+      
+      // Update button text
+      const btnText = resendBtn.querySelector('.btn-text');
+      btnText.textContent = 'Sending...';
+
+      // Store timestamp for cooldown
+      localStorage.setItem('lastResendTime', Date.now().toString());
+    });
+
+    // Start cooldown timer
+    function startCooldown() {
+      resendBtn.disabled = true;
+      resendTimer.style.display = 'block';
+      
+      timer = setInterval(function() {
+        countdown.textContent = timeLeft;
+        timeLeft--;
+        
+        if (timeLeft < 0) {
+          clearInterval(timer);
+          resendBtn.disabled = false;
+          resendTimer.style.display = 'none';
+          localStorage.removeItem('lastResendTime');
+        }
+      }, 1000);
+    }
+
+    // Check for email parameter in URL and update form if needed
+    const urlParams = new URLSearchParams(window.location.search);
+    const emailParam = urlParams.get('email');
+    
+    if (emailParam && !document.querySelector('input[name="companyEmail"]')) {
+      const hiddenInput = document.createElement('input');
+      hiddenInput.type = 'hidden';
+      hiddenInput.name = 'companyEmail';
+      hiddenInput.value = emailParam;
+      resendForm.appendChild(hiddenInput);
+      
+      // Enable the resend button if email is available
+      resendBtn.disabled = false;
+    }
+  });
+</script>
+{% endblock %}

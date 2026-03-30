@@ -1,0 +1,287 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Web Stories - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-book-open me-2"></i>Web Stories List
+                        </h5>
+                        <a href="{{ url_for('admin_add_webstory') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Add New Web Story
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <form method="GET" action="{{ url_for('admin_webstories') }}" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Filter by Status</label>
+                                    <select name="status" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Status</option>
+                                        <option value="active" {% if request.args.get('status') == 'active' %}selected{% endif %}>Active</option>
+                                        <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <a href="{{ url_for('admin_webstories') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-redo me-1"></i>Reset
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive table-scroll-container">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th style="width: 10%">Cover Image</th>
+                                    <th style="width: 30%">Title</th>
+                                    <th style="width: 15%">Slug</th>
+                                    <th style="width: 10%">Status</th>
+                                    <th style="width: 15%">Publish Date</th>
+                                    <th style="width: 15%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if webstories %}
+                                    {% for webstory in webstories %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            {% if webstory.cover_image %}
+                                                <img src="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image) }}"
+                                                     alt="{{ webstory.meta_title }}"
+                                                     class="img-thumbnail"
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light d-flex align-items-center justify-content-center"
+                                                     style="width: 60px; height: 60px; border-radius: 4px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">{{ webstory.meta_title }}</div>
+                                            {% if webstory.meta_description %}
+                                                <small class="text-muted">{{ webstory.meta_description[:50] }}...</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <code class="text-muted">{{ webstory.slug }}</code>
+                                        </td>
+                                        <td>
+                                            {% if webstory.status %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ webstory.publish_date.strftime('%Y-%m-%d') if webstory.publish_date else 'N/A' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}"
+                                                   class="btn btn-outline-success"
+                                                   title="View"
+                                                   target="_blank">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ url_for('admin_edit_webstory', id=webstory.id) }}"
+                                                   class="btn btn-outline-primary"
+                                                   title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-outline-danger"
+                                                        onclick="deleteWebstory({{ webstory.id }}, '{{ webstory.meta_title }}')"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center py-5">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No web stories found</p>
+                                            <a href="{{ url_for('admin_add_webstory') }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-plus me-1"></i>Add Your First Web Story
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the web story "<strong id="webstoryTitle"></strong>"?</p>
+                <p class="text-danger mb-0">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 12px;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: #495057;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Mobile responsive table container with horizontal scroll */
+    .table-scroll-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #dee2e6 #f8f9fa;
+    }
+
+    .table-scroll-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-thumb {
+        background: #dee2e6;
+        border-radius: 4px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #ced4da;
+    }
+
+    /* Ensure table has minimum width for scroll */
+    .table-scroll-container .table {
+        min-width: 800px;
+    }
+
+    /* Mobile responsive filters */
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch !important;
+        }
+
+        .card-header .btn {
+            width: 100%;
+        }
+
+        .row.g-3 .col-md-4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .table thead th {
+            font-size: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-group-sm .btn {
+            padding: 0.35rem 0.5rem;
+            min-width: 36px;
+            min-height: 36px;
+        }
+
+        .img-thumbnail {
+            width: 50px !important;
+            height: 50px !important;
+        }
+
+        code {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container-fluid.py-4 {
+            padding: 1rem 0.5rem !important;
+        }
+
+        .card-header {
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1rem 0.5rem;
+        }
+
+        .table thead th {
+            font-size: 0.7rem;
+        }
+
+        .table tbody td {
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.3rem 0.5rem;
+        }
+    }
+</style>
+
+<script>
+    function deleteWebstory(webstoryId, webstoryTitle) {
+        document.getElementById('webstoryTitle').textContent = webstoryTitle;
+        document.getElementById('deleteForm').action = "{{ url_for('admin_delete_webstory', id=0) }}".replace('0', webstoryId);
+
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+</script>
+{% endblock %}

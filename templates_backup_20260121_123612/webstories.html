@@ -1,0 +1,744 @@
+{% extends "base2.html" %}
+
+{% block title %}Web Stories - SEODADA{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="Web Stories - SEODADA">
+    <meta property="og:description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+    <meta property="og:site_name" content="SEODADA">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="Web Stories - SEODADA">
+    <meta name="twitter:description" content="Explore our engaging web stories about SEO, digital marketing, and technology insights.">
+{% endblock %}
+
+{% block extra_styles %}
+    <style>
+        :root {
+            --primary: #273879;
+            --primary-dark: #1e2a5a;
+            --primary-light: #0f74b2;
+            --secondary: #0f74b2;
+            --seodada-gradient: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            padding-top: 70px;
+        }
+
+        /* Main content with top padding */
+        .main-container {
+            margin-top: 4.375rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Page Header - Modern Hero Style */
+        .page-header {
+            background: var(--seodada-gradient);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0.625rem 0.9375rem -0.1875rem rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .page-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            transform: translate(-30%, 30%);
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            opacity: 0.95;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Web Stories Grid - Modern Card Layout */
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .story-card {
+            background: var(--surface);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            position: relative;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .story-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--seodada-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .story-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: var(--seodada-gradient);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .story-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(39, 56, 121, 0.25),
+                        0 12px 24px -8px rgba(15, 116, 178, 0.15),
+                        0 0 0 1px rgba(39, 56, 121, 0.05);
+            border-color: transparent;
+        }
+
+        .story-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .story-card:hover::after {
+            opacity: 0.3;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .story-card {
+            animation: fadeInUp 0.6s ease backwards;
+        }
+
+        .story-card:nth-child(1) { animation-delay: 0.1s; }
+        .story-card:nth-child(2) { animation-delay: 0.2s; }
+        .story-card:nth-child(3) { animation-delay: 0.3s; }
+        .story-card:nth-child(4) { animation-delay: 0.4s; }
+        .story-card:nth-child(5) { animation-delay: 0.5s; }
+        .story-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .story-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            background: var(--seodada-gradient);
+            transition: filter 0.4s ease;
+            position: relative;
+        }
+
+        .story-card:hover .story-image {
+            filter: brightness(1.05) contrast(1.05);
+        }
+
+        /* Image overlay effect */
+        .story-image-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-image-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .story-card:hover .story-image-wrapper::after {
+            opacity: 1;
+        }
+
+        .story-card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .story-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-title a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            background: linear-gradient(to right, var(--primary), var(--primary-light)) no-repeat;
+            background-size: 0% 2px;
+            background-position: left bottom;
+            transition: background-size 0.4s ease, color 0.3s ease;
+            display: inline;
+            padding-bottom: 2px;
+        }
+
+        .story-card:hover .story-title a {
+            color: var(--primary);
+            background-size: 100% 2px;
+        }
+
+        .story-excerpt {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .story-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .read-more {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .read-more:hover {
+            color: var(--primary-dark);
+            gap: 0.5rem;
+        }
+
+        /* Pagination */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            gap: 0.5rem;
+        }
+
+        .page-item {
+            margin: 0;
+        }
+
+        .page-link {
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-link:hover {
+            background: var(--seodada-gradient);
+            border-color: transparent;
+            color: white;
+        }
+
+        .page-item.active .page-link {
+            background: var(--seodada-gradient);
+            border-color: transparent;
+            color: white;
+        }
+
+        .page-item.disabled .page-link {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .no-stories {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .no-stories i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Tablet Responsive */
+        @media (max-width: 1024px) {
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .page-header p {
+                font-size: 0.95rem;
+            }
+
+            .page-header {
+                padding: 2.5rem 1.25rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .main-container {
+                padding: 1rem;
+                margin-top: 3.5rem;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .story-image {
+                height: 200px;
+            }
+
+            .story-card-body {
+                padding: 1.25rem;
+            }
+
+            .story-title {
+                font-size: 1.15rem;
+            }
+
+            .story-excerpt {
+                font-size: 0.85rem;
+                -webkit-line-clamp: 2;
+            }
+
+            .story-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .pagination {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.35rem;
+            }
+
+            .page-link {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .page-header p {
+                font-size: 0.875rem;
+            }
+
+            .page-header {
+                padding: 2rem 1rem;
+                border-radius: 0.5rem;
+            }
+
+            .main-container {
+                padding: 0.75rem;
+            }
+
+            .story-card {
+                border-radius: 0.75rem;
+            }
+
+            .story-card:hover {
+                transform: translateY(-6px) scale(1.01);
+            }
+
+            .story-image {
+                height: 180px;
+            }
+
+            .story-card-body {
+                padding: 1rem;
+            }
+
+            .story-title {
+                font-size: 1.05rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .story-excerpt {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+            }
+
+            .story-meta {
+                font-size: 0.8rem;
+                padding-top: 0.75rem;
+            }
+
+            .read-more {
+                font-size: 0.85rem;
+            }
+
+            .no-stories i {
+                font-size: 3rem;
+            }
+
+            .no-stories h3 {
+                font-size: 1.25rem;
+            }
+
+            .no-stories p {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Landscape mode for mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .page-header {
+                padding: 1.5rem 1rem;
+            }
+
+            .stories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Touch device improvements - prevent transform on tap */
+        @media (hover: none) and (pointer: coarse) {
+            .story-card:hover {
+                transform: none;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            }
+
+            .story-card:hover::before {
+                transform: scaleX(0);
+            }
+
+            .story-card:hover::after {
+                opacity: 0;
+            }
+
+            .story-card:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+
+            .story-card:hover .story-title a {
+                background-size: 0% 2px;
+                color: var(--text);
+            }
+
+            .story-card:hover .story-image {
+                filter: none;
+            }
+
+            .story-card:hover .story-image-wrapper::after {
+                opacity: 0;
+            }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--seodada-gradient);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(39, 56, 121, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .scroll-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-header-content">
+                <h1><i class="fas fa-book-open me-2"></i>Web Stories</h1>
+                <p>Explore our engaging web stories about SEO, digital marketing, and technology insights</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Web Stories Grid -->
+        {% if webstories %}
+        <div class="stories-grid">
+            {% for webstory in webstories %}
+            <div class="story-card" onclick="window.location.href='{{ url_for('webstory_detail', slug=webstory.slug) }}'">
+                {% if webstory.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image) }}"
+                     alt="{{ webstory.meta_title }}"
+                     class="story-image">
+                {% else %}
+                <div class="story-image d-flex align-items-center justify-content-center">
+                    <i class="fas fa-book-open fa-3x text-white" style="opacity: 0.3;"></i>
+                </div>
+                {% endif %}
+
+                <div class="story-card-body">
+                    <h3 class="story-title">
+                        <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}">
+                            {{ webstory.meta_title }}
+                        </a>
+                    </h3>
+
+                    <div class="story-excerpt">
+                        {% if webstory.meta_description %}
+                            {{ webstory.meta_description }}
+                        {% endif %}
+                    </div>
+
+                    <div class="story-meta">
+                        <span>
+                            <i class="far fa-calendar me-1"></i>
+                            {{ webstory.publish_date.strftime('%B %d, %Y') if webstory.publish_date else 'N/A' }}
+                        </span>
+                        <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}" class="read-more">
+                            View Story <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination.pages > 1 %}
+        <div class="pagination-wrapper">
+            <nav aria-label="Web stories pagination">
+                <ul class="pagination">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('public_webstories', page=pagination.prev_num) }}">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('public_webstories', page=page_num) }}">
+                                    {{ page_num }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('public_webstories', page=pagination.next_num) }}">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+        {% else %}
+        <div class="no-stories">
+            <i class="fas fa-book-open"></i>
+            <h3>No Web Stories Yet</h3>
+            <p>Check back soon for exciting web stories!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+        // Scroll to Top Button Functionality
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+{% endblock %}

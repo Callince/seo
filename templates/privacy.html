@@ -1,0 +1,353 @@
+{% extends "base2.html" %}
+
+{% block title %}Privacy Policy | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* Privacy page styles - Brand color overrides */
+    .privacy-content h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #273879 !important;
+        margin-bottom: 1rem !important;
+        margin-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 2px solid #273879 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .privacy-content h2:first-of-type {
+        margin-top: 0 !important;
+    }
+
+    .privacy-content h2 i {
+        color: #273879 !important;
+    }
+
+    .privacy-content h3 {
+        color: #273879 !important;
+    }
+
+    .privacy-content p {
+        color: #374151 !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .privacy-content ul,
+    .privacy-content ol {
+        color: #374151 !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .privacy-content li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .privacy-content strong {
+        color: #273879 !important;
+    }
+
+    .privacy-content .info-box {
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .privacy-content .info-box.blue {
+        background-color: #eff6ff !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .privacy-content .info-box.blue h2,
+    .privacy-content .info-box.blue h3,
+    .privacy-content .info-box.blue i {
+        color: #273879 !important;
+    }
+
+    .privacy-content .info-box.green {
+        background-color: #f0fdf4 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .privacy-content .info-box.green h3,
+    .privacy-content .info-box.green i {
+        color: #273879 !important;
+    }
+
+    .privacy-content .info-box h2,
+    .privacy-content .info-box h3 {
+        border-bottom: none !important;
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .privacy-content .contact-box {
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;
+        border-radius: 0.75rem !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .privacy-content .contact-box h3 {
+        color: #273879 !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .privacy-content .contact-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .privacy-content .contact-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+    }
+
+    .privacy-content .last-updated {
+        text-align: center !important;
+        padding-top: 2rem !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    .privacy-content .last-updated p {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">Privacy Policy</h1>
+                <p class="text-lg text-white/90">
+                    At Fourth Dimension SEO Dada, we are committed to protecting your privacy and respecting the data you trust us with. This Privacy Policy explains what data we collect, how we use it, what rights you have, and how we secure and manage your information.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12 privacy-content">
+                <!-- Key Privacy Principles -->
+                <div class="info-box blue">
+                    <h2 style="border-bottom: none !important; margin-top: 0 !important; padding-bottom: 0 !important;">
+                        <i class="fas fa-shield-alt"></i>
+                        Key Privacy Principles
+                    </h2>
+                    <ul class="space-y-2" style="list-style: none !important; padding-left: 0 !important;">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>We do not sell or rent your data to third parties</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>We collect only essential information to provide our services</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>You have full control over your data and can request deletion at any time</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check mt-1" style="color: #273879 !important;"></i>
+                            <span>We use industry-standard security measures to protect your information</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <h2>
+                    <i class="fas fa-bullseye"></i>
+                    Scope and Purpose
+                </h2>
+                <p>
+                    This Privacy Policy applies to all users of the Fourth Dimension SEO Dada platform, website, and associated services. By accessing or using Fourth Dimension SEO Dada, you agree to the practices described here. If you do not agree with this policy, you should not use our services.
+                </p>
+
+                <h2>
+                    <i class="fas fa-database"></i>
+                    Information We Collect
+                </h2>
+
+                <h3 class="text-xl font-semibold mb-3 mt-6">Account Information</h3>
+                <p>When you register for Fourth Dimension SEO Dada, we collect:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Name and email address</li>
+                    <li>Password (hashed and encrypted)</li>
+                    <li>Company name (if applicable)</li>
+                    <li>Billing and subscription details (processed via third-party payment gateways)</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-3">Usage and Technical Data</h3>
+                <p>When you use Fourth Dimension SEO Dada, we collect:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>URLs you scan and the time of each scan</li>
+                    <li>Number of audits performed</li>
+                    <li>Browser type, IP address, operating system, and device type</li>
+                    <li>Interactions with specific platform features</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold mb-3">Cookies and Analytics</h3>
+                <p>
+                    We use cookies for secure login, session tracking, and analytics to improve your user experience.
+                </p>
+
+                <h2>
+                    <i class="fas fa-cogs"></i>
+                    How We Use Your Information
+                </h2>
+                <p>We use your information to:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Provide and manage access to Fourth Dimension SEO Dada features</li>
+                    <li>Process subscriptions and generate invoices</li>
+                    <li>Improve user experience, identify usage patterns, and optimize product flows</li>
+                    <li>Communicate updates, feature releases, or billing notifications</li>
+                    <li>Ensure system stability and security</li>
+                    <li>Comply with legal obligations and respond to lawful requests</li>
+                </ul>
+                <p>
+                    <strong>We do not use your data for third-party marketing or advertising purposes.</strong>
+                </p>
+
+                <h2>
+                    <i class="fas fa-share-alt"></i>
+                    Data Sharing and Disclosure
+                </h2>
+                <p>We do not sell or rent your data. We may share data only in the following circumstances:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>With trusted service providers:</strong> For payment processing, cloud hosting, and analytics under confidentiality agreements</li>
+                    <li><strong>With legal authorities:</strong> When required to comply with applicable laws, court orders, or government regulations</li>
+                    <li><strong>Within our organization:</strong> For internal operations by authorized personnel</li>
+                </ul>
+
+                <h2>
+                    <i class="fas fa-clock"></i>
+                    Data Retention
+                </h2>
+                <p>
+                    We retain your account data for as long as your account is active or as needed to fulfill the purposes outlined in this policy. If you cancel your subscription or delete your account, we will retain billing records and system logs as required by law, and remove audit-related data and user activity logs within 60 days, unless retention is legally mandated.
+                </p>
+
+                <h2>
+                    <i class="fas fa-lock"></i>
+                    Data Security
+                </h2>
+
+                <div class="info-box green">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-check-circle"></i>
+                        Industry-Standard Security
+                    </h3>
+                    <p>We use industry-standard security measures to protect your information, including:</p>
+                    <ul class="list-disc list-inside space-y-2 ml-4">
+                        <li>Encrypted transmission (HTTPS)</li>
+                        <li>Secure cloud infrastructure with access controls</li>
+                        <li>Encrypted password storage and tokenized sessions</li>
+                        <li>Role-based access control for internal staff</li>
+                    </ul>
+                </div>
+
+                <p>
+                    While we take every precaution to safeguard your data, no method of transmission or storage is 100% secure. We encourage strong passwords and responsible access practices.
+                </p>
+
+                <h2>
+                    <i class="fas fa-user-shield"></i>
+                    Your Rights
+                </h2>
+                <p>As a Fourth Dimension SEO Dada user, you have the right to:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Access the personal data we hold about you</li>
+                    <li>Request corrections to inaccurate information</li>
+                    <li>Request deletion of your account and associated data</li>
+                    <li>Withdraw consent for non-essential data processing</li>
+                    <li>Opt out of non-critical product communications</li>
+                </ul>
+                <p>
+                    To exercise these rights, contact our support team. We will respond within 7–10 working days.
+                </p>
+
+                <h2>
+                    <i class="fas fa-globe"></i>
+                    International Access and Storage
+                </h2>
+                <p>
+                    Fourth Dimension SEO Dada is operated from India. If you are accessing the service from outside India, you consent to your data being processed and stored in India under Indian data protection laws.
+                </p>
+
+                <h2>
+                    <i class="fas fa-child"></i>
+                    Children's Privacy
+                </h2>
+                <p>
+                    Fourth Dimension SEO Dada is not intended for use by individuals under 18 years of age. We do not knowingly collect data from minors. If we learn that we have collected personal data from someone underage, we will delete it immediately.
+                </p>
+
+                <h2>
+                    <i class="fas fa-external-link-alt"></i>
+                    Third-Party Links and Integrations
+                </h2>
+                <p>
+                    Our platform may contain links to external websites or services. We are not responsible for the privacy practices or content of these external entities. Use caution and review their policies before sharing any personal information.
+                </p>
+
+                <h2>
+                    <i class="fas fa-user-tie"></i>
+                    Grievance Officer
+                </h2>
+                <p>
+                    In accordance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, users can contact our designated grievance officer for privacy-related concerns.
+                </p>
+                <p>
+                    <strong>Working Hours:</strong> Monday to Friday, 10:00 AM to 6:00 PM (IST)
+                </p>
+
+                <div class="info-box blue">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-info-circle"></i>
+                        Updates to This Policy
+                    </h3>
+                    <p>
+                        We may update this privacy policy from time to time to reflect legal, technical, or operational changes. When we make material changes, we will notify users by email or through platform alerts. Continued use of the Service after changes take effect implies your agreement with the updated policy.
+                    </p>
+                </div>
+
+                <!-- Contact section -->
+                <div class="contact-box">
+                    <h3>Contact Information</h3>
+                    <p>For any privacy-related questions, concerns, or data access requests, please contact:</p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 600; margin-bottom: 0.5rem;">Fourth Dimension SEO Dada</p>
+                        <p>📍 Address: Shyamala Towers, 3rd floor, No. 136, Arcot Rd, Saligramam, Chennai, Tamil Nadu 600092</p>
+                    </div>
+                    <a href="mailto:support@seodada.com" class="contact-btn">
+                        <i class="fas fa-envelope"></i>
+                        support@seodada.com
+                    </a>
+                </div>
+
+                <!-- Last updated -->
+                <div class="last-updated">
+                    <p>Effective Date: June 12, 2025 | Last Updated: June 12, 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

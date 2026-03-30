@@ -1,0 +1,909 @@
+/**
+ * Admin Pages CSS - SEO Dada
+ * Page-specific styles for admin dashboard, users, payments, subscriptions, blogs, etc.
+ * Extends admin-base.css with component-specific styling
+ */
+
+/* ==========================================================================
+   CSS Variables for Admin Pages
+   ========================================================================== */
+:root {
+  --admin-primary: #273879;
+  --admin-primary-light: #3d4a91;
+  --admin-secondary: #6c757d;
+  --admin-success: #28a745;
+  --admin-info: #17a2b8;
+  --admin-warning: #ffc107;
+  --admin-danger: #dc3545;
+  --admin-transition: 0.3s ease;
+  --admin-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --admin-shadow-hover: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  --admin-border-radius: 0.375rem;
+  --admin-border-color: #dee2e6;
+}
+
+/* ==========================================================================
+   Dashboard Stat Cards
+   ========================================================================== */
+.dashboard-stats-row .stat-card {
+  transition: transform var(--admin-transition), box-shadow var(--admin-transition);
+}
+
+.dashboard-stats-row .stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--admin-shadow-hover);
+}
+
+/* ==========================================================================
+   Avatar Circle
+   ========================================================================== */
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Icon Wrapper
+   ========================================================================== */
+.icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   Card Enhancements
+   ========================================================================== */
+.card {
+  border: none;
+  box-shadow: var(--admin-shadow);
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: var(--admin-shadow-hover);
+  transform: translateY(-2px);
+  transition: all var(--admin-transition);
+}
+
+.card-primary {
+  border-left: 4px solid #007bff !important;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.05) 0%, rgba(0, 123, 255, 0.02) 100%);
+}
+
+.card-success {
+  border-left: 4px solid var(--admin-success) !important;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(40, 167, 69, 0.02) 100%);
+}
+
+.card-info {
+  border-left: 4px solid var(--admin-info) !important;
+  background: linear-gradient(135deg, rgba(23, 162, 184, 0.05) 0%, rgba(23, 162, 184, 0.02) 100%);
+}
+
+.card-warning {
+  border-left: 4px solid var(--admin-warning) !important;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 193, 7, 0.02) 100%);
+}
+
+.card-danger {
+  border-left: 4px solid var(--admin-danger) !important;
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.05) 0%, rgba(220, 53, 69, 0.02) 100%);
+}
+
+.card-secondary {
+  border-left: 4px solid var(--admin-secondary) !important;
+  background: linear-gradient(135deg, rgba(108, 117, 125, 0.05) 0%, rgba(108, 117, 125, 0.02) 100%);
+}
+
+.border-left-primary {
+  border-left: 4px solid var(--admin-primary) !important;
+}
+
+/* ==========================================================================
+   Table Enhancements
+   ========================================================================== */
+.table thead th {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: #495057;
+  border-bottom: 2px solid var(--admin-border-color) !important;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(0, 123, 255, 0.05);
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 12px 8px;
+  border-color: #f1f3f4;
+}
+
+.table th {
+  border-color: #e9ecef;
+  background-color: #f8f9fa;
+}
+
+/* Sticky Table Header */
+.sticky-header,
+.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8f9fa !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Table Scroll Container
+   ========================================================================== */
+.table-scroll-container,
+.table-responsive-enhanced {
+  overflow-x: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #f8f9fa;
+}
+
+.table-scroll-container::-webkit-scrollbar,
+.table-responsive-enhanced::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track,
+.table-responsive-enhanced::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb,
+.table-responsive-enhanced::-webkit-scrollbar-thumb {
+  background: #6c757d;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover,
+.table-responsive-enhanced::-webkit-scrollbar-thumb:hover {
+  background: #495057;
+}
+
+.table-scroll-container .table {
+  min-width: 900px;
+}
+
+/* ==========================================================================
+   Scrollable Table Container (Dashboard)
+   ========================================================================== */
+.scrollable-table-container {
+  max-height: 150px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scrollable-table-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.scrollable-table-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.scrollable-table-container table thead {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 10;
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Chart Cards (Dashboard)
+   ========================================================================== */
+.chart-card {
+  min-height: 300px;
+}
+
+.chart-card .card-body {
+  padding: 1rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 350px;
+  width: 100%;
+  background: transparent;
+  border-radius: var(--admin-border-radius);
+  box-sizing: border-box;
+}
+
+.chart-container canvas {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ==========================================================================
+   Badge Enhancements
+   ========================================================================== */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+  border-radius: var(--admin-border-radius);
+  display: inline-flex;
+  align-items: center;
+}
+
+.badge i {
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   Button Group Styling
+   ========================================================================== */
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+}
+
+/* ==========================================================================
+   Action Buttons Cell
+   ========================================================================== */
+.action-buttons-cell {
+  position: relative;
+  min-width: 200px;
+  max-width: 200px;
+  width: 200px;
+  padding: 8px !important;
+  white-space: nowrap;
+}
+
+.action-buttons-cell .d-flex {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.action-buttons-cell .btn {
+  min-width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.action-buttons-cell .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.action-buttons-cell .btn i {
+  margin: 0;
+}
+
+.action-buttons-cell .btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.action-buttons-cell .btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+.action-buttons-cell .btn-outline-success:hover {
+  background-color: #198754;
+  border-color: #198754;
+  color: white;
+}
+
+.action-buttons-cell .btn-outline-info:hover {
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+  color: white;
+}
+
+/* ==========================================================================
+   Password Requirements Styling
+   ========================================================================== */
+.password-requirements {
+  background-color: #f8f9fa;
+  border-radius: var(--admin-border-radius);
+  padding: 0.75rem;
+  border: 1px solid #e9ecef;
+}
+
+.requirements-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+}
+
+.requirement.text-success {
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Form Validation Enhancements
+   ========================================================================== */
+.form-control.is-valid {
+  border-color: var(--admin-success);
+}
+
+.form-control.is-invalid {
+  border-color: var(--admin-danger);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 0.2rem rgba(39, 56, 121, 0.25);
+}
+
+/* ==========================================================================
+   Password Strength Bar
+   ========================================================================== */
+.progress-bar {
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+/* ==========================================================================
+   Compact Filter Styles
+   ========================================================================== */
+.compact-filter {
+  padding: 1rem !important;
+}
+
+.compact-filter .mb-3 {
+  margin-bottom: 0.75rem !important;
+}
+
+.compact-filter .form-label {
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  margin-bottom: 0.4rem !important;
+}
+
+.compact-filter .compact-btn {
+  font-size: 0.7rem !important;
+  padding: 0.2rem 0.4rem !important;
+  border-radius: 0.25rem !important;
+}
+
+.compact-filter .form-select-sm,
+.compact-filter .form-control-sm {
+  font-size: 0.8rem !important;
+  padding: 0.3rem 0.6rem !important;
+}
+
+.compact-filter .form-text {
+  font-size: 0.65rem !important;
+  margin-top: 0.2rem !important;
+}
+
+/* ==========================================================================
+   Timeline Styling (Website Settings)
+   ========================================================================== */
+.timeline {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -35px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.timeline-content {
+  padding-left: 5px;
+}
+
+/* ==========================================================================
+   Empty State Styling
+   ========================================================================== */
+.empty-state {
+  padding: 2rem 1rem;
+}
+
+/* ==========================================================================
+   Blog Management Specific Styles
+   ========================================================================== */
+.img-thumbnail {
+  padding: 0.25rem;
+  background-color: #fff;
+  border: 1px solid var(--admin-border-color);
+  border-radius: var(--admin-border-radius);
+  max-width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Subscriptions Page Specific Styles
+   ========================================================================== */
+.text-break {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   Tooltip Styling
+   ========================================================================== */
+.tooltip {
+  font-size: 0.75rem;
+}
+
+.tooltip-inner {
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Button Hover Effects (Desktop Only)
+   ========================================================================== */
+@media (min-width: 768px) {
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+  }
+
+  .table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    transition: background-color 0.2s ease;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Large Screens (1200px - 1399px)
+   ========================================================================== */
+@media (max-width: 1399px) {
+  .chart-container {
+    height: 320px;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Medium Screens (992px - 1199px)
+   ========================================================================== */
+@media (max-width: 1200px) {
+  .table-responsive-enhanced {
+    max-height: 500px;
+  }
+
+  .table th,
+  .table td {
+    padding: 8px 6px;
+    font-size: 0.875rem;
+  }
+
+  .action-buttons-cell {
+    min-width: 160px;
+    max-width: 160px;
+    width: 160px;
+  }
+
+  .action-buttons-cell .btn {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px;
+    font-size: 0.8rem;
+  }
+
+  .chart-container {
+    height: 300px;
+  }
+
+  .chart-card {
+    min-height: 280px;
+  }
+
+  .chart-card canvas {
+    max-height: 180px !important;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Tablet (768px - 991px)
+   ========================================================================== */
+@media (max-width: 991px) {
+  .chart-container {
+    height: 280px;
+  }
+
+  .chart-card {
+    height: auto !important;
+    min-height: 260px;
+  }
+
+  .chart-card canvas {
+    max-height: 160px !important;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Mobile (max-width: 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Chart adjustments */
+  .chart-card {
+    min-height: 250px;
+  }
+
+  .chart-card canvas {
+    max-height: 150px !important;
+  }
+
+  .chart-container {
+    height: 260px;
+  }
+
+  /* Table adjustments */
+  .table-responsive-enhanced {
+    max-height: 400px;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 4px;
+    font-size: 0.8rem;
+  }
+
+  .table thead th {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.5rem;
+    white-space: nowrap;
+  }
+
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  /* Avatar adjustments */
+  .avatar-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.8rem;
+  }
+
+  /* Action buttons adjustments */
+  .action-buttons-cell {
+    min-width: 120px;
+    max-width: 120px;
+    width: 120px;
+  }
+
+  .action-buttons-cell .btn {
+    min-width: 24px;
+    height: 24px;
+    padding: 2px;
+    font-size: 0.75rem;
+  }
+
+  /* Badge adjustments */
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  /* Scrollable container adjustments */
+  .scrollable-table-container {
+    max-height: 120px;
+  }
+
+  /* Card header adjustments */
+  .card-header .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch !important;
+  }
+
+  .card-header .btn {
+    width: 100%;
+  }
+
+  /* Requirements list */
+  .requirements-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* Card body padding */
+  .card-body {
+    padding: 1rem;
+  }
+
+  /* Icon wrapper */
+  .icon-wrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon-wrapper i {
+    font-size: 1.5rem !important;
+  }
+
+  /* Button group */
+  .btn-group {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .btn-group-sm .btn {
+    padding: 0.35rem 0.5rem;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  /* Modal adjustments */
+  .modal-dialog {
+    margin: 1rem;
+  }
+
+  .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  /* Pagination */
+  .pagination {
+    font-size: 0.875rem;
+  }
+
+  /* Button group - mobile stacking */
+  .btn-group {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .btn-group .btn {
+    border-radius: 0.375rem !important;
+    margin-bottom: 2px;
+  }
+
+  .btn-group .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Dropdown menu */
+  .dropdown-menu {
+    min-width: 200px;
+  }
+
+  .dropdown-item {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .dropdown-item i {
+    width: 1.25rem;
+  }
+
+  /* Button sizing */
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    min-height: 40px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Image thumbnail */
+  .img-thumbnail {
+    width: 50px !important;
+    height: 50px !important;
+  }
+}
+
+/* ==========================================================================
+   Responsive - Small Mobile (max-width: 576px)
+   ========================================================================== */
+@media (max-width: 576px) {
+  /* Container padding */
+  .container-fluid.py-4 {
+    padding: 1rem 0.5rem !important;
+  }
+
+  /* Card padding */
+  .card-header {
+    padding: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem 0.5rem;
+  }
+
+  /* Table font sizes */
+  .table thead th {
+    font-size: 0.7rem;
+  }
+
+  .table tbody td {
+    font-size: 0.8rem;
+  }
+
+  /* Badge */
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem;
+  }
+
+  /* Avatar */
+  .avatar-circle {
+    width: 35px;
+    height: 35px;
+    font-size: 1rem;
+  }
+
+  /* Chart */
+  .chart-card {
+    min-height: 220px;
+  }
+
+  .chart-card canvas {
+    max-height: 130px !important;
+  }
+
+  .chart-container {
+    height: 240px;
+  }
+
+  /* Scrollable container */
+  .scrollable-table-container {
+    max-height: 100px;
+  }
+
+  /* Stat card values */
+  .stat-card .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-card .stat-desc {
+    font-size: 0.7rem;
+    line-height: 1.2;
+  }
+
+  .stat-card .stat-card-body {
+    padding: 0.75rem;
+  }
+
+  .stat-card .icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    margin-right: 0.75rem;
+  }
+
+  /* Card actions - mobile stacking */
+  .card-actions-mobile {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-actions-mobile .btn,
+  .card-actions-mobile .dropdown {
+    width: 100%;
+  }
+
+  /* Form controls - prevent iOS zoom */
+  .form-control,
+  .form-select {
+    font-size: 16px;
+  }
+
+  /* Password requirements */
+  .password-requirements {
+    padding: 0.5rem;
+  }
+
+  /* Page title */
+  .page-title h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Button sizing */
+  .btn-sm {
+    min-height: 36px;
+  }
+}
+
+/* ==========================================================================
+   Touch Device Enhancements
+   ========================================================================== */
+@media (pointer: coarse) {
+  .btn,
+  .dropdown-item,
+  .nav-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+  .sidebar,
+  .top-bar,
+  .btn,
+  .scroll-to-top,
+  .action-buttons-cell {
+    display: none !important;
+  }
+
+  .content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}

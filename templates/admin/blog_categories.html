@@ -1,0 +1,230 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Blog Categories - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-folder me-2"></i>Blog Categories
+                        </h5>
+                        <a href="{{ url_for('admin_add_blog_category') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Add Category
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive table-scroll-container">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 10%">#</th>
+                                    <th style="width: 40%">Name</th>
+                                    <th style="width: 15%">Sort Order</th>
+                                    <th style="width: 15%">Status</th>
+                                    <th style="width: 20%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if categories %}
+                                    {% for category in categories %}
+                                    <tr>
+                                        <td>{{ category.id }}</td>
+                                        <td>
+                                            <div class="fw-semibold">{{ category.name }}</div>
+                                            <small class="text-muted">{{ category.blogs.count() }} blogs</small>
+                                        </td>
+                                        <td>{{ category.sort_order }}</td>
+                                        <td>
+                                            {% if category.status %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('admin_edit_blog_category', id=category.id) }}"
+                                                   class="btn btn-outline-primary"
+                                                   title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-outline-danger"
+                                                        onclick="deleteCategory({{ category.id }}, '{{ category.name }}', {{ category.blogs.count() }})"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No categories found</p>
+                                            <a href="{{ url_for('admin_add_blog_category') }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-plus me-1"></i>Add Your First Category
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the category "<strong id="categoryName"></strong>"?</p>
+                <p class="text-danger mb-0" id="warningMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger" id="deleteBtn">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 12px;
+    }
+
+    .table thead th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        color: #495057;
+    }
+
+    /* Mobile responsive table container with horizontal scroll */
+    .table-scroll-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: #dee2e6 #f8f9fa;
+    }
+
+    .table-scroll-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 4px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-thumb {
+        background: #dee2e6;
+        border-radius: 4px;
+    }
+
+    .table-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #ced4da;
+    }
+
+    .table-scroll-container .table {
+        min-width: 600px;
+    }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .card-header .d-flex {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch !important;
+        }
+
+        .card-header .btn {
+            width: 100%;
+        }
+
+        .table thead th {
+            font-size: 0.75rem;
+            padding: 0.75rem 0.5rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-group-sm .btn {
+            padding: 0.35rem 0.5rem;
+            min-width: 36px;
+            min-height: 36px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .container-fluid.py-4 {
+            padding: 1rem 0.5rem !important;
+        }
+
+        .card-header {
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1rem 0.5rem;
+        }
+
+        .table thead th {
+            font-size: 0.7rem;
+        }
+
+        .table tbody td {
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            padding: 0.3rem 0.5rem;
+        }
+    }
+</style>
+
+<script>
+    function deleteCategory(categoryId, categoryName, blogCount) {
+        document.getElementById('categoryName').textContent = categoryName;
+        document.getElementById('deleteForm').action = "{{ url_for('admin_delete_blog_category', id=0) }}".replace('0', categoryId);
+
+        const warningMsg = document.getElementById('warningMessage');
+        const deleteBtn = document.getElementById('deleteBtn');
+
+        if (blogCount > 0) {
+            warningMsg.textContent = `This category has ${blogCount} blog(s). You cannot delete a category with existing blogs.`;
+            deleteBtn.disabled = true;
+        } else {
+            warningMsg.textContent = 'This action cannot be undone.';
+            deleteBtn.disabled = false;
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+</script>
+{% endblock %}
+

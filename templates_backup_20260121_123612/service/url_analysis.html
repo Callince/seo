@@ -1,0 +1,699 @@
+{% extends "base2.html" %}
+
+{% block title %}URL Analysis Tool – Check & Optimize Your Website URL Instantly{% endblock %}
+
+{% block meta %}
+<meta name="description" content="Use our URL Analysis tool to check your website URL, structure, links, and SEO strength instantly.">
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-blue-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-link text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">URL Analysis Tool</span> – Check & Optimize Your Website URL Instantly
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Use our URL Analysis tool to check your website URL, structure, links, and SEO strength instantly. Analyze your URLs online with our powerful URL analyser for better search rankings.
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('url_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start URL Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is URL Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is URL Analysis?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        URL Analysis helps you understand how your website links are built and how search engines interpret them. A clean structure improves user experience, visibility, and crawlability.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Many websites use <strong>URL analysis online</strong> to detect broken links, long URLs, and unclear structures. With simple checks, you can strengthen your site performance and follow SEO-friendly link practices.
+                    </p>
+                    <p class="text-lg text-gray-600">
+                        Our <strong>URL analysis tool</strong> provides comprehensive insights into your link structure, helping you identify issues before they impact your rankings.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Detect Broken Links</h4>
+                                <p class="text-gray-600 text-sm">Find and fix dead URLs affecting your SEO</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Analyze URL Structure</h4>
+                                <p class="text-gray-600 text-sm">Ensure clean, readable URL patterns</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Improve Crawlability</h4>
+                                <p class="text-gray-600 text-sm">Help search engines navigate your site</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">URL Analysis Tool – How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our system performs a fast URL Analysis using advanced scanning to detect issues, redirect chains, and structural weaknesses.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Enter URL for SEO Analysis</h3>
+                    <p class="text-gray-600 text-sm">
+                        Simply paste your website URL or sitemap to begin the analysis
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Deep URL Scanning</h3>
+                    <p class="text-gray-600 text-sm">
+                        Our URL analyser reads every part of your link and detects issues
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Review Insights</h3>
+                    <p class="text-gray-600 text-sm">
+                        Get detailed reports with actionable recommendations
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Optimize & Rank</h3>
+                    <p class="text-gray-600 text-sm">
+                        Implement suggestions to boost your SEO performance
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                <p class="text-lg text-gray-700 text-center">
+                    The tool works like a professional <strong>URL analysis tool</strong> that reads every part of your link and shows how it influences search results. It ensures your URL stays clean, readable, and aligned with Google's crawling patterns.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- URL Structure Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">URL Structure Analysis (SEO-Friendly URL Checker)</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A good link structure is essential for strong SEO. Our platform works as a full URL structure analysis engine.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-ruler text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">URL Length Check</h3>
+                    <p class="text-gray-600 mb-4">
+                        Analyze URL length to ensure optimal character count for search engines and user readability.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Optimal length recommendations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Character count analysis</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-eye text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Clarity Analysis</h3>
+                    <p class="text-gray-600 mb-4">
+                        Check how your URL communicates meaning to search engines and users.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Readability scoring</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Keyword usage review</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-broom text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Pattern Detection</h3>
+                    <p class="text-gray-600 mb-4">
+                        Identify unnecessary characters or complex patterns that harm SEO.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Special character alerts</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Complex pattern warnings</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    Our <strong>URL structure analysis</strong> makes your website easier to crawl and improves ranking potential instantly.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Website Link Checker Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Website Link Checker (Internal & External Links)</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        This tool helps you review all your internal and external links by acting as a <strong>website all link checker</strong>. It detects broken paths, missing pages, redirected URLs, and linking gaps.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6">
+                        You can also use it as a <strong>website page link checker</strong> to review every link inside your page. Strong link health helps search engines move across your website smoothly.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-unlink text-red-600"></i>
+                            </div>
+                            <span class="text-gray-700">Broken link detection</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-directions text-yellow-600"></i>
+                            </div>
+                            <span class="text-gray-700">Redirect chain analysis</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-external-link-alt text-blue-600"></i>
+                            </div>
+                            <span class="text-gray-700">External link review</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-link text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Internal linking gaps</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Why Link Health Matters</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Improves crawlability for search engines</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Enhances user navigation experience</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Distributes page authority effectively</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Reduces bounce rates from dead links</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEO Factors Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">SEO Factors Checked by the URL Analyzer</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    The analyzer performs a deep review of key elements using modern scanning logic. It works like a complete URL analyzer that checks relevance, readability, and structure.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-search text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Test SEO URL Patterns</h3>
+                    <p class="text-gray-600 text-sm">
+                        Check URL patterns so search engines understand your page meaning without confusion.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-check-double text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Relevance Check</h3>
+                    <p class="text-gray-600 text-sm">
+                        Ensure your URLs accurately represent the content of each page.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-book-reader text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Readability Score</h3>
+                    <p class="text-gray-600 text-sm">
+                        Analyze how easily users and bots can understand your URL structure.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-sitemap text-2xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Hierarchy Analysis</h3>
+                    <p class="text-gray-600 text-sm">
+                        Review folder depth and site structure organization.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">HTTPS Status</h3>
+                    <p class="text-gray-600 text-sm">
+                        Verify secure protocol implementation for better rankings.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-copy text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Duplicate Detection</h3>
+                    <p class="text-gray-600 text-sm">
+                        Identify duplicate content risks from URL variations.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    These checks make your website more dependable and easy to crawl with our <strong>URL analysis tools</strong>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why URL Analysis Is Important Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Why URL Analysis Is Important for SEO</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A well-designed URL supports both users and search engines. Many professionals enter URL for SEO analysis to understand how link quality affects indexing and ranking.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mouse-pointer text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved Click-Through Rates</h3>
+                            <p class="text-gray-600">
+                                Clean URLs improve click-through rates by appearing trustworthy and relevant in search results.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bug text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Reduced Crawl Errors</h3>
+                            <p class="text-gray-600">
+                                Properly structured URLs reduce crawl errors, allowing search engines to index your content efficiently.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-brain text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Content Understanding</h3>
+                            <p class="text-gray-600">
+                                When combined with a clear structure, it becomes easier for search engines to understand what your page is about.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl border border-blue-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-share-alt text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Enhanced Shareability</h3>
+                            <p class="text-gray-600">
+                                Clean, descriptive URLs are more likely to be shared and linked to by other websites.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- URL Optimization Tips Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">URL Optimization Tips for Higher Rankings</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Simple improvements in URLs can produce meaningful SEO results. Reviewing your links regularly with URL analysis tools helps maintain a clean structure.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border border-green-100">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-minus text-green-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Keep URLs Short</h3>
+                    <p class="text-gray-600 text-sm">Remove extra characters and keep the path readable for better clarity.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-key text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Use Keywords</h3>
+                    <p class="text-gray-600 text-sm">Include relevant keywords naturally in your URL path.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-100">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-text-height text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Use Hyphens</h3>
+                    <p class="text-gray-600 text-sm">Separate words with hyphens, not underscores or spaces.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white p-6 rounded-xl border border-orange-100">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-font text-orange-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Lowercase Only</h3>
+                    <p class="text-gray-600 text-sm">Always use lowercase letters to avoid duplicate content issues.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    Small optimizations improve the clarity of every page and help build long-term visibility with proper <strong>analysis URL</strong> techniques.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compare Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Compare Our URL Analysis Tool with Other SEO Tools</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Most platforms only provide basic URL checks, but ours offers deeper insights by focusing on full analysis URL patterns and overall clarity.
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <thead class="bg-gradient-to-r from-primary to-secondary text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-semibold">Feature</th>
+                            <th class="px-6 py-4 text-center font-semibold">Our Tool</th>
+                            <th class="px-6 py-4 text-center font-semibold">Other Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">URL Structure Analysis</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">Redirect Path Analysis</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">Link Depth Examination</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">Indexing Factor Check</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-minus-circle text-yellow-500 text-xl"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">Full Pattern Analysis</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">Internal & External Link Check</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-minus-circle text-yellow-500 text-xl"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    This gives you more control than many standard SEO tools and ensures your website stays optimized with precision.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about URL Analysis</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How do I know if my URL is SEO-friendly?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            An SEO-friendly URL is simple, short, and clear. Keeping URLs descriptive helps search engines understand your content quickly. A good URL should be readable, contain relevant keywords, and avoid unnecessary parameters or special characters.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Can a bad URL structure hurt my Google rankings?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Complicated or unclear URLs make it harder for search engines to understand your topic, which can reduce your rankings. Long URLs with multiple parameters, random strings, or unclear paths can negatively impact both crawlability and user trust.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Does changing my URL affect SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Changing URLs can impact rankings temporarily, so always set proper redirects and update internal links. Use 301 redirects to pass link equity from old URLs to new ones and ensure all internal links point to the updated URLs.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Should I include keywords in my URL?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes, but only when natural. Keywords help search engines understand your topic without guessing. Include your primary keyword in the URL, but avoid keyword stuffing. Keep it concise and relevant to the page content.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How often should I check my website URLs for SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            It's good to review them regularly, especially when updating pages, restructuring content, or publishing new sections. A monthly audit is recommended for active websites, while quarterly checks work well for smaller sites with less frequent updates.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your URLs?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start analyzing your website URLs today with our powerful URL analysis online tool and improve your SEO performance
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('url_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start URL Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

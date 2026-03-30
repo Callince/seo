@@ -1,0 +1,675 @@
+/**
+ * Detail Pages CSS - SEO Dada
+ * Shared styles for meta_detail, keyword_detail, image_detail, h_detail pages
+ * Extracted from inline styles for better performance and maintainability
+ */
+
+/* ==========================================================================
+   CSS Variables for Detail Pages
+   ========================================================================== */
+:root {
+  --detail-color-primary: #273879;
+  --detail-color-primary-light: #3d4a91;
+  --detail-color-secondary: #0f74b2;
+  --detail-color-success: #28a745;
+  --detail-color-warning: #ffc107;
+  --detail-color-danger: #dc3545;
+  --detail-color-info: #17a2b8;
+  --detail-color-text: #1e293b;
+  --detail-color-text-light: #64748b;
+  --detail-color-border: #e5e7eb;
+  --detail-color-background: #f8fafc;
+  --detail-color-surface: #ffffff;
+  --detail-transition: 0.3s ease;
+  --detail-radius: 8px;
+  --detail-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --detail-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================================================
+   Bootstrap Primary Color Overrides
+   ========================================================================== */
+.btn-primary,
+.back-to-search {
+  background: linear-gradient(45deg, var(--detail-color-primary), var(--detail-color-secondary)) !important;
+  border-color: var(--detail-color-primary) !important;
+  color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.back-to-search:hover,
+.back-to-search:focus,
+.back-to-search:active {
+  background: linear-gradient(45deg, var(--detail-color-primary-light), var(--detail-color-secondary)) !important;
+  border-color: var(--detail-color-primary-light) !important;
+  color: white !important;
+  opacity: 0.95;
+}
+
+.btn-outline-primary {
+  color: var(--detail-color-primary) !important;
+  border-color: var(--detail-color-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--detail-color-primary) !important;
+  border-color: var(--detail-color-primary) !important;
+  color: white !important;
+}
+
+.bg-primary,
+.badge.bg-primary,
+.card-header.bg-primary {
+  background: linear-gradient(45deg, var(--detail-color-primary), var(--detail-color-secondary)) !important;
+}
+
+.text-primary {
+  color: var(--detail-color-primary) !important;
+}
+
+/* ==========================================================================
+   Progress Bar Colors
+   ========================================================================== */
+.progress-bar.bg-success {
+  background-color: var(--detail-color-success) !important;
+}
+
+.progress-bar.bg-warning {
+  background-color: var(--detail-color-warning) !important;
+}
+
+.progress-bar.bg-danger {
+  background-color: var(--detail-color-danger) !important;
+}
+
+.progress-bar.bg-primary {
+  background: linear-gradient(45deg, var(--detail-color-primary), var(--detail-color-secondary)) !important;
+}
+
+/* ==========================================================================
+   SEO Circle Chart Colors
+   ========================================================================== */
+.circular-chart .circle {
+  stroke: var(--detail-color-primary) !important;
+}
+
+.circular-chart .circle[stroke="#28a745"] {
+  stroke: var(--detail-color-success) !important;
+}
+
+.circular-chart .circle[stroke="#ffc107"] {
+  stroke: var(--detail-color-warning) !important;
+}
+
+.circular-chart .circle[stroke="#dc3545"] {
+  stroke: var(--detail-color-danger) !important;
+}
+
+/* ==========================================================================
+   Text Primary Elements
+   ========================================================================== */
+.fa-link.text-primary,
+.fa-heading.text-primary,
+.fa-ruler.text-primary,
+.fa-lightbulb.text-primary,
+.fas.text-primary {
+  color: var(--detail-color-primary) !important;
+}
+
+/* ==========================================================================
+   Card Header Customization
+   ========================================================================== */
+.card-header.bg-secondary {
+  background: linear-gradient(45deg, #6c757d, #5a6268) !important;
+}
+
+.card-header.bg-success {
+  background: linear-gradient(45deg, #28a745, #20c997) !important;
+}
+
+/* ==========================================================================
+   Badge Colors
+   ========================================================================== */
+.badge.bg-info {
+  background-color: var(--detail-color-secondary) !important;
+}
+
+.badge.bg-secondary {
+  background-color: #6c757d !important;
+}
+
+/* ==========================================================================
+   Loading Overlay
+   ========================================================================== */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+  transition: opacity 0.3s ease;
+}
+
+#loading-overlay.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#loading-overlay[style*="display: none"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+#loading-overlay .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3em;
+  color: var(--detail-color-primary) !important;
+}
+
+body.loading {
+  overflow: hidden;
+}
+
+#loading-overlay.hide-immediate {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* ==========================================================================
+   Enhanced Button Styles
+   ========================================================================== */
+.btn {
+  border-radius: var(--detail-radius);
+  transition: all var(--detail-transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.5s ease;
+  transform: skewX(-15deg);
+}
+
+.btn:hover::before,
+.btn:active::before {
+  transform: translateX(200%) skewX(-15deg);
+}
+
+.btn:hover,
+.btn:active {
+  transform: translateY(-1px);
+  box-shadow: var(--detail-shadow-md);
+}
+
+/* ==========================================================================
+   Enhanced Card Styles
+   ========================================================================== */
+.card {
+  border-radius: var(--detail-radius);
+  transition: all var(--detail-transition);
+  border: 1px solid var(--detail-color-border);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--detail-shadow-md);
+}
+
+/* ==========================================================================
+   Enhanced Progress Bars
+   ========================================================================== */
+.progress {
+  border-radius: calc(var(--detail-radius) / 2);
+  overflow: hidden;
+}
+
+.progress-bar {
+  transition: width 0.6s ease;
+}
+
+/* ==========================================================================
+   Enhanced Badges
+   ========================================================================== */
+.badge {
+  border-radius: calc(var(--detail-radius) / 2);
+  transition: all var(--detail-transition);
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* ==========================================================================
+   Enhanced Table Styles
+   ========================================================================== */
+.table-hover tbody tr:hover {
+  background-color: rgba(39, 56, 121, 0.05);
+}
+
+/* ==========================================================================
+   Enhanced Accordion Styles
+   ========================================================================== */
+.accordion-button {
+  color: var(--detail-color-text);
+  background-color: var(--detail-color-surface);
+  border: none;
+  border-radius: var(--detail-radius);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(39, 56, 121, 0.1);
+  color: var(--detail-color-primary);
+}
+
+.accordion-button:focus {
+  box-shadow: 0 0 0 0.25rem rgba(39, 56, 121, 0.25);
+}
+
+/* ==========================================================================
+   Enhanced Alert Styles
+   ========================================================================== */
+.alert {
+  border-radius: var(--detail-radius);
+  border: none;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1);
+  color: #721c24;
+  border-left: 4px solid var(--detail-color-danger);
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.1);
+  color: #856404;
+  border-left: 4px solid var(--detail-color-warning);
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  color: #155724;
+  border-left: 4px solid var(--detail-color-success);
+}
+
+.alert-info {
+  background-color: rgba(15, 116, 178, 0.1);
+  color: #0c5460;
+  border-left: 4px solid var(--detail-color-secondary);
+}
+
+/* ==========================================================================
+   Enhanced Link Styles
+   ========================================================================== */
+a {
+  color: var(--detail-color-primary);
+  text-decoration: none;
+  transition: color var(--detail-transition);
+}
+
+a:hover {
+  color: var(--detail-color-primary-light);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Sticky Top Enhancement
+   ========================================================================== */
+.sticky-top {
+  top: 1rem !important;
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+@keyframes detailFadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: detailFadeInUp 0.6s ease forwards;
+}
+
+/* ==========================================================================
+   Focus Styles for Accessibility
+   ========================================================================== */
+.btn:focus,
+.form-control:focus,
+.accordion-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.25rem rgba(39, 56, 121, 0.25);
+}
+
+[data-bs-toggle="tooltip"] {
+  cursor: help;
+}
+
+/* ==========================================================================
+   Score Indicator Styles
+   ========================================================================== */
+.score-indicator {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.score-indicator.score-good {
+  color: var(--detail-color-success);
+}
+
+.score-indicator.score-moderate {
+  color: var(--detail-color-warning);
+}
+
+.score-indicator.score-poor {
+  color: var(--detail-color-danger);
+}
+
+/* ==========================================================================
+   SEO Score Card Styles
+   ========================================================================== */
+.seo-score-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.seo-score-value {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.seo-score-label {
+  font-size: 0.875rem;
+  color: var(--detail-color-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   Meta Tag Display Styles
+   ========================================================================== */
+.meta-tag-display {
+  background-color: var(--detail-color-background);
+  border-radius: var(--detail-radius);
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.meta-tag-key {
+  color: var(--detail-color-primary);
+  font-weight: 600;
+}
+
+.meta-tag-value {
+  color: var(--detail-color-text);
+}
+
+/* ==========================================================================
+   Keyword Analysis Styles
+   ========================================================================== */
+.keyword-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: var(--detail-color-background);
+  border-radius: var(--detail-radius);
+  margin-bottom: 0.5rem;
+  transition: all var(--detail-transition);
+}
+
+.keyword-item:hover {
+  background-color: rgba(39, 56, 121, 0.05);
+  transform: translateX(3px);
+}
+
+.keyword-text {
+  font-weight: 500;
+  color: var(--detail-color-text);
+}
+
+.keyword-count {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--detail-color-primary);
+  color: white;
+  border-radius: calc(var(--detail-radius) / 2);
+}
+
+/* ==========================================================================
+   Image Analysis Styles
+   ========================================================================== */
+.image-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--detail-radius);
+  border: 1px solid var(--detail-color-border);
+}
+
+.image-info-table th {
+  width: 30%;
+  color: var(--detail-color-text-light);
+  font-weight: 500;
+}
+
+.image-info-table td {
+  color: var(--detail-color-text);
+}
+
+/* ==========================================================================
+   Heading Structure Styles
+   ========================================================================== */
+.heading-structure {
+  padding: 0;
+  list-style: none;
+}
+
+.heading-item {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--detail-radius);
+  background-color: var(--detail-color-background);
+  border-left: 3px solid var(--detail-color-primary);
+  transition: all var(--detail-transition);
+}
+
+.heading-item:hover {
+  background-color: rgba(39, 56, 121, 0.05);
+  transform: translateX(3px);
+}
+
+.heading-item.h1 {
+  border-left-color: var(--detail-color-primary);
+  padding-left: 1rem;
+}
+
+.heading-item.h2 {
+  border-left-color: var(--detail-color-secondary);
+  padding-left: 1.5rem;
+}
+
+.heading-item.h3 {
+  border-left-color: var(--detail-color-success);
+  padding-left: 2rem;
+}
+
+.heading-item.h4 {
+  border-left-color: var(--detail-color-warning);
+  padding-left: 2.5rem;
+}
+
+.heading-item.h5 {
+  border-left-color: var(--detail-color-info);
+  padding-left: 3rem;
+}
+
+.heading-item.h6 {
+  border-left-color: #6c757d;
+  padding-left: 3.5rem;
+}
+
+.heading-tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  background-color: var(--detail-color-primary);
+  padding: 0.125rem 0.375rem;
+  border-radius: calc(var(--detail-radius) / 2);
+  margin-right: 0.5rem;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+  .sticky-top {
+    position: relative !important;
+    top: 0 !important;
+  }
+
+  .score-indicator {
+    font-size: 2rem;
+  }
+
+  .seo-score-value {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .heading-item.h2 { padding-left: 1.25rem; }
+  .heading-item.h3 { padding-left: 1.5rem; }
+  .heading-item.h4 { padding-left: 1.75rem; }
+  .heading-item.h5 { padding-left: 2rem; }
+  .heading-item.h6 { padding-left: 2.25rem; }
+}
+
+/* ==========================================================================
+   Accessibility - Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn,
+  .badge,
+  .keyword-item,
+  .heading-item,
+  .animate-fade-in {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .card:hover,
+  .btn:hover,
+  .badge:hover,
+  .keyword-item:hover,
+  .heading-item:hover {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Accessibility - High Contrast
+   ========================================================================== */
+@media (prefers-contrast: high) {
+  .card {
+    border: 2px solid #000;
+  }
+
+  .btn {
+    border: 2px solid #000;
+  }
+
+  .alert {
+    border-left-width: 6px;
+  }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --detail-color-text: #f1f5f9;
+    --detail-color-text-light: #94a3b8;
+    --detail-color-border: #334155;
+    --detail-color-background: #1e293b;
+    --detail-color-surface: #0f172a;
+  }
+
+  .card {
+    background-color: var(--detail-color-background);
+    border-color: var(--detail-color-border);
+  }
+
+  .meta-tag-display {
+    background-color: var(--detail-color-surface);
+  }
+
+  .keyword-item,
+  .heading-item {
+    background-color: var(--detail-color-surface);
+  }
+
+  .accordion-button {
+    background-color: var(--detail-color-background);
+    color: var(--detail-color-text);
+  }
+
+  .accordion-button:not(.collapsed) {
+    background-color: rgba(39, 56, 121, 0.3);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(39, 56, 121, 0.2);
+  }
+
+  #loading-overlay {
+    background: rgba(15, 23, 42, 0.95);
+  }
+}

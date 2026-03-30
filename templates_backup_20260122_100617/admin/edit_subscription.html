@@ -1,0 +1,424 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Edit Subscription Plan{% endblock %}
+
+{% block page_title %}
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
+    <h1 class="h3 mb-2 mb-sm-0">Edit Subscription Plan</h1>
+    <a href="{{ url_for('admin_subscriptions') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i>
+        <span class="d-none d-sm-inline">Back to Plans</span>
+        <span class="d-sm-none">Back</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Main Form Card -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Plan Information</h5>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show mx-3 mt-3" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            <div class="card-body">
+                <form action="{{ url_for('admin_edit_subscription', id=subscription.S_ID) }}" method="POST" id="editSubscriptionForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    
+                    <div class="row g-3">
+                        <!-- Plan Name -->
+                        <div class="col-md-6">
+                            <label for="plan" class="form-label">Plan Name *</label>
+                            <input type="text" class="form-control" id="plan" name="plan" 
+                                   value="{{ subscription.plan }}" placeholder="Enter plan name" required>
+                        </div>
+                        
+                        <!-- Price -->
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Price *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control" id="price" name="price" 
+                                       value="{{ subscription.price }}" step="0.01" min="0" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Duration -->
+                        <div class="col-md-6">
+                            <label for="days" class="form-label">Duration (days) *</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="days" name="days" min="1" 
+                                       value="{{ subscription.days }}" placeholder="30" required>
+                                <span class="input-group-text">days</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Daily Usage -->
+                        <div class="col-md-6">
+                            <label for="usage_per_day" class="form-label">Daily Usage Limit *</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="usage_per_day" name="usage_per_day" 
+                                       min="1" value="{{ subscription.usage_per_day }}" placeholder="100" required>
+                                <span class="input-group-text">requests</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Tier -->
+                        <div class="col-md-6">
+                            <label for="tier" class="form-label">Tier Level *</label>
+                            <input type="number" class="form-control" id="tier" name="tier" min="1" 
+                                   value="{{ subscription.tier }}" placeholder="1" required>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <div class="form-check form-switch mt-2">
+                                <input class="form-check-input" type="checkbox" role="switch" id="is_active" 
+                                       name="is_active" {% if subscription.is_active %}checked{% endif %}>
+                                <label class="form-check-label" for="is_active">
+                                    Active Plan
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Features -->
+                        <div class="col-12">
+                            <label for="features" class="form-label">Features (JSON)</label>
+                            <textarea class="form-control" id="features" name="features" rows="3" 
+                                      placeholder='{"premium_support": true, "analytics": false}'>{{ subscription.features }}</textarea>
+                            <div class="form-text">Optional: Enter features in JSON format</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Actions -->
+                    <div class="d-flex flex-column flex-sm-row gap-2 mt-4">
+                        <a href="{{ url_for('admin_subscriptions') }}" class="btn btn-outline-secondary order-2 order-sm-1">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary order-1 order-sm-2">
+                            Update Plan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 text-center">
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 bg-light rounded">
+                            <div class="h5 mb-1" id="preview-price">₹{{ subscription.price }}</div>
+                            <small class="text-muted">Price</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 bg-light rounded">
+                            <div class="h5 mb-1" id="preview-days">{{ subscription.days }} days</div>
+                            <small class="text-muted">Duration</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 bg-light rounded">
+                            <div class="h5 mb-1" id="preview-usage">{{ subscription.usage_per_day }}/day</div>
+                            <small class="text-muted">Usage</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="p-3 bg-light rounded">
+                            <div class="h5 mb-1" id="preview-tier">Tier {{ subscription.tier }}</div>
+                            <small class="text-muted">Level</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <span class="badge" id="preview-status">
+                        {% if subscription.is_active %}
+                            <span class="badge bg-success">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Form Enhancements */
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    font-weight: 500;
+}
+
+/* Preview Cards */
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+/* Form Validation */
+.is-invalid {
+    border-color: #dc3545;
+}
+
+.is-valid {
+    border-color: #198754;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Loading State */
+.btn.loading {
+    pointer-events: none;
+    opacity: 0.65;
+}
+
+.btn.loading::after {
+    content: "";
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('editSubscriptionForm');
+    const featuresInput = document.getElementById('features');
+    
+    // Form inputs for preview updates
+    const priceInput = document.getElementById('price');
+    const daysInput = document.getElementById('days');
+    const usageInput = document.getElementById('usage_per_day');
+    const tierInput = document.getElementById('tier');
+    const activeInput = document.getElementById('is_active');
+    
+    // Preview elements
+    const previewPrice = document.getElementById('preview-price');
+    const previewDays = document.getElementById('preview-days');
+    const previewUsage = document.getElementById('preview-usage');
+    const previewTier = document.getElementById('preview-tier');
+    const previewStatus = document.getElementById('preview-status');
+
+    // Update preview in real-time
+    function updatePreview() {
+        if (priceInput && previewPrice) {
+            previewPrice.textContent = `₹${priceInput.value || '0'}`;
+        }
+        if (daysInput && previewDays) {
+            previewDays.textContent = `${daysInput.value || '0'} days`;
+        }
+        if (usageInput && previewUsage) {
+            previewUsage.textContent = `${usageInput.value || '0'}/day`;
+        }
+        if (tierInput && previewTier) {
+            previewTier.textContent = `Tier ${tierInput.value || '1'}`;
+        }
+        if (activeInput && previewStatus) {
+            if (activeInput.checked) {
+                previewStatus.innerHTML = '<span class="badge bg-success">Active</span>';
+            } else {
+                previewStatus.innerHTML = '<span class="badge bg-secondary">Inactive</span>';
+            }
+        }
+    }
+
+    // Add event listeners for real-time preview updates
+    [priceInput, daysInput, usageInput, tierInput].forEach(input => {
+        if (input) {
+            input.addEventListener('input', updatePreview);
+        }
+    });
+
+    if (activeInput) {
+        activeInput.addEventListener('change', updatePreview);
+    }
+
+    // JSON validation for features field
+    function validateJSON() {
+        const value = featuresInput.value.trim();
+        if (!value) {
+            featuresInput.classList.remove('is-invalid', 'is-valid');
+            return true;
+        }
+
+        try {
+            JSON.parse(value);
+            featuresInput.classList.remove('is-invalid');
+            featuresInput.classList.add('is-valid');
+            return true;
+        } catch (e) {
+            featuresInput.classList.remove('is-valid');
+            featuresInput.classList.add('is-invalid');
+            
+            // Add error message
+            let feedback = featuresInput.parentNode.querySelector('.invalid-feedback');
+            if (!feedback) {
+                feedback = document.createElement('div');
+                feedback.className = 'invalid-feedback';
+                featuresInput.parentNode.appendChild(feedback);
+            }
+            feedback.textContent = 'Please enter valid JSON format';
+            return false;
+        }
+    }
+
+    // JSON validation events
+    if (featuresInput) {
+        featuresInput.addEventListener('blur', validateJSON);
+    }
+
+    // Form validation on submit
+    if (form) {
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+
+            // Validate required fields
+            const requiredFields = ['plan', 'price', 'days', 'usage_per_day', 'tier'];
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && !field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else if (field) {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            });
+
+            // Validate JSON if provided
+            if (featuresInput && featuresInput.value.trim()) {
+                if (!validateJSON()) {
+                    isValid = false;
+                }
+            }
+
+            // Validate positive numbers
+            const numberFields = ['price', 'days', 'usage_per_day', 'tier'];
+            numberFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                if (field && (parseFloat(field.value) <= 0 || isNaN(parseFloat(field.value)))) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                
+                // Scroll to first invalid field
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstInvalid.focus();
+                }
+                return false;
+            }
+
+            // Add loading state to submit button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            }
+        });
+    }
+
+    // Real-time validation for number inputs
+    const numberInputs = document.querySelectorAll('input[type="number"]');
+    numberInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const value = parseFloat(this.value);
+            if (value <= 0 || isNaN(value)) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            } else {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+    });
+
+    // Auto-format JSON on blur
+    if (featuresInput) {
+        featuresInput.addEventListener('blur', function() {
+            const value = this.value.trim();
+            if (value) {
+                try {
+                    const parsed = JSON.parse(value);
+                    this.value = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    // Don't auto-format if JSON is invalid
+                }
+            }
+        });
+    }
+
+    // Initialize preview
+    updatePreview();
+});
+</script>
+{% endblock %}

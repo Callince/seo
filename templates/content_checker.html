@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5 Ways to Use Real-Time Content Analysis for Better Rankings</title>
+  <meta name="description" content="Fix your errors while you write. Use the SEODADA real-time content analysis tool to improve your titles and keywords for better growth in 2026.">
+  <meta name="keywords" content="SEO content analyzer, SEO content checker, on-page SEO checker, SEO writing tool, content optimization tool, keyword density checker, readability checker, Google SERP preview, meta title checker, SEO score checker">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://seodada.com/content-checker">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://seodada.com/content-checker">
+  <meta property="og:title" content="Free SEO Content Analyzer - Check SEO Score Online | SEODADA">
+  <meta property="og:description" content="Analyze your blog content's SEO score, readability, keyword density, heading structure, and Google snippet preview in real-time. Free on-page SEO checker by SEODADA.">
+  <meta property="og:site_name" content="SEODADA">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://seodada.com/content-checker">
+  <meta name="twitter:title" content="Free SEO Content Analyzer - Check SEO Score Online | SEODADA">
+  <meta name="twitter:description" content="Analyze your blog content's SEO score, readability, keyword density, heading structure, and Google snippet preview in real-time. Free on-page SEO checker by SEODADA.">
+
+  <!-- Schema.org - WebApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "@id": "https://seodada.com/content-checker#webapp",
+    "name": "SEODADA SEO Content Analyzer",
+    "url": "https://seodada.com/content-checker",
+    "description": "Free real-time SEO content analyzer that checks SEO score, readability, keyword density, heading structure, and Google snippet preview for your blog content.",
+    "applicationCategory": "SEO Tool",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "INR",
+      "availability": "https://schema.org/InStock"
+    },
+    "featureList": [
+      "Real-time SEO Score Analysis",
+      "Content Readability Score",
+      "Focus Keyword Optimization",
+      "Keyword Density Checker",
+      "Heading Structure Analysis",
+      "Google SERP Snippet Preview (Desktop & Mobile)",
+      "Meta Title & Description Length Checker",
+      "Word Count & Character Count",
+      "On-Page SEO Suggestions",
+      "Export Report as JSON"
+    ],
+    "creator": {
+      "@type": "Organization",
+      "name": "SEODADA",
+      "url": "https://seodada.com"
+    },
+    "isPartOf": {
+      "@type": "WebSite",
+      "@id": "https://seodada.com/#website"
+    }
+  }
+  </script>
+
+  <!-- Schema.org - BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": "https://seodada.com/content-checker#breadcrumb",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://seodada.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "SEO Content Analyzer",
+        "item": "https://seodada.com/content-checker"
+      }
+    ]
+  }
+  </script>
+
+ 
+
+  <!-- Inter font (matches seodada.com) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- CKEditor 5 Classic Build -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+
+  <!-- Tailwind config — palette matched to seodada.com
+       Navy #273879 · Cyan #0f74b2 · Teal #0891b2
+       BG #f8fafc · Surface #fff · Text #1e293b · Muted #64748b -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            navy:  { 50:'#eef2ff', 100:'#dce4fd', 200:'#b9c8fb', 300:'#8ba4f6', 400:'#5570e8', 500:'#3854d1', 600:'#273879', 700:'#1f2d5f', 800:'#172148', 900:'#101630' },
+            cyan:  { 50:'#ecfcff', 100:'#cff5fe', 200:'#a0e9fd', 300:'#60d5fa', 400:'#22b8e8', 500:'#0f74b2', 600:'#0a5d91', 700:'#084a74', 800:'#063857', 900:'#04253a' },
+            teal:  { 50:'#f0fdfa', 100:'#ccfbf1', 200:'#99f6e4', 300:'#5eead4', 400:'#2dd4bf', 500:'#0891b2', 600:'#0e7490', 700:'#155e75', 800:'#164e63', 900:'#134152' },
+            seo:   { good:'#22c55e', ok:'#f59e0b', poor:'#ef4444' },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* ── Smooth transitions ─────────────────────────────────────────── */
+    *, *::before, *::after { transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s; }
+
+    /* ── Scrollbar ──────────────────────────────────────────────────── */
+    .analysis-scroll::-webkit-scrollbar { width: 5px; }
+    .analysis-scroll::-webkit-scrollbar-track { background: transparent; }
+    .analysis-scroll::-webkit-scrollbar-thumb { background: #b9c8fb; border-radius: 3px; }
+    .dark .analysis-scroll::-webkit-scrollbar-thumb { background: #1f2d5f; }
+
+    /* ── Score gauge ring ───────────────────────────────────────────── */
+    .score-ring { transform: rotate(-90deg); }
+    .score-ring circle { transition: stroke-dashoffset 0.6s ease; }
+
+    /* ── Glassmorphism header (seodada style) ─────────────────────── */
+    .glass-header {
+      background: rgba(39, 56, 121, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-header {
+      background: rgba(16, 22, 48, 0.95);
+    }
+
+    /* ── Gradient text utility ─────────────────────────────────────── */
+    .text-gradient {
+      background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .dark .text-gradient {
+      background: linear-gradient(135deg, #8ba4f6 0%, #60d5fa 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    /* ── Card shadow (seodada style) ──────────────────────────────── */
+    .card {
+      background: #fff;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(39,56,121,.08); }
+    .dark .card {
+      background: #172148;
+      border-color: #1f2d5f;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .dark .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,.3); }
+
+    /* ── Google snippet preview — DESKTOP ─────────────────────────── */
+    .snippet-desktop .snippet-title { color: #1a0dab; font-size: 20px; line-height: 1.3; font-family: arial, sans-serif; }
+    .snippet-desktop .snippet-url   { color: #202124; font-size: 12px; font-family: arial, sans-serif; }
+    .snippet-desktop .snippet-url .snippet-url-domain { color: #202124; }
+    .snippet-desktop .snippet-url .snippet-url-path   { color: #5f6368; }
+    .snippet-desktop .snippet-desc  { color: #4d5156; font-size: 14px; line-height: 1.58; font-family: arial, sans-serif; }
+    .dark .snippet-desktop .snippet-title { color: #8ba4f6; }
+    .dark .snippet-desktop .snippet-url,
+    .dark .snippet-desktop .snippet-url .snippet-url-domain { color: #bdc1c6; }
+    .dark .snippet-desktop .snippet-url .snippet-url-path   { color: #9aa0a6; }
+    .dark .snippet-desktop .snippet-desc  { color: #bdc1c6; }
+
+    /* ── Google snippet preview — MOBILE ───────────────────────────── */
+    .snippet-mobile { max-width: 400px; }
+    .snippet-mobile .snippet-site-row { display: flex; align-items: center; gap: 10px; }
+    .snippet-mobile .snippet-favicon  { width: 28px; height: 28px; border-radius: 50%; background: #f1f3f4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .snippet-mobile .snippet-favicon svg { width: 16px; height: 16px; color: #5f6368; }
+    .snippet-mobile .snippet-site-name   { font-size: 14px; color: #202124; font-family: arial, sans-serif; line-height: 1.2; }
+    .snippet-mobile .snippet-site-url    { font-size: 12px; color: #4d5156; font-family: arial, sans-serif; }
+    .snippet-mobile .snippet-m-title     { color: #1a0dab; font-size: 18px; line-height: 1.3; font-family: arial, sans-serif; margin-top: 6px; }
+    .snippet-mobile .snippet-m-desc      { color: #4d5156; font-size: 13px; line-height: 1.5; font-family: arial, sans-serif; margin-top: 4px; }
+    .dark .snippet-mobile .snippet-favicon { background: #1f2d5f; }
+    .dark .snippet-mobile .snippet-favicon svg { color: #60d5fa; }
+    .dark .snippet-mobile .snippet-site-name { color: #e8eaed; }
+    .dark .snippet-mobile .snippet-site-url  { color: #9aa0a6; }
+    .dark .snippet-mobile .snippet-m-title   { color: #8ba4f6; }
+    .dark .snippet-mobile .snippet-m-desc    { color: #bdc1c6; }
+
+    /* ── Snippet tab active state ─────────────────────────────────── */
+    .snippet-tab-active { border-bottom: 2px solid #273879; color: #273879; font-weight: 600; }
+    .dark .snippet-tab-active { border-bottom-color: #8ba4f6; color: #8ba4f6; }
+
+    /* ── CKEditor overrides (navy / cyan theme) ───────────────────── */
+    .ck.ck-editor__editable_inline { min-height: 380px; font-family: Inter, system-ui, sans-serif !important; }
+    .ck.ck-editor__editable_inline:focus { border-color: #0f74b2 !important; box-shadow: 0 0 0 2px rgba(15,116,178,.2) !important; }
+    .ck.ck-toolbar { background: #f8fafc !important; border-color: #e2e8f0 !important; border-radius: 0.75rem 0.75rem 0 0 !important; }
+    .ck.ck-editor__main>.ck-editor__editable { border-color: #e2e8f0 !important; }
+    .dark .ck.ck-toolbar { background: #1f2d5f !important; border-color: #273879 !important; }
+    .dark .ck.ck-toolbar .ck-button { color: #8ba4f6 !important; }
+    .dark .ck.ck-toolbar .ck-button:hover { background: #273879 !important; }
+    .dark .ck.ck-toolbar .ck-dropdown__panel { background: #1f2d5f !important; border-color: #273879 !important; }
+    .dark .ck.ck-editor__main>.ck-editor__editable { background: #101630 !important; border-color: #1f2d5f !important; color: #e2e8f0 !important; }
+    .dark .ck.ck-editor__editable_inline:focus { border-color: #0f74b2 !important; box-shadow: 0 0 0 2px rgba(15,116,178,.3) !important; }
+    .dark .ck.ck-list__item .ck-button:hover { background: #273879 !important; }
+
+    /* ── Fade-in animation (seodada style) ─────────────────────────── */
+    .fade-in {
+      opacity: 0; transform: translateY(12px);
+      animation: fadeUp 0.5s ease-out forwards;
+    }
+    .fade-in-delay-1 { animation-delay: 0.08s; }
+    .fade-in-delay-2 { animation-delay: 0.16s; }
+    .fade-in-delay-3 { animation-delay: 0.24s; }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Gradient button ──────────────────────────────────────────── */
+    .btn-gradient {
+      background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+      color: #fff;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      font-size: 0.75rem;
+      box-shadow: 0 2px 8px rgba(39,56,121,.25);
+    }
+    .btn-gradient:hover {
+      box-shadow: 0 4px 16px rgba(39,56,121,.35);
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+
+<body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0c1322] dark:text-gray-100 min-h-screen font-sans">
+
+  <!-- ─── GLASSMORPHISM NAVBAR (seodada style) ────────────────────── -->
+  <header class="glass-header sticky top-0 z-50 shadow-lg shadow-navy-600/10 dark:shadow-black/20">
+    <div class="max-w-[1280px] mx-auto flex items-center justify-between px-4 sm:px-6 h-14">
+      <!-- Logo -->
+      <a href="{{ url_for('landing') }}" class="flex items-center gap-3">
+        {% if website_settings.website_logo_file %}
+          <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+            alt="{{ website_settings.website_name }}"
+            class="h-8 w-auto rounded"
+            width="120"
+            height="32"
+            decoding="async" />
+        {% elif website_settings.website_icon %}
+          <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+            <i class="{{ website_settings.website_icon }} text-white text-xl"></i>
+          </div>
+        {% endif %}
+        <h1 class="text-lg font-bold tracking-tight text-white">SEO Content Analyzer</h1>
+      </a>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-2">
+        <!-- Export -->
+        <button id="btn-export" title="Export report as JSON"
+          class="flex items-center gap-1.5 btn-gradient text-xs">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          </svg>
+          Export JSON
+        </button>
+        <!-- Dark mode -->
+        <button id="btn-darkmode" title="Toggle dark mode"
+          class="p-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── MAIN LAYOUT ────────────────────────────────────────────────── -->
+  <main class="max-w-[1280px] mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col lg:flex-row gap-6">
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           LEFT COLUMN — EDITOR
+           ═══════════════════════════════════════════════════════════════ -->
+      <section class="w-full lg:w-[58%] space-y-5">
+
+        <!-- Focus Keyword -->
+        <div class="card p-5 fade-in">
+          <label for="focus-keyword" class="block text-sm font-semibold mb-2 text-gradient">Focus Keyword / Keyphrase</label>
+          <input id="focus-keyword" type="text" placeholder='e.g. "real-time SEO analysis"'
+            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-navy-700 bg-[#f8fafc] dark:bg-[#101630] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm" />
+        </div>
+
+        <!-- SEO Title & Meta Description & Snippet Preview -->
+        <div class="card p-5 space-y-4 fade-in fade-in-delay-1">
+          <h2 class="text-sm font-semibold text-gradient">Google Snippet Settings</h2>
+
+          <!-- SEO Title -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="seo-title" class="text-xs font-medium text-[#64748b] dark:text-gray-400">Meta Title</label>
+              <span id="seo-title-count" class="text-xs text-gray-400">0 / 60</span>
+            </div>
+            <input id="seo-title" type="text" placeholder="Enter Meta title…"
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-navy-700 bg-[#f8fafc] dark:bg-[#101630] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm" />
+          </div>
+
+          <!-- Slug -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="seo-slug" class="text-xs font-medium text-[#64748b] dark:text-gray-400">URL Slug</label>
+            </div>
+            <input id="seo-slug" type="text" placeholder="your-page-slug"
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-navy-700 bg-[#f8fafc] dark:bg-[#101630] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm font-mono" />
+          </div>
+
+          <!-- Meta Description -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label for="meta-desc" class="text-xs font-medium text-[#64748b] dark:text-gray-400">Meta Description</label>
+              <span id="meta-desc-count" class="text-xs text-gray-400">0 / 160</span>
+            </div>
+            <textarea id="meta-desc" rows="3" placeholder="Enter meta description…"
+              class="w-full px-4 py-2.5 rounded-lg border border-gray-200 dark:border-navy-700 bg-[#f8fafc] dark:bg-[#101630] focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none text-sm"></textarea>
+          </div>
+
+          <!-- Snippet Preview — Desktop / Mobile tabs -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-xs font-medium text-[#64748b] dark:text-gray-400">Google Preview</h3>
+              <div class="flex border border-gray-200 dark:border-navy-700 rounded-lg overflow-hidden text-xs">
+                <button id="tab-desktop" type="button"
+                  class="snippet-tab-active flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-navy-800 hover:bg-gray-50 dark:hover:bg-navy-700">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                  Desktop
+                </button>
+                <button id="tab-mobile" type="button"
+                  class="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-navy-800 hover:bg-gray-50 dark:hover:bg-navy-700 border-l border-gray-200 dark:border-navy-700">
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                  Mobile
+                </button>
+              </div>
+            </div>
+
+            <!-- Desktop Preview -->
+            <div id="snippet-desktop" class="snippet-desktop bg-white dark:bg-[#101630] rounded-lg border border-gray-200 dark:border-navy-700 p-4">
+              <div id="snippet-d-title" class="snippet-title truncate">Your Meta Title</div>
+              <div class="snippet-url mt-0.5 flex items-center gap-1 text-xs">
+                <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                <span class="snippet-url-domain">example.com</span>
+                <span class="snippet-url-path"> › <span id="snippet-d-slug">your-page-slug</span></span>
+              </div>
+              <div id="snippet-d-desc" class="snippet-desc mt-1.5 line-clamp-2">Your meta description will appear here. Write a compelling summary to improve click-through rates.</div>
+            </div>
+
+            <!-- Mobile Preview (hidden by default) -->
+            <div id="snippet-mobile" class="snippet-mobile hidden bg-white dark:bg-[#101630] rounded-lg border border-gray-200 dark:border-navy-700 p-4 mx-auto">
+              <div class="snippet-site-row">
+                <div class="snippet-favicon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                </div>
+                <div>
+                  <div class="snippet-site-name">example.com</div>
+                  <div class="snippet-site-url">https://example.com › <span id="snippet-m-slug">your-page-slug</span></div>
+                </div>
+              </div>
+              <div id="snippet-m-title" class="snippet-m-title">Your Meta Title</div>
+              <div id="snippet-m-desc" class="snippet-m-desc line-clamp-3">Your meta description will appear here. Write a compelling summary to improve click-through rates.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Editor -->
+        <div class="card p-5 fade-in fade-in-delay-2">
+          <div class="flex items-center justify-between mb-3">
+            <label class="text-sm font-semibold text-gradient">Content</label>
+            <div class="flex items-center gap-3 text-xs text-[#64748b] dark:text-gray-400">
+              <span><strong id="word-count" class="text-navy-600 dark:text-cyan-300">0</strong> words</span>
+              <span><strong id="char-count" class="text-navy-600 dark:text-cyan-300">0</strong> chars</span>
+              <span><strong id="paragraph-count" class="text-navy-600 dark:text-cyan-300">0</strong> paragraphs</span>
+              <span><strong id="sentence-count" class="text-navy-600 dark:text-cyan-300">0</strong> sentences</span>
+            </div>
+          </div>
+          <textarea id="content-editor"></textarea>
+          <p class="text-xs text-[#64748b] mt-2">Use the toolbar above to add headings (H1–H6), bold, links, lists, and more.</p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════════════
+           RIGHT COLUMN — ANALYSIS PANEL (sticky sidebar)
+           ═══════════════════════════════════════════════════════════════ -->
+      <aside class="w-full lg:w-[42%] lg:sticky lg:top-20 lg:self-start space-y-5 analysis-scroll lg:max-h-[calc(100vh-5rem)] lg:overflow-y-auto lg:pr-1">
+
+        <!-- Score Gauges -->
+        <div class="grid grid-cols-2 gap-4 fade-in">
+          <!-- SEO Score -->
+          <div class="card p-5 flex flex-col items-center">
+            <svg class="score-ring w-24 h-24" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" stroke-width="8" fill="none" class="stroke-gray-100 dark:stroke-navy-800"/>
+              <circle id="seo-score-ring" cx="50" cy="50" r="42" stroke-width="8" fill="none"
+                stroke-linecap="round" class="stroke-red-500"
+                stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+            </svg>
+            <span id="seo-score-label" class="text-2xl font-bold -mt-[3.6rem] mb-6 text-navy-600 dark:text-cyan-300">0</span>
+            <span class="text-xs font-semibold text-[#64748b] dark:text-gray-400 uppercase tracking-wider">SEO Score</span>
+          </div>
+          <!-- Readability Score -->
+          <div class="card p-5 flex flex-col items-center">
+            <svg class="score-ring w-24 h-24" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="42" stroke-width="8" fill="none" class="stroke-gray-100 dark:stroke-navy-800"/>
+              <circle id="read-score-ring" cx="50" cy="50" r="42" stroke-width="8" fill="none"
+                stroke-linecap="round" class="stroke-red-500"
+                stroke-dasharray="263.89" stroke-dashoffset="263.89"/>
+            </svg>
+            <span id="read-score-label" class="text-2xl font-bold -mt-[3.6rem] mb-6 text-navy-600 dark:text-cyan-300">0</span>
+            <span class="text-xs font-semibold text-[#64748b] dark:text-gray-400 uppercase tracking-wider">Readability</span>
+          </div>
+        </div>
+
+        <!-- SEO Analysis Checks -->
+        <div class="card p-5 fade-in fade-in-delay-1">
+          <h2 class="text-sm font-semibold mb-3 flex items-center gap-2 text-gradient">
+            <svg class="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            SEO Analysis
+          </h2>
+          <ul id="seo-checks" class="space-y-2 text-sm"></ul>
+        </div>
+
+        <!-- Readability Analysis -->
+        <div class="card p-5 fade-in fade-in-delay-2">
+          <h2 class="text-sm font-semibold mb-3 flex items-center gap-2 text-gradient">
+            <svg class="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            Readability Analysis
+          </h2>
+          <ul id="readability-checks" class="space-y-2 text-sm"></ul>
+        </div>
+
+        <!-- Heading Structure -->
+        <div class="card p-5 fade-in fade-in-delay-3">
+          <h2 class="text-sm font-semibold mb-3 flex items-center gap-2 text-gradient">
+            <svg class="w-4 h-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h10M4 18h6"/></svg>
+            Heading Structure
+          </h2>
+          <div id="heading-structure" class="text-sm space-y-1">
+            <p class="text-[#64748b] italic text-xs">No headings detected yet.</p>
+          </div>
+        </div>
+
+        <!-- Suggestions Panel -->
+        <div class="card p-5 fade-in fade-in-delay-3">
+          <h2 class="text-sm font-semibold mb-3 flex items-center gap-2">
+            <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <span class="text-gradient">Suggestions</span>
+          </h2>
+          <ul id="suggestions-list" class="space-y-2 text-sm">
+            <li class="text-[#64748b] italic text-xs">Start typing to get suggestions…</li>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       CONTENT SECTIONS — Service-style layout
+       ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- Section: What Is Real-Time Content Analysis? -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">What Is Real-Time Content Analysis?</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">
+            Real-Time Content Analysis is a way to check your writing while you are still working on it. Instead of waiting until after you publish to see if you made a mistake, this seo optimization tool gives you feedback as you type. It acts like a live guide that helps you follow the best principles of search.
+          </p>
+          <p class="text-lg text-gray-600 dark:text-gray-300">
+            When you use a free seo tool like this, you can see how a search engine sees your words. It looks at your headings, your links, and your keywords to make sure everything is in the right place. This helps you build a site that is both helpful for people and easy for bots to understand.
+          </p>
+        </div>
+        <div class="bg-gradient-to-br from-navy-50 to-cyan-50 dark:from-navy-800 dark:to-navy-700 p-8 rounded-2xl border border-navy-100 dark:border-navy-600">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-navy-100 dark:bg-navy-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-quote-left text-2xl text-navy-600 dark:text-cyan-300"></i>
+            </div>
+            <blockquote class="text-xl italic text-gray-700 dark:text-gray-200 mb-4">
+              "Content is the reason search began in the first place."
+            </blockquote>
+            <p class="font-semibold text-navy-600 dark:text-cyan-400">— Bill Gates</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: How Real-Time Content Analysis Works -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-[#f8fafc] dark:bg-[#0c1322]">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">How Real-Time Content Analysis Works</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          The process is very simple. You paste your draft into our real-time content analysis checker. As you add or change words, the system updates your score immediately.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white dark:bg-navy-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-navy-700 hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 bg-cyan-100 dark:bg-cyan-900 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-keyboard text-2xl text-cyan-600 dark:text-cyan-400"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Keyword Check</h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            It tracks how often your main word appears to make sure it sounds natural and avoids keyword stuffing.
+          </p>
+        </div>
+
+        <div class="bg-white dark:bg-navy-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-navy-700 hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 bg-amber-100 dark:bg-amber-900 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-bolt text-2xl text-amber-600 dark:text-amber-400"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Instant Feedback</h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            You see alerts if a sentence is too long or if a heading is missing from your content structure.
+          </p>
+        </div>
+
+        <div class="bg-white dark:bg-navy-800 p-8 rounded-2xl shadow-lg border border-gray-100 dark:border-navy-700 hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-xl flex items-center justify-center mb-4">
+            <i class="fas fa-sync-alt text-2xl text-green-600 dark:text-green-400"></i>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">Live Updates</h3>
+          <p class="text-gray-600 dark:text-gray-300">
+            Every time you fix an error, your optimization score goes up in real time with live seo feedback.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 bg-gradient-to-br from-navy-50 to-cyan-50 dark:from-navy-800 dark:to-navy-700 p-8 rounded-2xl border border-navy-100 dark:border-navy-600 text-center">
+        <blockquote class="text-xl italic text-gray-700 dark:text-gray-200 mb-2">
+          "Focus on users and all else will follow."
+        </blockquote>
+        <p class="font-semibold text-navy-600 dark:text-cyan-400">— Google</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Why Real-Time Content Analysis Is Important for SEO -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="bg-gradient-to-br from-navy-600 to-cyan-500 p-8 rounded-2xl text-white">
+          <h3 class="text-2xl font-bold mb-4">Why It Matters</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start space-x-3">
+              <i class="fas fa-check-circle mt-1"></i>
+              <span>Well-structured content ranks higher</span>
+            </li>
+            <li class="flex items-start space-x-3">
+              <i class="fas fa-check-circle mt-1"></i>
+              <span>Fix errors before publishing, not after</span>
+            </li>
+            <li class="flex items-start space-x-3">
+              <i class="fas fa-check-circle mt-1"></i>
+              <span>Better experience for visitors</span>
+            </li>
+            <li class="flex items-start space-x-3">
+              <i class="fas fa-check-circle mt-1"></i>
+              <span>Build a stronger brand with quality</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-6">Why Real-Time Content Analysis Is Important for SEO</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-4">
+            Search engines prioritize content that is well-structured, easy to read and relevant to user intent. By using instant content optimization, you ensure that your work meets these standards before the content goes live.
+          </p>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+            In 2026, the speed of your work matters. A website seo checker saves you time because you do not have to go back and fix old posts. You get the quality right the first time. This creates a better experience for your visitors and helps you build a stronger brand.
+          </p>
+          <div class="bg-gradient-to-br from-navy-50 to-cyan-50 dark:from-navy-800 dark:to-navy-700 p-6 rounded-xl border border-navy-100 dark:border-navy-600">
+            <blockquote class="text-base italic text-gray-700 dark:text-gray-200 mb-2">
+              "Our algorithms are designed to surface helpful, reliable information that's created primarily for people."
+            </blockquote>
+            <p class="font-semibold text-navy-600 dark:text-cyan-400 text-sm">— Danny Sullivan</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Key SEO Factors Checked in Real Time -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-[#f8fafc] dark:bg-[#0c1322]">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Key SEO Factors Checked in Real Time</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Our seo website checker tool looks at four main areas to help you stay ahead.
+        </p>
+        <div class="mt-4 bg-gradient-to-br from-navy-50 to-cyan-50 dark:from-navy-800 dark:to-navy-700 p-4 rounded-xl border border-navy-100 dark:border-navy-600 inline-block">
+          <blockquote class="text-base italic text-gray-700 dark:text-gray-200 mb-1">
+            "Great SEO is increasingly dependent on having a great user experience."
+          </blockquote>
+          <p class="font-semibold text-navy-600 dark:text-cyan-400 text-sm">— Rand Fishkin</p>
+        </div>
+      </div>
+
+      <!-- Factors Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full bg-white dark:bg-navy-800 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-navy-700">
+          <thead>
+            <tr class="bg-gradient-to-r from-navy-600 to-cyan-500 text-white">
+              <th class="px-6 py-4 text-left font-semibold">Area</th>
+              <th class="px-6 py-4 text-left font-semibold">What We Check</th>
+              <th class="px-6 py-4 text-left font-semibold">Why It Matters</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-navy-700">
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-navy-600 dark:text-cyan-300">
+                <i class="fas fa-key mr-2"></i>Keyword Optimization
+              </td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">How often you use your main/focus word</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Helps you avoid speaking like a robot</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-navy-600 dark:text-cyan-300">
+                <i class="fas fa-sitemap mr-2"></i>Content Structure
+              </td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">The use of H1 and H2 tags</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Makes your page easy to scan</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-navy-600 dark:text-cyan-300">
+                <i class="fas fa-book-reader mr-2"></i>Readability
+              </td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Sentence length and simple words</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Keeps your readers from leaving</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-navy-600 dark:text-cyan-300">
+                <i class="fas fa-mobile-alt mr-2"></i>Meta Data Preview
+              </td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">How your title looks on a phone</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300">Drives more clicks from search</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Readability Sub-section -->
+      <div class="mt-12 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">Readability and User Experience</h3>
+          <p class="text-lg text-gray-600 dark:text-gray-300">
+            We believe that writing should be simple. Our seo tool checks if your paragraphs are too thick. It suggests breaks to give your readers "visual breathing room." This is a big part of on page seo analysis because it lowers your bounce rate.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white dark:bg-navy-800 p-5 rounded-xl shadow border border-gray-100 dark:border-navy-700 text-center">
+            <i class="fas fa-paragraph text-3xl text-navy-600 dark:text-cyan-400 mb-2"></i>
+            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Short Paragraphs</p>
+          </div>
+          <div class="bg-white dark:bg-navy-800 p-5 rounded-xl shadow border border-gray-100 dark:border-navy-700 text-center">
+            <i class="fas fa-text-width text-3xl text-navy-600 dark:text-cyan-400 mb-2"></i>
+            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Simple Words</p>
+          </div>
+          <div class="bg-white dark:bg-navy-800 p-5 rounded-xl shadow border border-gray-100 dark:border-navy-700 text-center">
+            <i class="fas fa-align-left text-3xl text-navy-600 dark:text-cyan-400 mb-2"></i>
+            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Clear Structure</p>
+          </div>
+          <div class="bg-white dark:bg-navy-800 p-5 rounded-xl shadow border border-gray-100 dark:border-navy-700 text-center">
+            <i class="fas fa-eye text-3xl text-navy-600 dark:text-cyan-400 mb-2"></i>
+            <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">Visual Breaks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Real-Time vs Traditional SEO Audits -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-navy-900">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Real-Time Content Analysis vs Traditional SEO Audits</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          Traditional audits happen after the work is done. A website seo analyse usually tells you what you did wrong last month. Live seo feedback tells you what to fix right now.
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto overflow-x-auto">
+        <table class="w-full bg-white dark:bg-navy-800 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-navy-700">
+          <thead>
+            <tr class="bg-gradient-to-r from-navy-600 to-cyan-500 text-white">
+              <th class="px-6 py-4 text-left font-semibold">Feature</th>
+              <th class="px-6 py-4 text-left font-semibold">Traditional Audit</th>
+              <th class="px-6 py-4 text-left font-semibold">Real-Time Analysis</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100 dark:divide-navy-700">
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Timing</td>
+              <td class="px-6 py-4 text-gray-500 dark:text-gray-400"><i class="fas fa-times-circle text-red-400 mr-2"></i>After publishing</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300"><i class="fas fa-check-circle text-green-500 mr-2"></i>While writing</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Speed</td>
+              <td class="px-6 py-4 text-gray-500 dark:text-gray-400"><i class="fas fa-times-circle text-red-400 mr-2"></i>Slow and manual</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300"><i class="fas fa-check-circle text-green-500 mr-2"></i>Instant and automatic</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Cost</td>
+              <td class="px-6 py-4 text-gray-500 dark:text-gray-400"><i class="fas fa-times-circle text-red-400 mr-2"></i>Often requires a consultant</td>
+              <td class="px-6 py-4 text-gray-600 dark:text-gray-300"><i class="fas fa-check-circle text-green-500 mr-2"></i>Accessible via our seo tool</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-12 bg-gradient-to-br from-navy-50 to-cyan-50 dark:from-navy-800 dark:to-navy-700 p-8 rounded-2xl border border-navy-100 dark:border-navy-600 text-center max-w-4xl mx-auto">
+        <blockquote class="text-xl italic text-gray-700 dark:text-gray-200 mb-2">
+          "The best content doesn't just rank — it satisfies the searcher's intent completely."
+        </blockquote>
+        <p class="font-semibold text-navy-600 dark:text-cyan-400">— Brian Dean</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: Who Should Use + How It Improves Quality -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-[#f8fafc] dark:bg-[#0c1322]">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid md:grid-cols-2 gap-12">
+        <!-- Who Should Use -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Who Should Use Real-Time Content Analysis Tools?</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+            Anyone who creates content should check seo online with this tool. It is perfect for:
+          </p>
+          <div class="space-y-4">
+            <div class="flex items-start space-x-4 bg-white dark:bg-navy-800 p-4 rounded-xl border border-gray-100 dark:border-navy-700">
+              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-pen-nib text-blue-600 dark:text-blue-400"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 dark:text-white">Bloggers</h4>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">To ensure every post is ready to rank</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-4 bg-white dark:bg-navy-800 p-4 rounded-xl border border-gray-100 dark:border-navy-700">
+              <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-briefcase text-green-600 dark:text-green-400"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 dark:text-white">Business Owners</h4>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">To check site seo without hiring an agency</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-4 bg-white dark:bg-navy-800 p-4 rounded-xl border border-gray-100 dark:border-navy-700">
+              <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-pencil-alt text-purple-600 dark:text-purple-400"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 dark:text-white">Copywriters</h4>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">To provide content analysis tool reports to their clients</p>
+              </div>
+            </div>
+            <div class="flex items-start space-x-4 bg-white dark:bg-navy-800 p-4 rounded-xl border border-gray-100 dark:border-navy-700">
+              <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-users text-amber-600 dark:text-amber-400"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 dark:text-white">Marketing Teams</h4>
+                <p class="text-gray-600 dark:text-gray-300 text-sm">To test seo tool features across different projects</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- How It Improves Quality + Future -->
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">How Real-Time Content Analysis Improves Content Quality</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
+            Using a test seo for website ensures that your message is clear. When you follow the seo content evaluation, you remove the fluff that bores readers. It makes your writing more professional and authoritative.
+          </p>
+
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">Future of Real-Time Content Analysis</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+            As search moves toward AI summaries, check web seo will become even more important. Tools will focus more on how well you answer a question rather than just counting words. SEODADA is at the front of this change, helping you check seo rank potential with every sentence.
+          </p>
+
+          <div class="bg-gradient-to-br from-navy-600 to-cyan-500 p-6 rounded-2xl text-white">
+            <div class="flex items-center space-x-3 mb-3">
+              <i class="fas fa-rocket text-2xl"></i>
+              <h4 class="text-lg font-bold">The Future Is Real-Time</h4>
+            </div>
+            <ul class="space-y-2 text-sm text-cyan-100">
+              <li class="flex items-start space-x-2"><i class="fas fa-check mt-1"></i><span>AI-powered content suggestions</span></li>
+              <li class="flex items-start space-x-2"><i class="fas fa-check mt-1"></i><span>Intent-based scoring over word counting</span></li>
+              <li class="flex items-start space-x-2"><i class="fas fa-check mt-1"></i><span>Deeper readability analysis</span></li>
+              <li class="flex items-start space-x-2"><i class="fas fa-check mt-1"></i><span>Smarter heading structure checks</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: FAQ -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-navy-900">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+        <p class="text-xl text-gray-600 dark:text-gray-300">Common questions about Real-Time Content Analysis</p>
+      </div>
+
+      <div class="space-y-4" id="content-faq">
+        <!-- FAQ 1 -->
+        <div class="bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-xl overflow-hidden">
+          <button onclick="toggleContentFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white">How accurate is real-time content analysis compared to manual SEO review?</span>
+            <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transition-transform"></i>
+          </button>
+          <div class="hidden px-6 pb-4">
+            <p class="text-gray-600 dark:text-gray-300">
+              Our seo tool is highly accurate for technical checks like keyword density and heading structure. While a human should always check for tone, the tool catches the errors that humans often miss. It provides a solid foundation for your on page seo analysis.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-xl overflow-hidden">
+          <button onclick="toggleContentFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white">Can real-time content analysis help reduce content revision time?</span>
+            <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transition-transform"></i>
+          </button>
+          <div class="hidden px-6 pb-4">
+            <p class="text-gray-600 dark:text-gray-300">
+              Yes. By using instant content optimization, you fix errors as you go. This means you do not have to spend hours editing after you finish your draft. It is the fastest way to check seo rank potential.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-xl overflow-hidden">
+          <button onclick="toggleContentFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white">How does real-time content analysis support content consistency?</span>
+            <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transition-transform"></i>
+          </button>
+          <div class="hidden px-6 pb-4">
+            <p class="text-gray-600 dark:text-gray-300">
+              The tool uses the same rules for every page you write. This ensures that your whole site has the same high level of quality. It acts as a standard seo website checker tool for all your writers.
+            </p>
+          </div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="bg-white dark:bg-navy-800 border border-gray-200 dark:border-navy-700 rounded-xl overflow-hidden">
+          <button onclick="toggleContentFaq(this)" class="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-navy-700 transition-colors">
+            <span class="font-semibold text-gray-900 dark:text-white">Does real-time content analysis replace SEO plugins or tools?</span>
+            <i class="fas fa-chevron-down text-gray-500 dark:text-gray-400 transition-transform"></i>
+          </button>
+          <div class="hidden px-6 pb-4">
+            <p class="text-gray-600 dark:text-gray-300">
+              This tool works alongside your existing setup. It is a specialized seo content evaluation that focuses on the quality of your writing. It gives you deeper insights than a basic free seo tool.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-navy-600 to-cyan-500">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your Content in Real Time?</h2>
+      <p class="text-xl text-cyan-100 mb-8">
+        Start using our real-time content analysis tool now. Scroll up and paste your content to get instant SEO feedback.
+      </p>
+      <a href="#focus-keyword" class="inline-flex items-center gap-2 bg-white text-navy-600 hover:bg-gray-100 font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+        <i class="fas fa-arrow-up"></i>
+        Start Analyzing Now
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER (matching seodada landing) ─────────────────────────── -->
+  <footer class="py-12 text-white w-full m-0 p-0" style="background-color: #1e293b;">
+    <div class="w-full py-12 px-4 sm:px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div class="sm:col-span-2 lg:col-span-1 text-left">
+            <!-- Footer Logo -->
+            <div class="mb-6 justify-start">
+              {% if website_settings.website_logo_file %}
+                <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                  alt="{{ website_settings.website_name }}"
+                  class="h-10 w-auto rounded"
+                  width="150"
+                  height="40"
+                  loading="lazy"
+                  decoding="async" />
+              {% elif website_settings.website_icon %}
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                  <i class="{{ website_settings.website_icon }} text-xl" style="color: #273879;"></i>
+                </div>
+              {% endif %}
+            </div>
+            <div class="flex space-x-4 justify-start">
+              <a href="https://www.facebook.com/profile.php?id=61584072508577&mibextid=rS40aB7S9Ucbxw6v" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-facebook"></i>
+              </a>
+              <a href="https://www.linkedin.com/company/seodada/" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="https://www.instagram.com/seodada1?igsh=cmwxb3VueXVjbnUz" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                <i class="fab fa-instagram"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="text-left">
+            <h3 class="text-lg font-bold mb-4">Solutions</h3>
+            <ul class="space-y-2">
+              <li><a href="{{ url_for('url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
+              <li><a href="{{ url_for('keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
+              <li><a href="{{ url_for('image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
+              <li><a href="{{ url_for('h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
+              <li><a href="{{ url_for('meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
+              <li><a href="{{ url_for('site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
+            </ul>
+          </div>
+
+          <div class="text-left">
+            <h3 class="text-lg font-bold mb-4">Resources</h3>
+            <ul class="space-y-2">
+              <li><a href="{{ url_for('content_checker') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
+              <li><a href="{{ url_for('public_blogs') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
+              <li><a href="{{ url_for('public_webstories') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
+              <li><a href="{{ url_for('help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
+            </ul>
+          </div>
+
+          <div class="text-left">
+            <h3 class="text-lg font-bold mb-4">Company</h3>
+            <ul class="space-y-2">
+              <li><a href="/about" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">About Us</a></li>
+              <li><a href="/pricing" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Pricing</a></li>
+              <li><a href="/contact" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Contact Us</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-8 lg:mt-12 pt-6 lg:pt-8 flex flex-col md:flex-row justify-between items-center text-left">
+          <p class="text-gray-400 text-sm mb-4 md:mb-0">
+            &copy; {{ current_year }} SEO Dada. All rights reserved.
+          </p>
+          <div class="flex flex-wrap justify-start gap-4">
+            <a href="/privacy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+            <a href="/terms" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+            <a href="/cookie-policy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie & Policy</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Load analysis engine -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+  <!-- FAQ toggle script -->
+  <script>
+    function toggleContentFaq(button) {
+      var content = button.nextElementSibling;
+      var icon = button.querySelector('i');
+      content.classList.toggle('hidden');
+      icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+    }
+  </script>
+
+</body>
+</html>

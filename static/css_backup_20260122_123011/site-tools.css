@@ -1,0 +1,974 @@
+/**
+ * Site Tools CSS - SEO Dada
+ * Styles for site_structure, visualize, loading pages
+ * Site crawler, visualization, and loading states
+ */
+
+/* ==========================================================================
+   CSS Variables for Site Tools
+   ========================================================================== */
+:root {
+  --tool-primary: #273879;
+  --tool-primary-light: #3d4a91;
+  --tool-secondary: #0f74b2;
+  --tool-text: #1e293b;
+  --tool-text-light: #64748b;
+  --tool-border: #e5e7eb;
+  --tool-background: #f8fafc;
+  --tool-surface: #ffffff;
+  --tool-accent: #0ea5e9;
+  --tool-transition: 0.3s;
+  --tool-radius: 8px;
+  --tool-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --tool-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --tool-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --tool-header-height: 70px;
+}
+
+/* ==========================================================================
+   Bootstrap Primary Color Overrides
+   ========================================================================== */
+.btn-primary,
+.mobile-control-btn:not(.secondary):not(.outline),
+.viz-control-button.primary {
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary)) !important;
+  border-color: var(--tool-primary) !important;
+  color: white !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.mobile-control-btn:not(.secondary):not(.outline):hover,
+.viz-control-button.primary:hover {
+  background: linear-gradient(45deg, var(--tool-primary-light), var(--tool-secondary)) !important;
+  border-color: var(--tool-primary-light) !important;
+  color: white !important;
+  opacity: 0.95;
+}
+
+.btn-outline-primary {
+  color: var(--tool-primary) !important;
+  border-color: var(--tool-primary) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus,
+.btn-outline-primary:active {
+  background-color: var(--tool-primary) !important;
+  border-color: var(--tool-primary) !important;
+  color: white !important;
+}
+
+.bg-primary,
+.badge.bg-primary {
+  background-color: var(--tool-primary) !important;
+}
+
+.text-primary {
+  color: var(--tool-primary) !important;
+}
+
+.card-header.bg-primary {
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary)) !important;
+}
+
+.progress-bar.bg-primary {
+  background-color: var(--tool-primary) !important;
+}
+
+/* ==========================================================================
+   Heading Colors Fix - Scoped to site tools pages
+   ========================================================================== */
+/* Card headers within site tools pages */
+.card-header h5,
+.card-header .card-title,
+.text-dark {
+  color: var(--tool-text) !important;
+}
+
+/* Site tool specific headings - use specific selectors instead of global */
+.viz-app h1,
+.viz-app h2,
+.viz-app h3,
+.viz-panel-header h1,
+.mobile-viz-title,
+.container > h1.mb-4.text-dark {
+  color: var(--tool-text);
+}
+
+/* ==========================================================================
+   Progress Bar Styling (Loading Page)
+   ========================================================================== */
+.progress {
+  background-color: #e9ecef;
+  border-radius: var(--tool-radius);
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--tool-primary) 0%, var(--tool-secondary) 100%) !important;
+  border-radius: var(--tool-radius);
+  transition: width var(--tool-transition) ease;
+  font-weight: 600;
+  color: white;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Spinner Styling
+   ========================================================================== */
+.spinner-border {
+  color: var(--tool-secondary) !important;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ==========================================================================
+   Status Text Colors
+   ========================================================================== */
+#status-text {
+  color: var(--tool-primary) !important;
+  font-weight: 600;
+}
+
+#status-message {
+  color: var(--tool-secondary) !important;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Card Styling Improvements
+   ========================================================================== */
+.card {
+  border: 1px solid rgba(39, 56, 121, 0.1);
+  border-radius: 12px;
+}
+
+.card-header {
+  background: linear-gradient(135deg, var(--tool-primary), var(--tool-secondary));
+  color: white;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+/* ==========================================================================
+   Compact Card Styles
+   ========================================================================== */
+.compact-card {
+  box-shadow: var(--tool-shadow-md);
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius);
+  transition: transform var(--tool-transition), box-shadow var(--tool-transition);
+  background: white;
+}
+
+.compact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--tool-shadow-lg);
+}
+
+.compact-card .card-header {
+  background: linear-gradient(45deg, #f8f9fa, #ffffff);
+  border-bottom: 1px solid var(--tool-border);
+  transition: background var(--tool-transition) ease;
+  color: var(--tool-text);
+}
+
+.compact-card:hover .card-header {
+  background: linear-gradient(45deg, #f3f4f6, #ffffff);
+}
+
+/* ==========================================================================
+   Compact Button Styles
+   ========================================================================== */
+.compact-btn {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  border-radius: var(--tool-radius);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: all var(--tool-transition);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--tool-shadow-md);
+}
+
+.compact-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+  transition: transform 0.6s ease;
+}
+
+.compact-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--tool-shadow-lg);
+}
+
+.compact-btn:hover::after {
+  transform: translateX(200%);
+}
+
+.compact-btn:active {
+  transform: translateY(1px);
+}
+
+.btn-sm.compact-btn {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   Hover Border Button Effect
+   ========================================================================== */
+.hover-border-btn {
+  position: relative;
+  transition: all var(--tool-transition) ease;
+  border: 2px solid transparent !important;
+}
+
+.hover-border-btn.btn-outline-danger {
+  color: #dc3545;
+  border-color: #dc3545 !important;
+}
+
+.hover-border-btn.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d !important;
+}
+
+.hover-border-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border-width: 3px !important;
+}
+
+.hover-border-btn.btn-outline-danger:hover {
+  border-color: #dc3545 !important;
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.hover-border-btn.btn-outline-secondary:hover {
+  border-color: #6c757d !important;
+  background-color: rgba(108, 117, 125, 0.1);
+}
+
+/* ==========================================================================
+   Search Bar Styles
+   ========================================================================== */
+.search-bar {
+  position: relative;
+  animation: fadeInUp 0.7s ease backwards;
+  animation-delay: 0.3s;
+}
+
+.search-input {
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius);
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  transition: all var(--tool-transition) ease;
+}
+
+.search-input:focus {
+  border-color: var(--tool-primary);
+  box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+}
+
+/* ==========================================================================
+   Link Item Styling
+   ========================================================================== */
+.home-links-container.compact {
+  max-height: 350px;
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius);
+  animation: fadeIn 0.5s ease backwards;
+  overflow-y: auto;
+}
+
+.link-item {
+  padding: 0.7rem;
+  border-bottom: 1px solid var(--tool-border);
+  transition: background-color var(--tool-transition) ease, transform var(--tool-transition) ease;
+  animation: fadeInStaggered 0.6s ease backwards;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.link-item:last-child {
+  border-bottom: none;
+}
+
+.link-item:hover {
+  background-color: rgba(39, 56, 121, 0.05);
+  transform: translateX(5px);
+}
+
+.action-badge {
+  opacity: 0.7;
+  transition: all var(--tool-transition) ease;
+  margin-left: 0.3rem;
+}
+
+.action-badge:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Small Text Style
+   ========================================================================== */
+.small {
+  font-size: 0.85rem;
+  color: var(--tool-text-light);
+}
+
+/* ==========================================================================
+   Custom Scrollbar
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--tool-primary) 0%, var(--tool-secondary) 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--tool-primary);
+}
+
+/* ==========================================================================
+   Visualization App Container
+   ========================================================================== */
+.viz-app {
+  display: flex;
+  height: calc(100vh - var(--tool-header-height, 70px));
+  width: 100%;
+  position: relative;
+  background-color: var(--tool-background);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Desktop Control Panel
+   ========================================================================== */
+.viz-control-panel {
+  width: 320px;
+  background-color: var(--tool-surface);
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  transition: transform var(--tool-transition) cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  box-shadow: var(--tool-shadow-md);
+  z-index: 90;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tool-primary-light) transparent;
+}
+
+.viz-control-panel::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+.viz-control-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.viz-control-panel::-webkit-scrollbar-thumb {
+  background-color: var(--tool-primary-light);
+  border-radius: 0.625rem;
+}
+
+.viz-control-panel.collapsed {
+  transform: translateX(-280px);
+}
+
+/* ==========================================================================
+   Panel Toggle Button
+   ========================================================================== */
+.panel-toggle {
+  position: absolute;
+  right: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 60px;
+  background-color: var(--tool-surface);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: none;
+  border-radius: 0 var(--tool-radius) var(--tool-radius) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--tool-shadow-sm);
+  transition: all var(--tool-transition);
+  z-index: 91;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.panel-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 0 var(--tool-radius) var(--tool-radius) 0;
+  transform: scale(0);
+  transition: transform 0.5s ease;
+}
+
+.panel-toggle:hover::before {
+  transform: scale(1);
+}
+
+.panel-toggle:hover {
+  background-color: var(--tool-background);
+  color: var(--tool-primary);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.panel-toggle svg {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--tool-transition);
+}
+
+.viz-control-panel.collapsed .panel-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* ==========================================================================
+   Mobile Visualization Header
+   ========================================================================== */
+.mobile-viz-header {
+  display: none;
+  background-color: var(--tool-surface);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  box-shadow: var(--tool-shadow-sm);
+  z-index: 100;
+  position: relative;
+}
+
+.mobile-viz-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.mobile-viz-controls {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mobile-control-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ==========================================================================
+   Mobile Control Select
+   ========================================================================== */
+.mobile-control-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--tool-radius);
+  font-size: 0.875rem;
+  background-color: var(--tool-surface);
+  cursor: pointer;
+  transition: all var(--tool-transition);
+  min-height: 44px;
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+.mobile-control-select:focus {
+  outline: none;
+  border-color: var(--tool-primary);
+  box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+}
+
+/* ==========================================================================
+   Mobile Control Button
+   ========================================================================== */
+.mobile-control-btn {
+  padding: 0.75rem;
+  border: none;
+  border-radius: var(--tool-radius);
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary));
+  color: white;
+  cursor: pointer;
+  transition: all var(--tool-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 0.875rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-control-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: transform 0.5s ease;
+  transform: skewX(-15deg);
+}
+
+.mobile-control-btn:hover::before,
+.mobile-control-btn:active::before {
+  transform: translateX(200%) skewX(-15deg);
+}
+
+.mobile-control-btn:hover,
+.mobile-control-btn:active {
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: var(--tool-shadow-md);
+}
+
+.mobile-control-btn.secondary {
+  background: var(--tool-surface);
+  color: var(--tool-text);
+  border: 2px solid var(--tool-primary);
+}
+
+.mobile-control-btn.secondary:hover {
+  background: var(--tool-primary);
+  color: white;
+}
+
+.mobile-control-btn.outline {
+  background: transparent;
+  border: 2px solid var(--tool-primary);
+  color: var(--tool-primary);
+}
+
+.mobile-control-btn.outline:hover {
+  background: var(--tool-primary);
+  color: white;
+}
+
+/* ==========================================================================
+   Mobile Search Container
+   ========================================================================== */
+.mobile-search-container {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all var(--tool-transition) cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-10px);
+}
+
+.mobile-search-container.active {
+  opacity: 1;
+  max-height: 100px;
+  transform: translateY(0);
+  margin-top: 0.75rem;
+}
+
+/* ==========================================================================
+   Mobile Slider Group
+   ========================================================================== */
+.mobile-slider-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(39, 56, 121, 0.05);
+  border-radius: var(--tool-radius);
+  border: 1px solid rgba(39, 56, 121, 0.1);
+}
+
+.mobile-slider-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mobile-slider-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tool-text);
+  text-align: center;
+}
+
+.mobile-slider-input {
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.mobile-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary));
+  cursor: pointer;
+  transition: all var(--tool-transition);
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-slider-input::-webkit-slider-thumb:hover,
+.mobile-slider-input::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(39, 56, 121, 0.3);
+}
+
+.mobile-slider-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tool-primary);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Main Visualization Container
+   ========================================================================== */
+.viz-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--tool-background);
+  background-image: radial-gradient(circle at 1px 1px, rgba(39, 56, 121, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  touch-action: none;
+}
+
+/* ==========================================================================
+   Control Panel Sections
+   ========================================================================== */
+.viz-panel-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to right, rgba(249, 250, 251, 0.8), rgba(255, 255, 255, 0.8));
+}
+
+.viz-panel-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.viz-panel-header p {
+  font-size: 0.875rem;
+  color: var(--tool-text-light);
+  line-height: 1.6;
+}
+
+.viz-control-section {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color var(--tool-transition);
+}
+
+.viz-control-section:hover {
+  background-color: rgba(39, 56, 121, 0.02);
+}
+
+.viz-section-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--tool-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.viz-section-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 2rem;
+  height: 0.125rem;
+  background: linear-gradient(45deg, var(--tool-primary), var(--tool-secondary));
+  border-radius: var(--tool-radius);
+}
+
+/* ==========================================================================
+   Search Box
+   ========================================================================== */
+.viz-search-box {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.viz-search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-left: 36px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--tool-radius);
+  font-size: 0.875rem;
+  background-color: var(--tool-surface);
+  transition: all var(--tool-transition);
+  min-height: 44px;
+  -webkit-appearance: none;
+}
+
+.viz-search-input:focus {
+  outline: none;
+  border-color: var(--tool-primary);
+  box-shadow: 0 0 0 3px rgba(39, 56, 121, 0.1);
+  transform: translateY(-1px);
+}
+
+.viz-search-input::placeholder {
+  color: var(--tool-text-light);
+  opacity: 0.8;
+}
+
+.viz-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  opacity: 0.5;
+  color: var(--tool-text-light);
+  pointer-events: none;
+  transition: all var(--tool-transition);
+}
+
+.viz-search-input:focus + .viz-search-icon {
+  color: var(--tool-primary);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   Animation Keyframes
+   ========================================================================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInStaggered {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Responsive - Tablet and Mobile
+   ========================================================================== */
+@media (max-width: 768px) {
+  h1 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+  .btn { padding: 12px; margin-bottom: 10px; }
+  .progress { height: 20px; }
+  .text-truncate { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .d-flex.justify-content-between { flex-direction: column; }
+
+  .card-header h2 { font-size: 1.6rem; }
+  .card-header p { font-size: 0.95rem; }
+
+  /* Show mobile search container and hide desktop one */
+  .mobile-search-container {
+    display: block !important;
+  }
+
+  .desktop-search-container {
+    display: none !important;
+  }
+
+  /* Mobile search bar styling */
+  .input-group {
+    display: flex;
+    width: 100%;
+  }
+
+  .input-group-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0.375rem;
+    font-size: 0.875rem;
+  }
+
+  .form-control {
+    height: 38px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  /* Add spacing between mobile search input and button */
+  .mobile-search-container {
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust button positioning */
+  .compact-btn {
+    margin-top: 0.5rem;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  /* Mobile visualization header */
+  .mobile-viz-header {
+    display: block;
+  }
+
+  .viz-control-panel {
+    display: none;
+  }
+
+  .viz-app {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - var(--tool-header-height));
+  }
+
+  .viz-container {
+    height: calc(100vh - 200px);
+  }
+}
+
+/* ==========================================================================
+   Accessibility - Reduced Motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .compact-btn,
+  .compact-card,
+  .link-item,
+  .search-bar,
+  .search-input,
+  .action-badge,
+  .home-links-container.compact,
+  .panel-toggle,
+  .mobile-control-btn,
+  .viz-search-input {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .compact-btn:hover,
+  .compact-card:hover,
+  .link-item:hover,
+  .panel-toggle:hover,
+  .mobile-control-btn:hover {
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Print Styles
+   ========================================================================== */
+@media print {
+  .viz-control-panel,
+  .mobile-viz-header,
+  .panel-toggle,
+  .btn {
+    display: none !important;
+  }
+
+  .viz-app {
+    height: auto;
+  }
+
+  .viz-container {
+    height: auto;
+  }
+}

@@ -1,0 +1,481 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Add Blog - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Blog
+                        </h5>
+                        <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Blogs
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin_add_blog') }}" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+                        <!-- General Tab -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">General Information</h6>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="title" class="form-label fw-semibold">
+                                    Title <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                       placeholder="Enter blog title" required>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="slug" class="form-label fw-semibold">
+                                    Slug <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="slug" name="slug"
+                                       placeholder="blog-url-slug" required>
+                                <small class="form-text text-muted">URL-friendly version of the title (auto-generated from title)</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+			    <div class="col-md-6">
+                                <label for="author_name" class="form-label fw-semibold">
+                                    Author Name
+                                </label>
+                                <input type="text" class="form-control" id="author_name" name="author_name"
+                                       placeholder="Enter author name">
+                                <small class="form-text text-muted">This name will be displayed on the blog post</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="category_id" class="form-label fw-semibold">Category</label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    <option value="">Select Category</option>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="publish_date" class="form-label fw-semibold">Publish Date</label>
+                                <input type="date" class="form-control" id="publish_date" name="publish_date">
+                                <small class="form-text text-muted">Date when the blog will be published</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="image" class="form-label fw-semibold">Blog Image</label>
+                                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                <small class="form-text text-muted">Recommended size: 1200x630px</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="description" class="form-label fw-semibold">Description</label>
+
+                                <!-- SEO Image Alt Text Reminder -->
+                                <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+                                    <i class="fas fa-lightbulb me-2"></i><strong>SEO Tip:</strong> When adding images to your blog content, always click the image and add descriptive alt text using the toolbar button. Alt text improves SEO and accessibility!
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                <textarea class="form-control" id="description" name="description"
+                                          rows="8" placeholder="Enter blog content"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- SEO Tab -->
+                        <div class="row mb-4 mt-5">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">SEO Information</h6>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="meta_title" class="form-label fw-semibold">Meta Title</label>
+                                <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                       placeholder="Enter meta title for SEO">
+                                <small class="form-text text-muted">Recommended length: 50-60 characters</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="meta_keyword" class="form-label fw-semibold">Meta Keywords</label>
+                                <textarea class="form-control" id="meta_keyword" name="meta_keyword"
+                                          rows="2" placeholder="Enter meta keywords separated by commas"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="meta_description" class="form-label fw-semibold">Meta Description</label>
+                                <textarea class="form-control" id="meta_description" name="meta_description"
+                                          rows="3" placeholder="Enter meta description for SEO"></textarea>
+                                <small class="form-text text-muted">Recommended length: 150-160 characters</small>
+                            </div>
+                        </div>
+
+                        <!-- FAQ Section for Schema -->
+                        <div class="row mb-4 mt-5">
+                            <div class="col-12">
+                                <h6 class="text-muted mb-3">FAQ Schema (for SEO)</h6>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div id="faq-container">
+                                </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="addFaq()">
+                                    <i class="fas fa-plus me-1"></i>Add FAQ
+                                </button>
+                                <small class="d-block mt-2 text-muted">Add frequently asked questions to generate FAQ schema for better SEO</small>
+                            </div>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="status" name="status" checked>
+                                    <label class="form-check-label fw-semibold" for="status">
+                                        Active
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="fas fa-save me-2"></i>Save Blog
+                                    </button>
+                                    <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary px-4">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #4895ef;
+        box-shadow: 0 0 0 0.2rem rgba(72, 149, 239, 0.25);
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .card-header {
+        border-top-left-radius: 12px !important;
+        border-top-right-radius: 12px !important;
+    }
+
+    /* CKEditor List Styles - Fix bullet points visibility */
+    .ck-editor__editable ul,
+    .ck-editor__editable ol {
+        padding-left: 2rem !important;
+        margin: 0.5rem 0 !important;
+    }
+
+    .ck-editor__editable ul {
+        list-style-type: disc !important;
+    }
+
+    .ck-editor__editable ol {
+        list-style-type: decimal !important;
+    }
+
+    .ck-editor__editable ul li,
+    .ck-editor__editable ol li {
+        display: list-item !important;
+        margin-bottom: 0.25rem;
+    }
+
+    .ck-editor__editable ul ul {
+        list-style-type: circle !important;
+    }
+
+    .ck-editor__editable ul ul ul {
+        list-style-type: square !important;
+    }
+
+    /* Ensure CKEditor content area has proper min-height */
+    .ck-editor__editable {
+        min-height: 300px;
+    }
+</style>
+
+<!-- CKEditor 5 Classic Build -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+
+<script>
+    // Auto-generate slug from title
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('title');
+        const slugInput = document.getElementById('slug');
+        let manuallyEdited = false;
+
+        // Function to generate slug from string
+        function generateSlug(text) {
+            return text
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '') // Remove special characters
+                .replace(/\s+/g, '-')      // Replace spaces with hyphens
+                .replace(/-+/g, '-');      // Replace multiple hyphens with single hyphen
+        }
+
+        // Auto-generate slug when title changes
+        titleInput.addEventListener('input', function() {
+            if (!manuallyEdited) {
+                slugInput.value = generateSlug(this.value);
+            }
+        });
+
+        // Track manual edits to slug
+        slugInput.addEventListener('input', function() {
+            manuallyEdited = true;
+        });
+
+        // Reset manual edit flag if slug is cleared
+        slugInput.addEventListener('blur', function() {
+            if (this.value === '') {
+                manuallyEdited = false;
+            }
+        });
+    });
+
+    // Custom upload adapter for CKEditor
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+
+        upload() {
+            return this.loader.file.then(file => new Promise((resolve, reject) => {
+                const data = new FormData();
+                data.append('upload', file);
+
+                fetch('{{ url_for("admin_blog_upload_image") }}', {
+                    method: 'POST',
+                    body: data,
+                    credentials: 'include'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (result.uploaded) {
+                        console.log('Image uploaded successfully:', result.url);
+                        resolve({
+                            default: result.url
+                        });
+                    } else {
+                        const errorMsg = result.error ? result.error.message : 'Upload failed';
+                        console.error('Upload error:', errorMsg);
+                        reject(errorMsg);
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload failed:', error);
+                    reject('Upload failed: ' + error.message);
+                });
+            }));
+        }
+
+        abort() {
+            // Handle abort
+        }
+    }
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
+    // Initialize CKEditor
+    ClassicEditor
+        .create(document.querySelector('#description'), {
+            extraPlugins: [MyCustomUploadAdapterPlugin],
+            toolbar: {
+                items: [
+                    'heading', '|',
+                    'bold', 'italic', 'underline', 'strikethrough', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'outdent', 'indent', '|',
+                    'link', 'imageUpload', 'mediaEmbed', 'insertTable', '|',
+                    'blockQuote', 'horizontalLine', '|',
+                    'undo', 'redo'
+                ],
+                shouldNotGroupWhenFull: true
+            },
+            heading: {
+                options: [
+                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
+                ]
+            },
+            link: {
+                decorators: {
+                    openInNewTab: {
+                        mode: 'manual',
+                        label: 'Open in a new tab',
+                        attributes: {
+                            target: '_blank',
+                            rel: 'noopener noreferrer'
+                        }
+                    }
+                }
+            },
+            image: {
+                toolbar: [
+                    'imageTextAlternative', '|',
+                    'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+                    'linkImage'
+                ],
+                styles: [
+                    'full',
+                    'side',
+                    'alignLeft',
+                    'alignCenter',
+                    'alignRight'
+                ],
+                resizeUnit: 'px',
+                resizeOptions: [
+                    {
+                        name: 'resizeImage:original',
+                        value: null,
+                        label: 'Original'
+                    },
+                    {
+                        name: 'resizeImage:50',
+                        value: '50',
+                        label: '50%'
+                    },
+                    {
+                        name: 'resizeImage:75',
+                        value: '75',
+                        label: '75%'
+                    }
+                ]
+            },
+            table: {
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+            }
+        })
+        .then(editor => {
+            window.blogEditor = editor;
+            console.log('CKEditor initialized successfully', editor);
+            console.log('Image upload is configured and ready!');
+
+            // Add event listener to warn if images don't have alt text
+            editor.model.document.on('change:data', () => {
+                const imageElements = editor.model.document.getRoot().getChildren();
+                let imagesWithoutAlt = 0;
+
+                for (const item of imageElements) {
+                    if (item.name === 'imageBlock' || item.name === 'imageInline') {
+                        const alt = item.getAttribute('alt');
+                        if (!alt || alt.trim() === '') {
+                            imagesWithoutAlt++;
+                        }
+                    }
+                }
+
+                // You can add a visual indicator here if needed
+                if (imagesWithoutAlt > 0) {
+                    console.warn(`⚠️ SEO Warning: ${imagesWithoutAlt} image(s) missing alt text for accessibility and SEO`);
+                }
+            });
+        })
+        .catch(error => {
+            console.error('CKEditor initialization error:', error);
+        });
+
+    // FAQ Management Functions
+    let faqCounter = 0;
+
+    function addFaq() {
+        faqCounter++;
+        const container = document.getElementById('faq-container');
+        const faqItem = document.createElement('div');
+        faqItem.className = 'faq-item card mb-3';
+        faqItem.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <span class="badge bg-primary">FAQ ${faqCounter}</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeFaq(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small fw-semibold">Question</label>
+                    <input type="text" class="form-control faq-question" name="faq_questions[]"
+                           placeholder="Enter question">
+                </div>
+                <div>
+                    <label class="form-label small fw-semibold">Answer</label>
+                    <textarea class="form-control faq-answer" name="faq_answers[]"
+                              rows="2" placeholder="Enter answer"></textarea>
+                </div>
+            </div>
+        `;
+        container.appendChild(faqItem);
+        updateFaqNumbers();
+    }
+
+    function removeFaq(button) {
+        const faqItem = button.closest('.faq-item');
+        faqItem.remove();
+        updateFaqNumbers();
+    }
+
+    function updateFaqNumbers() {
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach((item, index) => {
+            const badge = item.querySelector('.badge');
+            if (badge) {
+                badge.textContent = `FAQ ${index + 1}`;
+            }
+        });
+        faqCounter = faqItems.length;
+    }
+</script>
+{% endblock %}

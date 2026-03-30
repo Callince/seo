@@ -1,0 +1,818 @@
+
+{% extends "base1.html" %}
+
+{% block title %}Sign Up | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Main auth content -->
+  <div class="auth-container auth-container--wide">
+    <div class="auth-logo">
+      <a href="{{ url_for('landing') }}" class="auth-logo-link">
+        {% if website_settings.website_logo_file %}
+            <!-- Admin uploaded logo -->
+            <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                alt="{{ website_settings.website_name }} Logo"
+                id="websiteLogo"
+                onerror="handleLogoError(this)" />
+
+        {% elif website_settings.website_icon %}
+            <!-- FontAwesome icon -->
+            <div class="auth-logo-icon">
+                <i class="{{ website_settings.website_icon }}"></i>
+            </div>
+
+        {% else %}
+            <!-- Default initials fallback -->
+            <div class="auth-logo-initials">
+                {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+            </div>
+        {% endif %}
+      </a>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Create your account</h1>
+        <p>Get started with Fourth Dimension</p>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="signup-steps">
+        <div class="signup-step active" id="stepIndicator1">
+          <div class="signup-step-circle">1</div>
+          <div class="signup-step-text">Account</div>
+        </div>
+        <div class="signup-step" id="stepIndicator2">
+          <div class="signup-step-circle">2</div>
+          <div class="signup-step-text">Password</div>
+        </div>
+        <div class="signup-step" id="stepIndicator3">
+          <div class="signup-step-circle">3</div>
+          <div class="signup-step-text">Verification</div>
+        </div>
+      </div>
+
+      <form id="signupForm" class="auth-form" method="post" action="{{ url_for('signup') }}">
+        <!-- Add CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+        
+        <!-- Step 1: Basic information -->
+        <div class="signup-form-step active" id="step1">
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required value="{{ name if name }}">
+            <div id="nameFeedback" class="feedback-text text-danger" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="companyEmail" class="form-label">Company Email</label>
+            <input type="email" id="companyEmail" name="companyEmail" class="form-control" placeholder="john.doe@company.com" required value="{{ company_email if company_email }}">
+            <div id="emailFeedback" class="feedback-text" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <div></div> <!-- Empty div for spacing -->
+            <button type="button" class="btn btn-primary" id="nextToStep2">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Continue</span> <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Password setup -->
+        <div class="signup-form-step" id="step2">
+          <div class="form-group">
+            <label for="password" class="form-label">Create Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" class="form-control" placeholder="Create a strong password" required>
+              <span class="password-toggle" id="passwordToggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            
+            <div class="password-strength">
+              <div class="password-strength-text">
+                <span id="passwordStrengthText">Password strength</span>
+                <span id="passwordStrengthLevel"></span>
+              </div>
+              
+              <ul class="password-criteria" id="passwordCriteria">
+                <li id="criteriaLength"><i class="fas fa-circle"></i> At least 8 characters</li>
+                <li id="criteriaUppercase"><i class="fas fa-circle"></i> At least one uppercase letter</li>
+                <li id="criteriaLowercase"><i class="fas fa-circle"></i> At least one lowercase letter</li>
+                <li id="criteriaNumber"><i class="fas fa-circle"></i> At least one number</li>
+                <li id="criteriaSpecial"><i class="fas fa-circle"></i> At least one special character</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="retypePassword" class="form-label">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="retypePassword" name="retypePassword" class="form-control" placeholder="Retype your password" required>
+              <span class="password-toggle" id="retypePasswordToggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div id="retypePasswordFeedback" class="feedback-text" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="backToStep1">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextToStep3">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Continue</span> <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Terms and verification -->
+        <div class="signup-form-step" id="step3">
+          <div class="form-group">
+            <div class="verification-message">
+              <i class="fas fa-info-circle verification-message-icon"></i>
+              <p class="verification-message-text">
+                After creating your account, you'll need to verify your email address. We'll send you a verification link to activate your account.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="termsCheck" name="termsCheck" class="form-check-input" required style="width: auto; margin-right: 0.75rem;">
+              <label for="termsCheck" class="form-check-label">
+                I agree to the <a href="{{ url_for('terms') }}" target="_blank">Terms of Service</a> and <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
+              </label>
+            </div>
+            <div id="termsCheckFeedback" class="feedback-text text-danger" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="backToStep2">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="submit" class="btn btn-primary" id="createAccount">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Create Account</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </div>
+  </div>
+
+  <!-- Promo sidebar (visible on larger screens) -->
+  <div class="promo-sidebar">
+    <div class="promo-sidebar-content">
+      <h2>Join Fourth Dimension</h2>
+      <p>Access powerful web analysis tools and unlock insights that drive growth and optimization.</p>
+      
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-search"></i>
+          <span>Complete URL analysis in seconds</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-chart-line"></i>
+          <span>Track performance metrics over time</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-globe"></i>
+          <span>Visualize site structures and hierarchies</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-lock"></i>
+          <span>Secure and private data processing</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Loading spinner -->
+<div id="loadingSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Checking...</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const form = document.getElementById('signupForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('companyEmail');
+    const passwordInput = document.getElementById('password');
+    const retypePasswordInput = document.getElementById('retypePassword');
+    const termsCheck = document.getElementById('termsCheck');
+    
+    // Feedback elements
+    const nameFeedback = document.getElementById('nameFeedback');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const retypePasswordFeedback = document.getElementById('retypePasswordFeedback');
+    const termsCheckFeedback = document.getElementById('termsCheckFeedback');
+    
+    // Password strength elements
+    const passwordStrengthText = document.getElementById('passwordStrengthText');
+    const passwordStrengthLevel = document.getElementById('passwordStrengthLevel');
+    
+    // Password criteria elements
+    const criteriaLength = document.getElementById('criteriaLength');
+    const criteriaUppercase = document.getElementById('criteriaUppercase');
+    const criteriaLowercase = document.getElementById('criteriaLowercase');
+    const criteriaNumber = document.getElementById('criteriaNumber');
+    const criteriaSpecial = document.getElementById('criteriaSpecial');
+    
+    // Step navigation buttons
+    const nextToStep2 = document.getElementById('nextToStep2');
+    const backToStep1 = document.getElementById('backToStep1');
+    const nextToStep3 = document.getElementById('nextToStep3');
+    const backToStep2 = document.getElementById('backToStep2');
+    const createAccount = document.getElementById('createAccount');
+    
+    // Step indicators
+    const stepIndicator1 = document.getElementById('stepIndicator1');
+    const stepIndicator2 = document.getElementById('stepIndicator2');
+    const stepIndicator3 = document.getElementById('stepIndicator3');
+    
+    // Step content
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    
+    // Password toggle buttons
+    const passwordToggle = document.getElementById('passwordToggle');
+    const retypePasswordToggle = document.getElementById('retypePasswordToggle');
+    
+    // Modal elements
+    const emailExistsModal = document.getElementById('emailExistsModal');
+    const emailExistsMessage = document.getElementById('emailExistsMessage');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Validation state tracking
+    let validationTimeouts = {};
+    let validationState = {
+        name: { isValid: false, isChecking: false },
+        email: { isValid: false, isChecking: false, isAvailable: false },
+        password: { isValid: false, strength: 0 },
+        retypePassword: { isValid: false },
+        terms: { isValid: false }
+    };
+
+    // Get CSRF token
+    function getCSRFToken() {
+        return document.querySelector('input[name="csrf_token"]').value;
+    }
+
+    // Debounced validation function
+    function debounceValidation(key, callback, delay = 300) {
+        if (validationTimeouts[key]) {
+            clearTimeout(validationTimeouts[key]);
+        }
+        validationTimeouts[key] = setTimeout(callback, delay);
+    }
+
+    // Show feedback with icon and animation
+    function showFeedback(feedbackElement, message, type = 'danger', icon = null) {
+        feedbackElement.className = `feedback-text text-${type}`;
+        
+        let iconHtml = '';
+        if (icon) {
+            iconHtml = `<i class="fas fa-${icon}"></i>`;
+        } else {
+            switch(type) {
+                case 'success':
+                    iconHtml = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'danger':
+                    iconHtml = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'warning':
+                    iconHtml = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+                default:
+                    iconHtml = '<i class="fas fa-info-circle"></i>';
+            }
+        }
+        
+        feedbackElement.innerHTML = `${iconHtml}${message}`;
+        feedbackElement.style.display = 'block';
+    }
+
+    function hideFeedback(feedbackElement) {
+        feedbackElement.style.display = 'none';
+    }
+
+    // Enhanced name validation with real-time feedback
+    function validateName(value, showLiveFeedback = true) {
+        const trimmedValue = value.trim();
+        
+        if (!trimmedValue) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name is required', 'danger');
+            }
+            return false;
+        }
+        
+        if (trimmedValue.length < 2) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name must be at least 2 characters long', 'danger');
+            }
+            return false;
+        }
+        
+        if (trimmedValue.length > 50) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name cannot exceed 50 characters', 'danger');
+            }
+            return false;
+        }
+        
+        if (!/^[a-zA-Z\s'-\.]+$/.test(trimmedValue)) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name can only contain letters, spaces, hyphens, apostrophes, and periods', 'danger');
+            }
+            return false;
+        }
+        
+        // Check for multiple consecutive spaces
+        if (/\s{2,}/.test(trimmedValue)) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name cannot contain multiple consecutive spaces', 'danger');
+            }
+            return false;
+        }
+        
+        // Valid name
+        validationState.name.isValid = true;
+        nameInput.classList.remove('is-invalid');
+        nameInput.classList.add('is-valid');
+        if (showLiveFeedback) {
+            showFeedback(nameFeedback, 'Name looks good!', 'success');
+        }
+        return true;
+    }
+
+    // Enhanced email validation
+    function validateEmailFormat(email) {
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        return emailRegex.test(email);
+    }
+
+    // Email availability check with enhanced feedback - removed text feedback during checking
+    async function checkEmailAvailability(email) {
+        if (!email || !validateEmailFormat(email)) {
+            validationState.email.isValid = false;
+            validationState.email.isAvailable = false;
+            emailInput.classList.remove('is-valid', 'email-checking');
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Please enter a valid email address', 'danger');
+            return { available: false, message: 'Please enter a valid email address.' };
+        }
+
+        try {
+            validationState.email.isChecking = true;
+            emailInput.classList.remove('is-valid', 'is-invalid');
+            emailInput.classList.add('email-checking');
+            hideFeedback(emailFeedback); // Hide feedback during checking
+            
+            const response = await fetch('/check_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    csrf_token: getCSRFToken()
+                })
+            });
+
+            const data = await response.json();
+            
+            validationState.email.isChecking = false;
+            emailInput.classList.remove('email-checking');
+            
+            if (response.ok) {
+                validationState.email.isAvailable = data.available;
+                validationState.email.isValid = data.available;
+                
+                if (data.available) {
+                    emailInput.classList.add('is-valid');
+                    emailInput.classList.remove('is-invalid');
+                    showFeedback(emailFeedback, 'Email is available to sign up!', 'success');
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    emailInput.classList.remove('is-valid');
+                    showFeedback(emailFeedback, data.message, 'danger');
+                }
+                
+                return data;
+            } else {
+                throw new Error(data.message || 'Failed to check email availability');
+            }
+        } catch (error) {
+            console.error('Email check error:', error);
+            validationState.email.isChecking = false;
+            emailInput.classList.remove('email-checking');
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Unable to verify email availability. Please try again.', 'danger');
+            
+            return { 
+                available: false, 
+                message: 'Unable to verify email availability. Please try again.' 
+            };
+        }
+    }
+
+    // Enhanced password validation
+    function validatePassword(password, showLiveFeedback = true) {
+        let strength = 0;
+        let level = '';
+        let isValid = true;
+        
+        // Reset criteria
+        const criteria = [criteriaLength, criteriaUppercase, criteriaLowercase, criteriaNumber, criteriaSpecial];
+        criteria.forEach(criterion => {
+            criterion.classList.remove('valid');
+            criterion.querySelector('i').className = 'fas fa-circle';
+        });
+        
+        if (password.length >= 8) {
+            criteriaLength.classList.add('valid');
+            criteriaLength.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[A-Z]/.test(password)) {
+            criteriaUppercase.classList.add('valid');
+            criteriaUppercase.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[a-z]/.test(password)) {
+            criteriaLowercase.classList.add('valid');
+            criteriaLowercase.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[0-9]/.test(password)) {
+            criteriaNumber.classList.add('valid');
+            criteriaNumber.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[^A-Za-z0-9]/.test(password)) {
+            criteriaSpecial.classList.add('valid');
+            criteriaSpecial.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        
+        validationState.password.isValid = isValid && strength >= 4;
+        validationState.password.strength = strength;
+        
+        if (password && showLiveFeedback) {
+            if (isValid && strength >= 4) {
+                passwordInput.classList.remove('is-invalid');
+                passwordInput.classList.add('is-valid');
+            } else {
+                passwordInput.classList.remove('is-valid');
+                if (password.length > 0) {
+                    passwordInput.classList.add('is-invalid');
+                }
+            }
+        }
+        
+        return isValid && strength >= 4;
+    }
+
+    // Enhanced password confirmation validation
+    function validatePasswordConfirmation(password, confirmPassword, showLiveFeedback = true) {
+        if (!confirmPassword) {
+            validationState.retypePassword.isValid = false;
+            retypePasswordInput.classList.remove('is-valid');
+            if (showLiveFeedback) {
+                hideFeedback(retypePasswordFeedback);
+            }
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            validationState.retypePassword.isValid = false;
+            retypePasswordInput.classList.remove('is-valid');
+            retypePasswordInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(retypePasswordFeedback, 'Passwords do not match', 'danger');
+            }
+            return false;
+        }
+        
+        validationState.retypePassword.isValid = true;
+        retypePasswordInput.classList.remove('is-invalid');
+        retypePasswordInput.classList.add('is-valid');
+        if (showLiveFeedback) {
+            showFeedback(retypePasswordFeedback, 'Passwords match!', 'success');
+        }
+        return true;
+    }
+
+    // Real-time validation event listeners
+    nameInput.addEventListener('input', function() {
+        const value = this.value;
+        debounceValidation('name', () => {
+            validateName(value, true);
+        }, 100);
+    });
+
+    nameInput.addEventListener('blur', function() {
+        validateName(this.value, true);
+    });
+
+    emailInput.addEventListener('input', function() {
+        const email = this.value.trim().toLowerCase();
+        
+        // Reset validation state
+        validationState.email.isValid = false;
+        validationState.email.isAvailable = false;
+        emailInput.classList.remove('is-valid', 'is-invalid', 'email-checking');
+        hideFeedback(emailFeedback);
+        
+        if (email) {
+            debounceValidation('email', () => {
+                if (validateEmailFormat(email)) {
+                    checkEmailAvailability(email);
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    showFeedback(emailFeedback, 'Please enter a valid email address', 'danger');
+                }
+            }, 500);
+        }
+    });
+
+    emailInput.addEventListener('blur', function() {
+        const email = this.value.trim().toLowerCase();
+        if (email && validateEmailFormat(email) && !validationState.email.isChecking) {
+            checkEmailAvailability(email);
+        }
+    });
+
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        validatePassword(password, true);
+        
+        // Also validate password confirmation if it has a value
+        const confirmPassword = retypePasswordInput.value;
+        if (confirmPassword) {
+            validatePasswordConfirmation(password, confirmPassword, true);
+        }
+    });
+
+    retypePasswordInput.addEventListener('input', function() {
+        const password = passwordInput.value;
+        const confirmPassword = this.value;
+        debounceValidation('retypePassword', () => {
+            validatePasswordConfirmation(password, confirmPassword, true);
+        }, 100);
+    });
+
+    termsCheck.addEventListener('change', function() {
+        validationState.terms.isValid = this.checked;
+        if (this.checked) {
+            hideFeedback(termsCheckFeedback);
+        } else {
+            showFeedback(termsCheckFeedback, 'You must agree to the Terms of Service and Privacy Policy', 'danger');
+        }
+    });
+
+    // Step validation functions
+    function validateStep1() {
+        const nameValid = validateName(nameInput.value.trim(), true);
+        const emailValid = validationState.email.isValid && validationState.email.isAvailable;
+        
+        if (!emailValid && validateEmailFormat(emailInput.value.trim())) {
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Please wait for email verification to complete', 'warning');
+        }
+        
+        return nameValid && emailValid;
+    }
+    
+    function validateStep2() {
+        const passwordValid = validatePassword(passwordInput.value, true);
+        const confirmPasswordValid = validatePasswordConfirmation(passwordInput.value, retypePasswordInput.value, true);
+        
+        return passwordValid && confirmPasswordValid;
+    }
+    
+    function validateStep3() {
+        const termsValid = termsCheck.checked;
+        validationState.terms.isValid = termsValid;
+        
+        if (!termsValid) {
+            showFeedback(termsCheckFeedback, 'You must agree to the Terms of Service and Privacy Policy', 'danger');
+        } else {
+            hideFeedback(termsCheckFeedback);
+        }
+        
+        return termsValid;
+    }
+
+    // Enhanced step navigation
+    nextToStep2.addEventListener('click', async function() {
+        this.classList.add('btn-loading');
+        this.disabled = true;
+        
+        const btnText = this.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Validating...';
+        
+        try {
+            if (!validateStep1()) {
+                return;
+            }
+            
+            // Final email check if not already validated
+            if (!validationState.email.isAvailable) {
+                const email = emailInput.value.trim().toLowerCase();
+                const emailCheck = await checkEmailAvailability(email);
+                
+                if (!emailCheck.available) {
+                    emailExistsMessage.innerHTML = emailCheck.message;
+                    if (typeof $ !== 'undefined' && $.fn.modal) {
+                        $('#emailExistsModal').modal('show');
+                    }
+                    return;
+                }
+            }
+            
+            showStep(2);
+            
+        } finally {
+            this.classList.remove('btn-loading');
+            this.disabled = false;
+            btnText.textContent = originalText;
+        }
+    });
+    
+    nextToStep3.addEventListener('click', function() {
+        if (validateStep2()) {
+            showStep(3);
+        }
+    });
+    
+    backToStep1.addEventListener('click', function() {
+        showStep(1);
+    });
+    
+    backToStep2.addEventListener('click', function() {
+        showStep(2);
+    });
+    
+    // Show step function
+    function showStep(stepNumber) {
+        // Hide all steps
+        [step1, step2, step3].forEach(step => step.classList.remove('active'));
+        
+        // Reset step indicators
+        [stepIndicator1, stepIndicator2, stepIndicator3].forEach(indicator => {
+            indicator.classList.remove('active', 'completed');
+        });
+        
+        // Show the requested step and update indicators
+        if (stepNumber === 1) {
+            step1.classList.add('active');
+            stepIndicator1.classList.add('active');
+        } else if (stepNumber === 2) {
+            step2.classList.add('active');
+            stepIndicator1.classList.add('completed');
+            stepIndicator2.classList.add('active');
+            // Focus on first input
+            setTimeout(() => passwordInput.focus(), 100);
+        } else if (stepNumber === 3) {
+            step3.classList.add('active');
+            stepIndicator1.classList.add('completed');
+            stepIndicator2.classList.add('completed');
+            stepIndicator3.classList.add('active');
+        }
+    }
+    
+    // Password toggle functionality
+    function togglePasswordVisibility(input, toggle) {
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        
+        const icon = toggle.querySelector('i');
+        icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+    
+    passwordToggle.addEventListener('click', function() {
+        togglePasswordVisibility(passwordInput, passwordToggle);
+    });
+    
+    retypePasswordToggle.addEventListener('click', function() {
+        togglePasswordVisibility(retypePasswordInput, retypePasswordToggle);
+    });
+    
+    // Enhanced form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        createAccount.classList.add('btn-loading');
+        createAccount.disabled = true;
+        
+        const btnText = createAccount.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Creating Account...';
+        
+        try {
+            // Validate all steps
+            const step1Valid = validateStep1();
+            const step2Valid = validateStep2();
+            const step3Valid = validateStep3();
+            
+            if (!step1Valid || !step2Valid || !step3Valid) {
+                // Show the first invalid step
+                if (!step1Valid) showStep(1);
+                else if (!step2Valid) showStep(2);
+                else if (!step3Valid) showStep(3);
+                return;
+            }
+            
+            // Final email availability check
+            const email = emailInput.value.trim().toLowerCase();
+            if (!validationState.email.isAvailable) {
+                const emailCheck = await checkEmailAvailability(email);
+                if (!emailCheck.available) {
+                    emailExistsMessage.innerHTML = emailCheck.message;
+                    if (typeof $ !== 'undefined' && $.fn.modal) {
+                        $('#emailExistsModal').modal('show');
+                    }
+                    showStep(1);
+                    return;
+                }
+            }
+            
+            // Submit form
+            this.submit();
+            
+        } catch (error) {
+            console.error('Form submission error:', error);
+            showFeedback(emailFeedback, 'An error occurred. Please try again.', 'danger');
+        } finally {
+            createAccount.classList.remove('btn-loading');
+            createAccount.disabled = false;
+            btnText.textContent = originalText;
+        }
+    });
+
+    // Initialize form
+    validatePassword('', false); // Initialize password strength meter
+    
+    // Focus on first input
+    setTimeout(() => nameInput.focus(), 100);
+});
+</script>
+{% endblock %}

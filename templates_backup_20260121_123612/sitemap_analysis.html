@@ -1,0 +1,808 @@
+{% extends "base.html" %}
+{% block title %}Enhanced Sitemap Analysis{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <div class="row align-items-center mb-4">
+        <div class="col">
+            <h1 class="display-6">
+                <i class="fas fa-sitemap text-primary me-2"></i>Enhanced Sitemap Analysis
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('url_search') }}">URL Search</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Sitemap Analysis</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="col-auto">
+            <div class="btn-group" role="group" aria-label="Sitemap Actions">
+                <a href="{{ url_for('download_sitemap_urls', url=url) }}" class="btn btn-outline-success">
+                    <i class="fas fa-file-csv me-1"></i>Export All URLs
+                </a>
+                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-filter me-1"></i>Export Filtered
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='blog') }}">Blog Posts</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='search') }}">Search Pages</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">By Status</h6></li>
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_2xx') }}">200 Status (OK)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_3xx') }}">300 Status (Redirect)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_4xx') }}">400 Status (Client Error)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_5xx') }}">500 Status (Server Error)</a></li>
+                </ul>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sitemapHelpModal">
+                    <i class="fas fa-question-circle me-1"></i>Help
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-link me-2"></i>Analyzed Site: 
+                        <a href="{{ url }}" target="_blank" class="text-decoration-none">{{ url }}</a>
+                    </h5>
+                    <div>
+                        <div class="form-check form-switch d-inline-block me-3">
+                            <input class="form-check-input" type="checkbox" id="checkStatusSwitch" {% if check_status %}checked{% endif %}>
+                            <label class="form-check-label" for="checkStatusSwitch">Check URL Status</label>
+                        </div>
+                        <span class="badge bg-info">
+                            Analyzed: {{ current_time|default('Just now') }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if sitemap_data.success %}
+                        {% if sitemap_data.sitemaps %}
+                            {# Sitemaps Summary Cards #}
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="card border-primary">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-primary">Total Sitemaps</h6>
+                                            <h3 class="display-6">{{ sitemap_data.sitemaps|length }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-success">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-success">Total URLs</h6>
+                                            <h3 class="display-6">{{ sitemap_data.urls|length }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-info">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-info">Blog Posts</h6>
+                                            <h3 class="display-6">{{ sitemap_data.blog_count|default(0) }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border-warning">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title text-warning">Search URLs</h6>
+                                            <h3 class="display-6">{{ sitemap_data.search_count|default(0) }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Status Code Distribution #}
+                            {% if sitemap_data.status_stats %}
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">
+                                                <i class="fas fa-chart-pie me-2"></i>Status Code Distribution
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                {% for status_group, count in sitemap_data.status_stats.items() %}
+                                                <div class="col-md-2 col-sm-4 mb-3">
+                                                    <div class="card h-100 
+                                                        {% if status_group == '2xx' %}border-success{% endif %}
+                                                        {% if status_group == '3xx' %}border-info{% endif %}
+                                                        {% if status_group == '4xx' %}border-warning{% endif %}
+                                                        {% if status_group == '5xx' %}border-danger{% endif %}
+                                                        {% if status_group == 'Error' %}border-dark{% endif %}
+                                                    ">
+                                                        <div class="card-body text-center p-2">
+                                                            <h6 class="card-title mb-0 
+                                                                {% if status_group == '2xx' %}text-success{% endif %}
+                                                                {% if status_group == '3xx' %}text-info{% endif %}
+                                                                {% if status_group == '4xx' %}text-warning{% endif %}
+                                                                {% if status_group == '5xx' %}text-danger{% endif %}
+                                                                {% if status_group == 'Error' %}text-dark{% endif %}
+                                                            ">
+                                                                {{ status_group }}
+                                                            </h6>
+                                                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                                                <span class="fs-4">{{ count }}</span>
+                                                                <span class="text-muted">{{ (count / sitemap_data.urls|length * 100)|round(1) }}%</span>
+                                                            </div>
+                                                            <a href="#" class="stretched-link filter-status" data-status="{{ status_group }}"></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {# Sitemaps Table #}
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-file-alt me-2"></i>Discovered Sitemaps
+                                    </h5>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Sitemap URL</th>
+                                                <th class="text-center">URLs Count</th>
+                                                <th class="text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for sitemap in sitemap_data.sitemaps %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{{ sitemap.url }}" target="_blank" class="text-truncate d-block" style="max-width: 400px;">
+                                                        {{ sitemap.url }}
+                                                    </a>
+                                                </td>
+                                                <td class="text-center">{{ sitemap.urls_count }}</td>
+                                                <td class="text-center">
+                                                    {% if sitemap.success %}
+                                                        <span class="badge bg-success">Parsed Successfully</span>
+                                                    {% else %}<span class="badge bg-danger">Parse Failed</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {# URLs Table with Enhanced Filtering #}
+                            {% if sitemap_data.urls %}
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-link me-2"></i>URLs from Sitemaps
+                                        </h5>
+                                        <div class="input-group" style="max-width: 500px;">
+                                            <input type="text" class="form-control" id="urlSearch" placeholder="Search URLs...">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fas fa-filter"></i> Filters
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><h6 class="dropdown-header">URL Types</h6></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="all">All URLs</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="blog">Blog Posts</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="search">Search Pages</button></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><h6 class="dropdown-header">Status Codes</h6></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="status_2xx">200 OK</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="status_3xx">300 Redirect</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="status_4xx">400 Client Error</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="status_5xx">500 Server Error</button></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><h6 class="dropdown-header">Path Depth</h6></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="path_0">Root (0 level)</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="path_1">1st level</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="path_2">2nd level</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="path_3">3rd level</button></li>
+                                                    <li><button class="dropdown-item filter-btn" data-filter="path_4+">4+ levels</button></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-striped" id="urlsTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 40%">URL</th>
+                                                    <th style="width: 10%">Status</th>
+                                                    <th style="width: 15%">Last Modified</th>
+                                                    <th style="width: 10%">Priority</th>
+                                                    <th style="width: 10%">Change Freq</th>
+                                                    <th style="width: 15%">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for url_data in sitemap_data.urls %}
+                                                <tr class="url-row
+                                                    {% if url_data.is_blog %} is-blog{% endif %}
+                                                    {% if url_data.is_search %} is-search{% endif %}
+                                                    {% if url_data.status_group %} status-{{ url_data.status_group }}{% endif %}
+                                                    path-level-{{ url_data.path_level|default(0) }}
+                                                ">
+                                                    <td>
+                                                        <div class="url-path-display">
+                                                            {% set path_parts = url_data.path_hierarchy|default([]) %}
+                                                            {% if path_parts|length > 0 %}
+                                                                {% for part in path_parts %}
+                                                                    <span class="path-segment">/ {{ part }}</span>
+                                                                {% endfor %}
+                                                            {% else %}
+                                                                <span class="path-segment">/ (root)</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <a href="{{ url_data.url }}" target="_blank" class="text-truncate d-block mt-1">
+                                                            {{ url_data.url }}
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        {% if url_data.status_code %}
+                                                            <span class="badge 
+                                                                {% if url_data.status_group == '2xx' %}bg-success{% endif %}
+                                                                {% if url_data.status_group == '3xx' %}bg-info{% endif %}
+                                                                {% if url_data.status_group == '4xx' %}bg-warning{% endif %}
+                                                                {% if url_data.status_group == '5xx' %}bg-danger{% endif %}
+                                                                {% if url_data.status_group == 'Error' %}bg-dark{% endif %}
+                                                            ">
+                                                                {{ url_data.status_code }} {{ url_data.status_group }}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-secondary">Not Checked</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>{{ url_data.lastmod or 'N/A' }}</td>
+                                                    <td>{{ url_data.priority or 'N/A' }}</td>
+                                                    <td>{{ url_data.changefreq or 'N/A' }}</td>
+                                                    <td>
+                                                        <div class="btn-group btn-group-sm" role="group">
+                                                            <a href="{{ url_for('keyword_detail', link=url_data.url) }}" 
+                                                               class="btn btn-outline-info" title="Keywords Analysis">
+                                                                <i class="fas fa-key"></i>
+                                                            </a>
+                                                            <a href="{{ url_for('meta_detail', link=url_data.url) }}" 
+                                                               class="btn btn-outline-warning" title="Meta Tags">
+                                                                <i class="fas fa-tags"></i>
+                                                            </a>
+                                                            {% if url_data.is_blog %}
+                                                                <button class="btn btn-outline-success" title="Blog Post">
+                                                                    <i class="fas fa-blog"></i>
+                                                                </button>
+                                                            {% endif %}
+                                                            {% if url_data.is_search %}
+                                                                <button class="btn btn-outline-primary" title="Search Page">
+                                                                    <i class="fas fa-search"></i>
+                                                                </button>
+                                                            {% endif %}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="card-footer">
+                                        <nav aria-label="Table navigation">
+                                            <ul class="pagination justify-content-center" id="urlsPagination">
+                                                <!-- Pagination will be generated by JavaScript -->
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    No URLs found in sitemaps.
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-warning">
+                                <h4 class="alert-heading">
+                                    <i class="fas fa-sitemap me-2"></i>No Sitemaps Discovered
+                                </h4>
+                                <p>{{ sitemap_data.message }}</p>
+                                <hr>
+                                <p class="mb-0">Recommendations:</p>
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <i class="fas fa-chevron-right me-2 text-muted"></i>
+                                        Create a sitemap to improve search engine crawling
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chevron-right me-2 text-muted"></i>
+                                        Add sitemap at <code>{{ url }}/sitemap.xml</code>
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chevron-right me-2 text-muted"></i>
+                                        Reference sitemap in robots.txt
+                                    </li>
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-times-circle me-2"></i>
+                            {{ sitemap_data.message }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Sitemap Help Modal #}
+<div class="modal fade" id="sitemapHelpModal" tabindex="-1" aria-labelledby="sitemapHelpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sitemapHelpModalLabel">
+                    <i class="fas fa-question-circle me-2"></i>Enhanced Sitemap Analysis Guide
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <h6>What is a Sitemap?</h6>
+                <p>A sitemap is an XML file that lists the important pages on a website, helping search engines understand the site's structure and crawl it more efficiently.</p>
+                
+                <h6>Key Metrics</h6>
+                <ul>
+                    <li><strong>Status Code:</strong> HTTP response status from the URL:
+                        <ul>
+                            <li>2xx - Success (200 OK, 201 Created)</li>
+                            <li>3xx - Redirect (301 Permanent, 302 Temporary)</li>
+                            <li>4xx - Client Error (404 Not Found, 403 Forbidden)</li>
+                            <li>5xx - Server Error (500 Internal Server Error)</li>
+                        </ul>
+                    </li>
+                    <li><strong>Last Modified:</strong> Date when the page was last updated</li>
+                    <li><strong>Priority:</strong> Relative importance of the page (0.0 to 1.0)</li>
+                    <li><strong>Change Frequency:</strong> How often the page is likely to change</li>
+                </ul>
+                
+                <h6>URL Categories</h6>
+                <ul>
+                    <li><strong>Blog Posts:</strong> URLs identified as blog content based on URL patterns</li>
+                    <li><strong>Search Pages:</strong> URLs with search parameters in the query string</li>
+                    <li><strong>Path Level:</strong> Depth of the URL in the site hierarchy</li>
+                </ul>
+                
+                <h6>Recommended Actions</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h7>For Error Status Codes:</h7>
+                        <ul>
+                            <li>Fix 404 errors by redirecting or removing from sitemap</li>
+                            <li>Investigate 5xx server errors</li>
+                            <li>Review 301/302 redirects and update sitemap</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h7>To Improve SEO:</h7>
+                        <ul>
+                            <li>Keep sitemap updated with correct URLs</li>
+                            <li>Set appropriate priorities for important pages</li>
+                            <li>Ensure consistent URL structure</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Variables
+    let urlsTable = document.getElementById('urlsTable');
+    let urlSearch = document.getElementById('urlSearch');
+    let checkStatusSwitch = document.getElementById('checkStatusSwitch');
+    let filterButtons = document.querySelectorAll('.filter-btn');
+    let statusFilterLinks = document.querySelectorAll('.filter-status');
+    let allRows = [];
+    let filteredRows = [];
+    let currentPage = 1;
+    const rowsPerPage = 50;
+    let currentFilter = 'all';
+    let currentSortField = 'path';
+    let sortDirection = 'asc';
+    
+    // Initialize
+    if (urlsTable) {
+        allRows = Array.from(urlsTable.querySelectorAll('tbody tr'));
+        filteredRows = [...allRows];
+        
+        // Call the new functions after initialization
+        addSortingFunctionality();
+        extractSearchTerms();
+        
+        updateTableView();
+    }
+    
+    // Check Status Switch
+    if (checkStatusSwitch) {
+        checkStatusSwitch.addEventListener('change', function() {
+            // Reload the page with or without status checking
+            const url = new URL(window.location);
+            url.searchParams.set('check_status', this.checked);
+            window.location = url.toString();
+        });
+    }
+    
+    // URL Search
+    if (urlSearch) {
+        urlSearch.addEventListener('input', function() {
+            filterTable();
+        });
+    }
+    
+    // Filter Buttons
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            currentFilter = this.dataset.filter;
+            currentPage = 1;
+            filterTable();
+        });
+    });
+    
+    // Status Filter Links
+    statusFilterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            currentFilter = 'status_' + this.dataset.status;
+            currentPage = 1;
+            filterTable();
+        });
+    });
+    
+    // Filter Table
+    function filterTable() {
+        const searchTerm = urlSearch ? urlSearch.value.toLowerCase() : '';
+        
+        filteredRows = allRows.filter(row => {
+            const urlText = row.querySelector('td a').textContent.toLowerCase();
+            const pathSegments = Array.from(row.querySelectorAll('.path-segment')).map(el => el.textContent.toLowerCase());
+            
+            // Text search
+            const matchesSearch = searchTerm === '' || 
+                                urlText.includes(searchTerm) || 
+                                pathSegments.some(segment => segment.includes(searchTerm));
+            
+            if (!matchesSearch) return false;
+            
+            // Filter by type
+            if (currentFilter === 'all') return true;
+            
+            if (currentFilter === 'blog') return row.classList.contains('is-blog');
+            if (currentFilter === 'search') return row.classList.contains('is-search');
+            
+            if (currentFilter.startsWith('status_')) {
+                const statusGroup = currentFilter.replace('status_', '');
+                return row.classList.contains('status-' + statusGroup);
+            }
+            
+            if (currentFilter.startsWith('path_')) {
+                let level = currentFilter.replace('path_', '');
+                if (level.endsWith('+')) {
+                    // Handle path_4+ case
+                    level = parseInt(level);
+                    return Array.from(row.classList).some(cls => {
+                        if (cls.startsWith('path-level-')) {
+                            const pathLevel = parseInt(cls.replace('path-level-', ''));
+                            return pathLevel >= level;
+                        }
+                        return false;
+                    });
+                } else {
+                    return row.classList.contains('path-level-' + level);
+                }
+            }
+            
+            return true;
+        });
+        
+        updateTableView();
+    }
+    
+    // Update Table View with Pagination
+    function updateTableView() {
+        // Hide all rows
+        allRows.forEach(row => {
+            row.style.display = 'none';
+        });
+        
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages || 1;
+        
+        // Show rows for current page
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        const endIndex = Math.min(startIndex + rowsPerPage, filteredRows.length);
+        
+        for (let i = startIndex; i < endIndex; i++) {
+            if (filteredRows[i]) {
+                filteredRows[i].style.display = '';
+            }
+        }
+        
+        // Update pagination UI
+        const pagination = document.getElementById('urlsPagination');
+        if (pagination) {
+            updatePagination(pagination, totalPages);
+        }
+        
+        // Update filter label
+        const filterName = currentFilter === 'all' ? 'All URLs' : 
+                          currentFilter === 'blog' ? 'Blog Posts' :
+                          currentFilter === 'search' ? 'Search Pages' :
+                          currentFilter.startsWith('status_') ? 'Status ' + currentFilter.replace('status_', '') :
+                          currentFilter.startsWith('path_') ? 'Path Level ' + currentFilter.replace('path_', '') :
+                          'Filtered';
+        
+        if (urlsTable) {
+            const tableHeader = urlsTable.closest('.card').querySelector('.card-header h5');
+            if (tableHeader) {
+                tableHeader.innerHTML = `<i class="fas fa-link me-2"></i>URLs from Sitemaps <small class="text-muted">(${filteredRows.length} ${filterName})</small>`;
+            }
+        }
+    }
+    
+    // Update Pagination Controls
+    function updatePagination(pagination, totalPages) {
+        let html = '';
+        
+        // Previous button
+        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>`;
+        
+        // Page numbers
+        const maxPages = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxPages / 2));
+        let endPage = Math.min(totalPages, startPage + maxPages - 1);
+        
+        if (endPage - startPage + 1 < maxPages) {
+            startPage = Math.max(1, endPage - maxPages + 1);
+        }
+        
+        if (startPage > 1) {
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="1">1</a></li>`;
+            if (startPage > 2) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>`;
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            html += `<li class="page-item"><a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+        }
+        
+        // Next button
+        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>`;
+        
+        pagination.innerHTML = html;
+        
+        // Add event listeners to pagination links
+        pagination.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = parseInt(this.dataset.page);
+                if (!isNaN(page) && page !== currentPage) {
+                    currentPage = page;
+                    updateTableView();
+                }
+            });
+        });
+    }
+    
+    // Add styles for path segments
+    const style = document.createElement('style');
+    style.textContent = `
+        .url-path-display {
+            font-family: monospace;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .path-segment {
+            display: inline-block;
+            padding: 2px 4px;
+            margin-right: 2px;
+            background-color: #f0f0f0;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Sorting functionality
+    function addSortingFunctionality() {
+        if (!urlsTable) return;
+        
+        // Add sort buttons to column headers
+        const headerRow = urlsTable.querySelector('thead tr');
+        if (!headerRow) return;
+        
+        const urlHeader = headerRow.querySelector('th:first-child');
+        if (!urlHeader) return;
+        
+        // Create sort buttons container
+        const sortButtons = document.createElement('div');
+        sortButtons.className = 'btn-group btn-group-sm float-end';
+        sortButtons.innerHTML = `
+            <button class="btn btn-sm btn-outline-secondary active sort-btn" data-sort="path" title="Sort by Path Structure">
+                <i class="fas fa-folder-tree"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary sort-btn" data-sort="alpha" title="Sort Alphabetically">
+                <i class="fas fa-sort-alpha-down"></i>
+            </button>
+        `;
+        
+        urlHeader.appendChild(sortButtons);
+        
+        // Add event listeners to sort buttons
+        document.querySelectorAll('.sort-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Toggle active state
+                document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Set sort field
+                const sortField = this.dataset.sort;
+                
+                // If clicking the same field, toggle direction
+                if (sortField === currentSortField) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSortField = sortField;
+                    sortDirection = 'asc';
+                }
+                
+                // Update icon
+                if (sortField === 'alpha') {
+                    this.querySelector('i').className = sortDirection === 'asc' 
+                        ? 'fas fa-sort-alpha-down' 
+                        : 'fas fa-sort-alpha-up';
+                } else {
+                    this.querySelector('i').className = sortDirection === 'asc' 
+                        ? 'fas fa-folder-tree' 
+                        : 'fas fa-folder-tree fa-flip-vertical';
+                }
+                
+                // Sort the table
+                sortTable();
+            });
+        });
+    }
+
+    // Sort the table based on current field and direction
+    function sortTable() {
+        // Sort the original array
+        allRows.sort((a, b) => {
+            let valueA, valueB;
+            
+            if (currentSortField === 'alpha') {
+                // Sort alphabetically by URL
+                const linkA = a.querySelector('td a');
+                const linkB = b.querySelector('td a');
+                
+                valueA = linkA ? linkA.textContent.toLowerCase() : '';
+                valueB = linkB ? linkB.textContent.toLowerCase() : '';
+            } else {
+                // Sort by path structure
+                const pathA = Array.from(a.querySelectorAll('.path-segment'))
+                    .map(el => el.textContent.trim().toLowerCase());
+                const pathB = Array.from(b.querySelectorAll('.path-segment'))
+                    .map(el => el.textContent.trim().toLowerCase());
+                    
+                // Join paths for lexicographical comparison
+                valueA = pathA.join('/');
+                valueB = pathB.join('/');
+            }
+            
+            // Compare based on direction
+            if (sortDirection === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        });
+        
+        // Re-filter after sorting
+        filterTable();
+    }
+
+    // Function to extract and display the search terms from URLs
+    function extractSearchTerms() {
+        if (!urlsTable) return;
+        
+        const searchUrls = urlsTable.querySelectorAll('.is-search');
+        
+        searchUrls.forEach(row => {
+            const urlElement = row.querySelector('td a');
+            if (!urlElement) return;
+            
+            const url = urlElement.textContent;
+            try {
+                const urlObj = new URL(url);
+                const searchParams = new URLSearchParams(urlObj.search);
+                
+                // Common search parameter names
+                const searchParamNames = ['q', 'query', 'search', 's', 'keyword', 'term'];
+                let searchTerm = null;
+                
+                // Find the first search parameter that exists
+                for (const param of searchParamNames) {
+                    if (searchParams.has(param)) {
+                        searchTerm = searchParams.get(param);
+                        break;
+                    }
+                }
+                
+                // If search term found, display it
+                if (searchTerm) {
+                    const actionsCell = row.querySelector('td:last-child');
+                    if (!actionsCell) return;
+                    
+                    const searchIcon = actionsCell.querySelector('.fa-search');
+                    if (!searchIcon) return;
+                    
+                    const searchButton = searchIcon.closest('button');
+                    if (!searchButton) return;
+                    
+                    // Add a tooltip with the search term
+                    searchButton.setAttribute('title', `Search: "${searchTerm}"`);
+                    
+                    // Add a badge with the search term
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-light text-dark ms-1';
+                    badge.textContent = searchTerm.length > 15 ? searchTerm.substring(0, 12) + '...' : searchTerm;
+                    searchButton.appendChild(badge);
+                }
+            } catch (error) {
+                console.error('Invalid URL:', url, error);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_styles %}
+{% endblock %}

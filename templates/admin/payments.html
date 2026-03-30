@@ -1,0 +1,747 @@
+
+{% extends "admin/base.html" %}
+
+{% block title %}Payment Management{% endblock %}
+
+{% block page_title %}
+Payment Management
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- First Row: Enhanced Summary Cards with Matching Design -->
+    <div class="row dashboard-stats-row">
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-payments">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Total Payments</div>
+                        <div class="stat-value">{{ "{:,}".format(stats.total_payments|default(0)) }}</div>
+                        <div class="stat-desc">All payment types</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-revenue">
+                        <i class="fas fa-rupee-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Total Revenue</div>
+                        <div class="stat-value">₹{{ "{:,.0f}".format(stats.total_revenue|default(0)) }}</div>
+                        <div class="stat-desc">Combined earnings</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-subscriptions">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Subscription Revenue</div>
+                        <div class="stat-value">₹{{ "{:,.0f}".format(stats.subscription_stats.total_revenue|default(0)) }}</div>
+                        <div class="stat-desc">{{ "{:,}".format(stats.subscription_stats.completed_payments|default(0)) }} payments</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-tokens">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Token Revenue</div>
+                        <div class="stat-value">₹{{ "{:,.0f}".format(stats.token_stats.total_revenue|default(0)) }}</div>
+                        <div class="stat-desc">{{ "{:,}".format(stats.token_stats.completed_payments|default(0)) }} purchases</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row: Success Rate and Status Cards -->
+    <div class="row dashboard-stats-row mb-4">
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Completed Payments</div>
+                        <div class="stat-value">{{ "{:,}".format(stats.completed_payments|default(0)) }}</div>
+                        <div class="stat-desc">Successfully processed</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-success-rate">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Success Rate</div>
+                        <div class="stat-value">{{ ((stats.completed_payments / stats.total_payments * 100) if stats.total_payments > 0 else 0)|round(1) }}%</div>
+                        <div class="stat-desc">Payment conversion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Pending Payments</div>
+                        <div class="stat-value">{{ "{:,}".format((stats.total_payments|default(0)) - (stats.completed_payments|default(0))) }}</div>
+                        <div class="stat-desc">Awaiting completion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Replace this entire card in your payments.html (around line 125-135): -->
+        <div class="col-xl-3 col-md-6 col-sm-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-card-body">
+                    <div class="icon icon-avg-value">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-title">Avg. Payment Value</div>
+                        <div class="stat-value">
+                            {% if stats.completed_payments > 0 %}
+                                ₹{{ "{:,.0f}".format(stats.total_revenue / stats.completed_payments) }}
+                            {% else %}
+                                ₹0
+                            {% endif %}
+                        </div>
+                        <div class="stat-desc">Per transaction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Third Row: Compact Filter + Larger Revenue Trends -->
+    <div class="row mb-4">
+        <!-- Left Side: Compact Filter Payments (Now 33% width) -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 pb-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-filter me-2"></i>Filter Payments
+                    </h5>
+                </div>
+                <div class="card-body compact-filter">
+                    <form method="get" action="{{ url_for('admin_payments') }}" id="payment-filter-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                        
+                        <!-- Payment Type Filter -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted mb-2">Payment Type</label>
+                            <div class="d-flex flex-wrap gap-1">
+                                <input type="radio" class="btn-check" name="payment_type" id="type-all" value="all" 
+                                       {% if filters.payment_type == 'all' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-primary btn-sm compact-btn" for="type-all">
+                                    <i class="fas fa-list me-1"></i>All
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="payment_type" id="type-subscription" value="subscription" 
+                                       {% if filters.payment_type == 'subscription' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-info btn-sm compact-btn" for="type-subscription">
+                                    <i class="fas fa-calendar-alt me-1"></i>Subs
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="payment_type" id="type-tokens" value="tokens" 
+                                       {% if filters.payment_type == 'tokens' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-warning btn-sm compact-btn" for="type-tokens">
+                                    <i class="fas fa-coins me-1"></i>Tokens
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Status Filter -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted mb-2">Status</label>
+                            <div class="d-flex flex-wrap gap-1">
+                                <input type="radio" class="btn-check" name="status" id="status-all" value="all" 
+                                       {% if filters.status == 'all' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-secondary btn-sm compact-btn" for="status-all">All</label>
+                                
+                                <input type="radio" class="btn-check" name="status" id="status-completed" value="completed" 
+                                       {% if filters.status == 'completed' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-success btn-sm compact-btn" for="status-completed">Done</label>
+                                
+                                <input type="radio" class="btn-check" name="status" id="status-pending" value="created" 
+                                       {% if filters.status == 'created' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-warning btn-sm compact-btn" for="status-pending">Pending</label>
+                                
+                                <input type="radio" class="btn-check" name="status" id="status-failed" value="failed" 
+                                       {% if filters.status == 'failed' %}checked{% endif %} autocomplete="off">
+                                <label class="btn btn-outline-danger btn-sm compact-btn" for="status-failed">Failed</label>
+                            </div>
+                        </div>
+                        
+                        <!-- Time Period Filter -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted mb-2">Period</label>
+                            <select name="date_range" class="form-select form-select-sm">
+                                <option value="7" {% if filters.date_range == '7' %}selected{% endif %}>7 Days</option>
+                                <option value="30" {% if filters.date_range == '30' %}selected{% endif %}>30 Days</option>
+                                <option value="90" {% if filters.date_range == '90' %}selected{% endif %}>3 Months</option>
+                                <option value="180" {% if filters.date_range == '180' %}selected{% endif %}>6 Months</option>
+                                <option value="365" {% if filters.date_range == '365' %}selected{% endif %}>1 Year</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Enhanced Search -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted mb-2">Search</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" name="search" class="form-control form-control-sm" 
+                                       placeholder="Invoice, Name, Email..." 
+                                       value="{{ filters.search or '' }}">
+                            </div>
+                            <div class="form-text small">Search by customer name, email, invoice number, or order ID</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-filter me-1"></i> Apply Filters
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side: Larger Revenue Trends (Now 67% width) -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Revenue Trends (Last 30 Days)
+                    </h5>
+                </div>
+                <div class="card-body p-2">
+                    <div class="chart-container">
+                        <canvas id="revenueTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fourth Row: Payment Transactions Table with Individual Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list-alt me-2"></i>Payment Transactions
+                        {% if filters.search or filters.status != 'all' or filters.payment_type != 'all' %}
+                        <span class="badge bg-primary ms-2">Filtered</span>
+                        {% endif %}
+                    </h5>
+                    <div class="text-muted small">
+                        Total: {{ "{:,}".format(payments.total) }} payments
+                        {% if payments.page > 1 %}
+                        (Page {{ payments.page }} of {{ payments.pages }})
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Enhanced table container with proper overflow handling -->
+                <div class="card-body p-0 table-container-wrapper">
+                    <div class="table-responsive-enhanced">
+                        <div class="table-scroll-container">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light sticky-header">
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Invoice #</th>
+                                        <th>Customer</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th class="text-end" style="min-width: 200px;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for payment in payments.items %}
+                                    <tr>
+                                        <!-- Payment Type -->
+                                        <td>
+                                            {% if payment.payment_category == 'subscription' %}
+                                                <span class="badge bg-info text-white">
+                                                    <i class="fas fa-calendar-alt me-1"></i>Subscription
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning text-dark">
+                                                    <i class="fas fa-coins me-1"></i>Tokens
+                                                    {% if payment.token_count %}({{ payment.token_count }}){% endif %}
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <!-- Invoice Number -->
+                                        <td>
+                                            <span class="fw-medium">{{ payment.invoice_number or 'N/A' }}</span>
+                                            <div class="small text-muted">
+                                                {% if payment.razorpay_order_id and payment.razorpay_order_id|length > 12 %}
+                                                    {{ payment.razorpay_order_id[:12] }}...
+                                                {% elif payment.razorpay_order_id %}
+                                                    {{ payment.razorpay_order_id }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        
+                                        <!-- Customer -->
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle bg-primary-subtle text-primary me-2">
+                                                    {{ (payment.user_name or 'U')[:1]|upper }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-medium">{{ payment.user_name or 'Unknown User' }}</div>
+                                                    <div class="small text-muted">{{ payment.company_email or 'No email' }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        
+                                        <!-- Description -->
+                                        <td>
+                                            {% if payment.payment_category == 'subscription' %}
+                                                <span class="badge bg-light text-dark border">{{ payment.description or 'Subscription' }}</span>
+                                            {% else %}
+                                                <span class="text-muted">{{ payment.description or 'Additional Tokens' }}</span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <!-- Amount -->
+                                        <td>
+                                            <div class="fw-bold">₹{{ "{:,.2f}".format(payment.total_amount or 0) }}</div>
+                                            <div class="small text-muted">
+                                                Base: ₹{{ "{:,.2f}".format(payment.base_amount or 0) }}
+                                            </div>
+                                        </td>
+                                        
+                                        <!-- Status -->
+                                        <td>
+                                            {% if payment.status == 'completed' %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle me-1"></i>Completed
+                                            </span>
+                                            {% elif payment.status == 'created' %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-clock me-1"></i>Pending
+                                            </span>
+                                            {% elif payment.status == 'failed' %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times-circle me-1"></i>Failed
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-ban me-1"></i>{{ (payment.status or 'Unknown')|capitalize }}
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <!-- Date -->
+                                        <td>
+                                            {% if payment.created_at %}
+                                            <div>{{ payment.created_at.strftime('%d %b %Y') }}</div>
+                                            <div class="small text-muted">{{ payment.created_at.strftime('%I:%M %p') }}</div>
+                                            {% else %}
+                                            <div class="text-muted">N/A</div>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <!-- UPDATED: Individual Action Buttons -->
+                                        <td class="text-end action-buttons-cell">
+                                            <div class="d-flex gap-1 justify-content-end flex-nowrap">
+                                                <!-- View Details Button -->
+                                                <a href="{{ url_for('admin_payment_details', order_id=payment.invoice_number or 'unknown') }}" 
+                                                   class="btn btn-sm btn-outline-primary" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                
+                                                <!-- Download Invoice Button (Only for completed payments) -->
+                                                {% if payment.invoice_number and payment.status == 'completed' %}
+                                                <a href="{% if payment.payment_category == 'subscription' %}{{ url_for('admin_payment_invoice', order_id=payment.razorpay_order_id or 'unknown') }}{% else %}{{ url_for('download_token_invoice', token_purchase_id=payment.payment_id) }}{% endif %}" 
+                                                   target="_blank" 
+                                                   class="btn btn-sm btn-outline-danger" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="Download Invoice">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </a>
+                                                {% endif %}
+                                                
+                                                <!-- Mark as Completed Button (Only for pending payments) -->
+                                                {% if payment.status == 'created' %}
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-success complete-payment" 
+                                                        data-payment-id="{{ payment.invoice_number or 'unknown' }}"
+                                                        data-payment-type="{{ payment.payment_category }}"
+                                                        data-bs-toggle="tooltip" 
+                                                        data-bs-placement="top" 
+                                                        title="Mark as Completed">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                                {% endif %}
+                                                
+                                                <!-- View Customer Button -->
+                                                <a href="{{ url_for('admin_users', user_id=payment.user_id) }}" 
+                                                   class="btn btn-sm btn-outline-info" 
+                                                   data-bs-toggle="tooltip" 
+                                                   data-bs-placement="top" 
+                                                   title="View Customer">
+                                                    <i class="fas fa-user"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="py-5">
+                                                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                                                <h5>No payments found</h5>
+                                                <p class="text-muted">Try adjusting your search or filter criteria</p>
+                                                <a href="{{ url_for('admin_payments') }}" class="btn btn-outline-primary">
+                                                    <i class="fas fa-redo me-1"></i> Reset Filters
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if payments.pages > 1 %}
+                    <div class="d-flex justify-content-between align-items-center p-3 border-top">
+                        <div class="text-muted small">
+                            Showing {{ ((payments.page - 1) * payments.per_page) + 1 }} to 
+                            {{ ((payments.page - 1) * payments.per_page) + payments.items|length }} of 
+                            {{ payments.total }} entries
+                        </div>
+                        <nav aria-label="Payment pagination">
+                            <ul class="pagination pagination-sm mb-0">
+                                {% if payments.has_prev %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_payments', page=payments.prev_num, **filters) }}">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                                
+                                {% for page_num in payments.iter_pages() %}
+                                    {% if page_num %}
+                                        {% if page_num != payments.page %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ url_for('admin_payments', page=page_num, **filters) }}">{{ page_num }}</a>
+                                        </li>
+                                        {% else %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ page_num }}</span>
+                                        </li>
+                                        {% endif %}
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if payments.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ url_for('admin_payments', page=payments.next_num, **filters) }}">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tooltips for action buttons
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Auto-submit form when filters change
+    const filterForm = document.getElementById('payment-filter-form');
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    const selectElements = document.querySelectorAll('select');
+    
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => filterForm.submit());
+    });
+    
+    selectElements.forEach(select => {
+        select.addEventListener('change', () => filterForm.submit());
+    });
+    
+    // Revenue Trend Chart with proper container fitting
+    const ctx = document.getElementById('revenueTrendChart');
+    if (ctx) {
+        try {
+            const revenueData = [
+                {% for trend in revenue_trend %}
+                {
+                    day: "{{ trend.day.strftime('%Y-%m-%d') if trend.day else '' }}",
+                    total_revenue: {{ trend.total_revenue|float|default(0) }},
+                    formatted_day: "{{ trend.day.strftime('%d %b') if trend.day else 'N/A' }}"
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+            
+            const hasValidData = revenueData && 
+                                revenueData.length > 0 && 
+                                revenueData.some(item => item.total_revenue > 0);
+            
+            if (hasValidData) {
+                const chartData = {
+                    labels: revenueData.map(item => item.formatted_day || 'N/A'),
+                    datasets: [{
+                        label: 'Daily Revenue (₹)',
+                        data: revenueData.map(item => parseFloat(item.total_revenue) || 0),
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#3b82f6',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointHoverBorderWidth: 3
+                    }]
+                };
+
+                const chartConfig = {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                top: 20,
+                                right: 20,
+                                bottom: 20,
+                                left: 20
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                titleColor: 'white',
+                                bodyColor: 'white',
+                                borderColor: '#3b82f6',
+                                borderWidth: 1,
+                                cornerRadius: 8,
+                                displayColors: false,
+                                padding: 12,
+                                titleFont: {
+                                    size: 13,
+                                    weight: 'bold'
+                                },
+                                bodyFont: {
+                                    size: 12
+                                },
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label || 'N/A';
+                                    },
+                                    label: function(context) {
+                                        const value = parseFloat(context.parsed.y) || 0;
+                                        return 'Revenue: ₹' + value.toLocaleString('en-IN', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        });
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                border: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    },
+                                    color: '#6b7280',
+                                    maxRotation: 45,
+                                    minRotation: 0,
+                                    padding: 8,
+                                    maxTicksLimit: window.innerWidth < 768 ? 6 : 12
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(107, 114, 128, 0.1)',
+                                    drawBorder: false
+                                },
+                                border: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 11
+                                    },
+                                    color: '#6b7280',
+                                    padding: 8,
+                                    maxTicksLimit: 6,
+                                    callback: function(value) {
+                                        if (value >= 100000) {
+                                            return '₹' + (value / 100000).toFixed(1) + 'L';
+                                        } else if (value >= 1000) {
+                                            return '₹' + (value / 1000).toFixed(1) + 'K';
+                                        }
+                                        return '₹' + parseFloat(value).toLocaleString('en-IN');
+                                    }
+                                }
+                            }
+                        },
+                        elements: {
+                            point: {
+                                hoverBorderWidth: 3
+                            }
+                        }
+                    }
+                };
+
+                const chart = new Chart(ctx, chartConfig);
+                
+                let resizeTimeout;
+                window.addEventListener('resize', function() {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(function() {
+                        chart.resize();
+                    }, 100);
+                });
+                
+            } else {
+                ctx.parentElement.innerHTML = `
+                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted" style="min-height: 280px;">
+                        <i class="fas fa-chart-line fa-3x mb-3" style="opacity: 0.5; color: #9ca3af;"></i>
+                        <h6 class="mb-2" style="color: #4b5563;">No Revenue Data</h6>
+                        <small class="text-center" style="color: #6b7280;">No completed payments found for the selected period</small>
+                    </div>
+                `;
+            }
+            
+        } catch (error) {
+            console.error('Error creating revenue chart:', error);
+            ctx.parentElement.innerHTML = `
+                <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted" style="min-height: 280px;">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3" style="opacity: 0.5; color: #ef4444;"></i>
+                    <h6 class="mb-2" style="color: #4b5563;">Chart Loading Error</h6>
+                    <small class="text-center" style="color: #6b7280;">Unable to load revenue chart. Check console for details.</small>
+                </div>
+            `;
+        }
+    }
+    
+    // Mark as completed functionality
+    document.querySelectorAll('.complete-payment').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const paymentId = this.dataset.paymentId;
+            const paymentType = this.dataset.paymentType;
+            
+            if (confirm('Are you sure you want to mark this payment as completed?')) {
+                try {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    
+                    if (paymentType === 'tokens') {
+                        form.action = `{{ url_for('admin_update_token_payment', order_id='') }}${paymentId}`;
+                    } else {
+                        form.action = `{{ url_for('admin_update_payment', order_id='') }}${paymentId}`;
+                    }
+                    
+                    const statusInput = document.createElement('input');
+                    statusInput.type = 'hidden';
+                    statusInput.name = 'status';
+                    statusInput.value = 'completed';
+                    
+                    const csrfInput = document.createElement('input');
+                    csrfInput.type = 'hidden';
+                    csrfInput.name = 'csrf_token';
+                    csrfInput.value = '{{ csrf_token }}';
+                    
+                    form.appendChild(statusInput);
+                    form.appendChild(csrfInput);
+                    document.body.appendChild(form);
+                    form.submit();
+                } catch (error) {
+                    console.error('Error submitting payment update:', error);
+                    alert('Error updating payment status. Please try again.');
+                }
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

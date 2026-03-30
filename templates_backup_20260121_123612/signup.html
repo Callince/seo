@@ -1,0 +1,1571 @@
+{% extends "base1.html" %}
+
+{% block title %}Sign Up | Fourth Dimension{% endblock %}
+
+{% block styles %}
+<style>
+  :root {
+    --primary: #273879;
+    --primary-dark: #1f2d5f;
+    --primary-light: #0f74b2;
+    --primary-rgb: 39, 56, 121;
+    --secondary: #0f74b2;
+    --secondary-light: #0891b2;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --surface: #ffffff;
+    --surface-dark: #f9fafb;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --text-muted: #9ca3af;
+    --border-color: #e5e7eb;
+    --header-height: 64px;
+    --border-radius: 10px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --transition: all 0.2s ease-in-out;
+    --gradient-primary: linear-gradient(135deg, #273879, #0f74b2);
+    --gradient-secondary: linear-gradient(135deg, #1f2d5f, #273879);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+    color: var(--text-dark);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .container {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .auth-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 750px;
+    padding: 2rem;
+    margin: auto;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo img {
+    height: 50px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(39, 56, 121, 0.1);
+  }
+
+  .auth-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(39, 56, 121, 0.02), rgba(15, 116, 178, 0.02));
+  }
+
+  .auth-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .auth-header p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+  }
+
+  .auth-form {
+    padding: 1.5rem 2rem 2rem;
+  }
+
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+    position: relative;
+    flex: 1;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--primary);
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-dark);
+    background-color: var(--surface);
+    background-clip: padding-box;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    transition: var(--transition);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary);
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+    background: linear-gradient(135deg, rgba(39, 56, 121, 0.01), rgba(15, 116, 178, 0.01));
+  }
+
+  .form-control.is-invalid {
+    border-color: var(--danger);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    padding-right: calc(1.5em + 0.75rem);
+  }
+
+  .form-control.is-valid {
+    border-color: var(--success);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    padding-right: calc(1.5em + 0.75rem);
+  }
+
+  /* Updated email checking style - removed yellow color and background image */
+  .email-checking {
+    border-color: var(--primary) !important;
+    padding-right: calc(1.5em + 0.75rem);
+    position: relative;
+  }
+
+  /* Add spinner overlay for email checking */
+  .email-checking::after {
+    content: '';
+    position: absolute;
+    right: calc(0.375em + 0.1875rem);
+    top: 50%;
+    transform: translateY(-50%);
+    width: calc(0.75em + 0.375rem);
+    height: calc(0.75em + 0.375rem);
+    border: 2px solid rgba(39, 56, 121, 0.3);
+    border-top: 2px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: translateY(-50%) rotate(0deg); }
+    100% { transform: translateY(-50%) rotate(360deg); }
+  }
+
+  .password-wrapper {
+    position: relative;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+    cursor: pointer;
+    z-index: 1;
+    font-size: 0.95rem;
+    transition: var(--transition);
+  }
+
+  .password-toggle:hover {
+    color: var(--primary-dark);
+  }
+
+  .password-strength {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .password-strength-meter {
+    height: 5px;
+    border-radius: 2.5px;
+    background-color: var(--border-color);
+    margin-top: 0.25rem;
+    overflow: hidden;
+  }
+
+  .password-strength-meter-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .password-strength-text {
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    color: var(--primary);
+  }
+
+  .password-strength-bar-weak {
+    background-color: var(--danger);
+    width: 25%;
+  }
+
+  .password-strength-bar-fair {
+    background-color: var(--warning);
+    width: 50%;
+  }
+
+  .password-strength-bar-good {
+    background: linear-gradient(135deg, var(--secondary), var(--primary-light));
+    width: 75%;
+  }
+
+  .password-strength-bar-strong {
+    background: var(--gradient-primary);
+    width: 100%;
+  }
+
+  .password-criteria {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+  }
+
+  .password-criteria li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    transition: var(--transition);
+  }
+
+  .password-criteria li.valid {
+    color: var(--primary);
+  }
+
+  .password-criteria li i {
+    margin-right: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+  }
+
+  .btn-primary {
+    color: #fff;
+    background: var(--gradient-primary);
+    border: none;
+    box-shadow: 0 4px 15px rgba(39, 56, 121, 0.2);
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background: var(--gradient-secondary);
+    box-shadow: 0 6px 20px rgba(39, 56, 121, 0.3);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    color: var(--primary);
+    background-color: #f1f5f9;
+    border: 2px solid var(--primary);
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background: var(--gradient-primary);
+    color: white;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
+
+  .btn-with-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-with-icon i {
+    margin-right: 0.5rem;
+  }
+
+  /* Button loading state */
+  .btn-loading {
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .btn-spinner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+  }
+
+  .btn-loading .btn-spinner {
+    display: flex;
+  }
+
+  .btn-loading .btn-text {
+    opacity: 0.7;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .feedback-text {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+  }
+
+  .feedback-text.text-danger {
+    color: var(--danger);
+  }
+
+  .feedback-text.text-success {
+    color: var(--primary);
+  }
+
+  .feedback-text.text-warning {
+    color: var(--warning);
+  }
+
+  .feedback-text i {
+    margin-right: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-light);
+    font-size: 0.95rem;
+  }
+
+  .auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* Modal styles */
+  .modal-content {
+    border-radius: var(--border-radius);
+    border: none;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .modal-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(39, 56, 121, 0.05), rgba(15, 116, 178, 0.05));
+  }
+
+  .modal-title {
+    font-weight: 600;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+  }
+
+  .modal-title i {
+    margin-right: 0.5rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 1rem 1.5rem;
+  }
+
+  .close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .close:hover {
+    color: var(--primary);
+  }
+
+  /* Spinner styles */
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  /* Step indicator */
+  .signup-steps {
+    display: flex;
+    margin-bottom: 2rem;
+    justify-content: space-between;
+    position: relative;
+    padding: 0 2rem;
+  }
+
+  .signup-steps::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(135deg, var(--border-color), rgba(39, 56, 121, 0.1));
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+
+  .signup-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .signup-step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--surface);
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    transition: var(--transition);
+    color: var(--text-light);
+  }
+
+  .signup-step.active .signup-step-circle {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
+  }
+
+  .signup-step.completed .signup-step-circle {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+  }
+
+  .signup-step-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-light);
+  }
+
+  .signup-step.active .signup-step-text {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  .signup-step.completed .signup-step-text {
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* Form multi-step */
+  .signup-form-step {
+    display: none;
+  }
+
+  .signup-form-step.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+  }
+
+  .form-actions .btn {
+    min-width: 120px;
+  }
+
+  /* Promo sidebar */
+  .promo-sidebar {
+    flex: 1;
+    background: var(--gradient-primary);
+    color: white;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .promo-sidebar-content {
+    padding: 3rem;
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .promo-sidebar h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .promo-sidebar p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+  }
+
+  .promo-sidebar .features {
+    margin-bottom: 2rem;
+  }
+
+  .promo-sidebar .feature {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .promo-sidebar .feature i {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .promo-sidebar .shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .promo-sidebar .shape {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    backdrop-filter: blur(20px);
+  }
+
+  .promo-sidebar .shape:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+  }
+
+  .promo-sidebar .shape:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -100px;
+  }
+
+  .promo-sidebar .shape:nth-child(3) {
+    width: 150px;
+    height: 150px;
+    bottom: 20%;
+    right: -75px;
+  }
+
+  /* Form check styling */
+  .form-check {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .form-check-input {
+    margin-top: 0.25rem;
+    accent-color: var(--primary);
+  }
+
+  .form-check-label {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .form-check-label a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .form-check-label a:hover {
+    text-decoration: underline;
+  }
+
+  /* Verification message styling */
+  .verification-message {
+    background: linear-gradient(135deg, rgba(39, 56, 121, 0.03), rgba(15, 116, 178, 0.03));
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    border: 1px solid rgba(39, 56, 121, 0.1);
+  }
+
+  /* Validation indicator styles */
+  .validation-indicator {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    transition: var(--transition);
+  }
+
+  .validation-indicator.checking {
+    background-color: var(--primary);
+    animation: pulse 1.5s infinite;
+  }
+
+  .validation-indicator.valid {
+    background: var(--gradient-primary);
+  }
+
+  .validation-indicator.invalid {
+    background-color: var(--danger);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* Responsive styles */
+  @media (min-width: 992px) {
+    .promo-sidebar {
+      display: block;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .auth-container {
+      padding: 1rem;
+    }
+
+    .auth-header, 
+    .auth-form {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Main auth content -->
+  <div class="auth-container">
+    <div class="auth-logo">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+        <!-- Logo section (left) -->
+        <div class="logo-section">
+        <a href="{{ url_for('landing') }}" class="logo-link" style="text-decoration: none; display: inline-block; cursor: pointer;">
+          {% if website_settings.website_logo_file %}
+              <!-- Admin uploaded logo -->
+              <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
+                  alt="{{ website_settings.website_name }} Logo"
+                  style="max-width: 120px; max-height: 60px; width: auto; height: auto; object-fit: contain; display: block;"
+                  id="websiteLogo"
+                  onerror="handleLogoError(this)" />
+              
+          {% elif website_settings.website_icon %}
+              <!-- FontAwesome icon -->
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #f1f5f9, white); border: 2px solid transparent; background-clip: padding-box; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <div style="position: absolute; inset: 0; background: linear-gradient(135deg, #273879, #0f74b2); border-radius: 10px; z-index: -1;"></div>
+                  <i class="{{ website_settings.website_icon }}" style="background: linear-gradient(135deg, #273879, #0f74b2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.75rem;"></i>
+              </div>
+              
+          {% else %}
+              <!-- Default initials fallback -->
+              <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #273879, #0f74b2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                  {{ website_settings.website_name[:2].upper() if website_settings.website_name else 'WA' }}
+              </div>
+          {% endif %}
+        </a> 
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>Create your account</h1>
+        <p>Get started with Fourth Dimension</p>
+      </div>
+
+      <!-- Step indicator -->
+      <div class="signup-steps">
+        <div class="signup-step active" id="stepIndicator1">
+          <div class="signup-step-circle">1</div>
+          <div class="signup-step-text">Account</div>
+        </div>
+        <div class="signup-step" id="stepIndicator2">
+          <div class="signup-step-circle">2</div>
+          <div class="signup-step-text">Password</div>
+        </div>
+        <div class="signup-step" id="stepIndicator3">
+          <div class="signup-step-circle">3</div>
+          <div class="signup-step-text">Verification</div>
+        </div>
+      </div>
+
+      <form id="signupForm" class="auth-form" method="post" action="{{ url_for('signup') }}">
+        <!-- Add CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+        
+        <!-- Step 1: Basic information -->
+        <div class="signup-form-step active" id="step1">
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required value="{{ name if name }}">
+            <div id="nameFeedback" class="feedback-text text-danger" style="display: none;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="companyEmail" class="form-label">Company Email</label>
+            <input type="email" id="companyEmail" name="companyEmail" class="form-control" placeholder="john.doe@company.com" required value="{{ company_email if company_email }}">
+            <div id="emailFeedback" class="feedback-text" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <div></div> <!-- Empty div for spacing -->
+            <button type="button" class="btn btn-primary" id="nextToStep2">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Continue</span> <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2: Password setup -->
+        <div class="signup-form-step" id="step2">
+          <div class="form-group">
+            <label for="password" class="form-label">Create Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" class="form-control" placeholder="Create a strong password" required>
+              <span class="password-toggle" id="passwordToggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            
+            <div class="password-strength">
+              <div class="password-strength-text">
+                <span id="passwordStrengthText">Password strength</span>
+                <span id="passwordStrengthLevel"></span>
+              </div>
+              
+              <ul class="password-criteria" id="passwordCriteria">
+                <li id="criteriaLength"><i class="fas fa-circle"></i> At least 8 characters</li>
+                <li id="criteriaUppercase"><i class="fas fa-circle"></i> At least one uppercase letter</li>
+                <li id="criteriaLowercase"><i class="fas fa-circle"></i> At least one lowercase letter</li>
+                <li id="criteriaNumber"><i class="fas fa-circle"></i> At least one number</li>
+                <li id="criteriaSpecial"><i class="fas fa-circle"></i> At least one special character</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="retypePassword" class="form-label">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="retypePassword" name="retypePassword" class="form-control" placeholder="Retype your password" required>
+              <span class="password-toggle" id="retypePasswordToggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+            <div id="retypePasswordFeedback" class="feedback-text" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="backToStep1">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="button" class="btn btn-primary" id="nextToStep3">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Continue</span> <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Terms and verification -->
+        <div class="signup-form-step" id="step3">
+          <div class="form-group">
+            <div class="verification-message">
+              <i class="fas fa-info-circle" style="color: var(--primary); font-size: 2rem; display: block; text-align: center; margin-bottom: 1rem;"></i>
+              <p style="text-align: center; margin-bottom: 1rem;">
+                After creating your account, you'll need to verify your email address. We'll send you a verification link to activate your account.
+              </p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" id="termsCheck" name="termsCheck" class="form-check-input" required style="width: auto; margin-right: 0.75rem;">
+              <label for="termsCheck" class="form-check-label">
+                I agree to the <a href="{{ url_for('terms') }}" target="_blank">Terms of Service</a> and <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
+              </label>
+            </div>
+            <div id="termsCheckFeedback" class="feedback-text text-danger" style="display: none;"></div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="backToStep2">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button type="submit" class="btn btn-primary" id="createAccount">
+              <span class="btn-spinner">
+                <div class="spinner"></div>
+              </span>
+              <span class="btn-text">Create Account</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      <p>Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </div>
+  </div>
+
+  <!-- Promo sidebar (visible on larger screens) -->
+  <div class="promo-sidebar">
+    <div class="promo-sidebar-content">
+      <h2>Join Fourth Dimension</h2>
+      <p>Access powerful web analysis tools and unlock insights that drive growth and optimization.</p>
+      
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-search"></i>
+          <span>Complete URL analysis in seconds</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-chart-line"></i>
+          <span>Track performance metrics over time</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-globe"></i>
+          <span>Visualize site structures and hierarchies</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-lock"></i>
+          <span>Secure and private data processing</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="shapes">
+      <div class="shape"></div>
+      <div class="shape"></div>
+      <div class="shape"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Loading spinner -->
+<div id="loadingSpinner" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Checking...</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Form elements
+    const form = document.getElementById('signupForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('companyEmail');
+    const passwordInput = document.getElementById('password');
+    const retypePasswordInput = document.getElementById('retypePassword');
+    const termsCheck = document.getElementById('termsCheck');
+    
+    // Feedback elements
+    const nameFeedback = document.getElementById('nameFeedback');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const retypePasswordFeedback = document.getElementById('retypePasswordFeedback');
+    const termsCheckFeedback = document.getElementById('termsCheckFeedback');
+    
+    // Password strength elements
+    const passwordStrengthText = document.getElementById('passwordStrengthText');
+    const passwordStrengthLevel = document.getElementById('passwordStrengthLevel');
+    
+    // Password criteria elements
+    const criteriaLength = document.getElementById('criteriaLength');
+    const criteriaUppercase = document.getElementById('criteriaUppercase');
+    const criteriaLowercase = document.getElementById('criteriaLowercase');
+    const criteriaNumber = document.getElementById('criteriaNumber');
+    const criteriaSpecial = document.getElementById('criteriaSpecial');
+    
+    // Step navigation buttons
+    const nextToStep2 = document.getElementById('nextToStep2');
+    const backToStep1 = document.getElementById('backToStep1');
+    const nextToStep3 = document.getElementById('nextToStep3');
+    const backToStep2 = document.getElementById('backToStep2');
+    const createAccount = document.getElementById('createAccount');
+    
+    // Step indicators
+    const stepIndicator1 = document.getElementById('stepIndicator1');
+    const stepIndicator2 = document.getElementById('stepIndicator2');
+    const stepIndicator3 = document.getElementById('stepIndicator3');
+    
+    // Step content
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    
+    // Password toggle buttons
+    const passwordToggle = document.getElementById('passwordToggle');
+    const retypePasswordToggle = document.getElementById('retypePasswordToggle');
+    
+    // Modal elements
+    const emailExistsModal = document.getElementById('emailExistsModal');
+    const emailExistsMessage = document.getElementById('emailExistsMessage');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    
+    // Validation state tracking
+    let validationTimeouts = {};
+    let validationState = {
+        name: { isValid: false, isChecking: false },
+        email: { isValid: false, isChecking: false, isAvailable: false },
+        password: { isValid: false, strength: 0 },
+        retypePassword: { isValid: false },
+        terms: { isValid: false }
+    };
+
+    // Get CSRF token
+    function getCSRFToken() {
+        return document.querySelector('input[name="csrf_token"]').value;
+    }
+
+    // Debounced validation function
+    function debounceValidation(key, callback, delay = 300) {
+        if (validationTimeouts[key]) {
+            clearTimeout(validationTimeouts[key]);
+        }
+        validationTimeouts[key] = setTimeout(callback, delay);
+    }
+
+    // Show feedback with icon and animation
+    function showFeedback(feedbackElement, message, type = 'danger', icon = null) {
+        feedbackElement.className = `feedback-text text-${type}`;
+        
+        let iconHtml = '';
+        if (icon) {
+            iconHtml = `<i class="fas fa-${icon}"></i>`;
+        } else {
+            switch(type) {
+                case 'success':
+                    iconHtml = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'danger':
+                    iconHtml = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'warning':
+                    iconHtml = '<i class="fas fa-exclamation-triangle"></i>';
+                    break;
+                default:
+                    iconHtml = '<i class="fas fa-info-circle"></i>';
+            }
+        }
+        
+        feedbackElement.innerHTML = `${iconHtml}${message}`;
+        feedbackElement.style.display = 'block';
+    }
+
+    function hideFeedback(feedbackElement) {
+        feedbackElement.style.display = 'none';
+    }
+
+    // Enhanced name validation with real-time feedback
+    function validateName(value, showLiveFeedback = true) {
+        const trimmedValue = value.trim();
+        
+        if (!trimmedValue) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name is required', 'danger');
+            }
+            return false;
+        }
+        
+        if (trimmedValue.length < 2) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name must be at least 2 characters long', 'danger');
+            }
+            return false;
+        }
+        
+        if (trimmedValue.length > 50) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name cannot exceed 50 characters', 'danger');
+            }
+            return false;
+        }
+        
+        if (!/^[a-zA-Z\s'-\.]+$/.test(trimmedValue)) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name can only contain letters, spaces, hyphens, apostrophes, and periods', 'danger');
+            }
+            return false;
+        }
+        
+        // Check for multiple consecutive spaces
+        if (/\s{2,}/.test(trimmedValue)) {
+            validationState.name.isValid = false;
+            nameInput.classList.remove('is-valid');
+            nameInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(nameFeedback, 'Name cannot contain multiple consecutive spaces', 'danger');
+            }
+            return false;
+        }
+        
+        // Valid name
+        validationState.name.isValid = true;
+        nameInput.classList.remove('is-invalid');
+        nameInput.classList.add('is-valid');
+        if (showLiveFeedback) {
+            showFeedback(nameFeedback, 'Name looks good!', 'success');
+        }
+        return true;
+    }
+
+    // Enhanced email validation
+    function validateEmailFormat(email) {
+        const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+        return emailRegex.test(email);
+    }
+
+    // Email availability check with enhanced feedback - removed text feedback during checking
+    async function checkEmailAvailability(email) {
+        if (!email || !validateEmailFormat(email)) {
+            validationState.email.isValid = false;
+            validationState.email.isAvailable = false;
+            emailInput.classList.remove('is-valid', 'email-checking');
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Please enter a valid email address', 'danger');
+            return { available: false, message: 'Please enter a valid email address.' };
+        }
+
+        try {
+            validationState.email.isChecking = true;
+            emailInput.classList.remove('is-valid', 'is-invalid');
+            emailInput.classList.add('email-checking');
+            hideFeedback(emailFeedback); // Hide feedback during checking
+            
+            const response = await fetch('/check_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(),
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    csrf_token: getCSRFToken()
+                })
+            });
+
+            const data = await response.json();
+            
+            validationState.email.isChecking = false;
+            emailInput.classList.remove('email-checking');
+            
+            if (response.ok) {
+                validationState.email.isAvailable = data.available;
+                validationState.email.isValid = data.available;
+                
+                if (data.available) {
+                    emailInput.classList.add('is-valid');
+                    emailInput.classList.remove('is-invalid');
+                    showFeedback(emailFeedback, 'Email is available to sign up!', 'success');
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    emailInput.classList.remove('is-valid');
+                    showFeedback(emailFeedback, data.message, 'danger');
+                }
+                
+                return data;
+            } else {
+                throw new Error(data.message || 'Failed to check email availability');
+            }
+        } catch (error) {
+            console.error('Email check error:', error);
+            validationState.email.isChecking = false;
+            emailInput.classList.remove('email-checking');
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Unable to verify email availability. Please try again.', 'danger');
+            
+            return { 
+                available: false, 
+                message: 'Unable to verify email availability. Please try again.' 
+            };
+        }
+    }
+
+    // Enhanced password validation
+    function validatePassword(password, showLiveFeedback = true) {
+        let strength = 0;
+        let level = '';
+        let isValid = true;
+        
+        // Reset criteria
+        const criteria = [criteriaLength, criteriaUppercase, criteriaLowercase, criteriaNumber, criteriaSpecial];
+        criteria.forEach(criterion => {
+            criterion.classList.remove('valid');
+            criterion.querySelector('i').className = 'fas fa-circle';
+        });
+        
+        if (password.length >= 8) {
+            criteriaLength.classList.add('valid');
+            criteriaLength.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[A-Z]/.test(password)) {
+            criteriaUppercase.classList.add('valid');
+            criteriaUppercase.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[a-z]/.test(password)) {
+            criteriaLowercase.classList.add('valid');
+            criteriaLowercase.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[0-9]/.test(password)) {
+            criteriaNumber.classList.add('valid');
+            criteriaNumber.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        if (/[^A-Za-z0-9]/.test(password)) {
+            criteriaSpecial.classList.add('valid');
+            criteriaSpecial.querySelector('i').className = 'fas fa-check-circle';
+            strength++;
+        }
+        
+        
+        validationState.password.isValid = isValid && strength >= 4;
+        validationState.password.strength = strength;
+        
+        if (password && showLiveFeedback) {
+            if (isValid && strength >= 4) {
+                passwordInput.classList.remove('is-invalid');
+                passwordInput.classList.add('is-valid');
+            } else {
+                passwordInput.classList.remove('is-valid');
+                if (password.length > 0) {
+                    passwordInput.classList.add('is-invalid');
+                }
+            }
+        }
+        
+        return isValid && strength >= 4;
+    }
+
+    // Enhanced password confirmation validation
+    function validatePasswordConfirmation(password, confirmPassword, showLiveFeedback = true) {
+        if (!confirmPassword) {
+            validationState.retypePassword.isValid = false;
+            retypePasswordInput.classList.remove('is-valid');
+            if (showLiveFeedback) {
+                hideFeedback(retypePasswordFeedback);
+            }
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            validationState.retypePassword.isValid = false;
+            retypePasswordInput.classList.remove('is-valid');
+            retypePasswordInput.classList.add('is-invalid');
+            if (showLiveFeedback) {
+                showFeedback(retypePasswordFeedback, 'Passwords do not match', 'danger');
+            }
+            return false;
+        }
+        
+        validationState.retypePassword.isValid = true;
+        retypePasswordInput.classList.remove('is-invalid');
+        retypePasswordInput.classList.add('is-valid');
+        if (showLiveFeedback) {
+            showFeedback(retypePasswordFeedback, 'Passwords match!', 'success');
+        }
+        return true;
+    }
+
+    // Real-time validation event listeners
+    nameInput.addEventListener('input', function() {
+        const value = this.value;
+        debounceValidation('name', () => {
+            validateName(value, true);
+        }, 100);
+    });
+
+    nameInput.addEventListener('blur', function() {
+        validateName(this.value, true);
+    });
+
+    emailInput.addEventListener('input', function() {
+        const email = this.value.trim().toLowerCase();
+        
+        // Reset validation state
+        validationState.email.isValid = false;
+        validationState.email.isAvailable = false;
+        emailInput.classList.remove('is-valid', 'is-invalid', 'email-checking');
+        hideFeedback(emailFeedback);
+        
+        if (email) {
+            debounceValidation('email', () => {
+                if (validateEmailFormat(email)) {
+                    checkEmailAvailability(email);
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    showFeedback(emailFeedback, 'Please enter a valid email address', 'danger');
+                }
+            }, 500);
+        }
+    });
+
+    emailInput.addEventListener('blur', function() {
+        const email = this.value.trim().toLowerCase();
+        if (email && validateEmailFormat(email) && !validationState.email.isChecking) {
+            checkEmailAvailability(email);
+        }
+    });
+
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        validatePassword(password, true);
+        
+        // Also validate password confirmation if it has a value
+        const confirmPassword = retypePasswordInput.value;
+        if (confirmPassword) {
+            validatePasswordConfirmation(password, confirmPassword, true);
+        }
+    });
+
+    retypePasswordInput.addEventListener('input', function() {
+        const password = passwordInput.value;
+        const confirmPassword = this.value;
+        debounceValidation('retypePassword', () => {
+            validatePasswordConfirmation(password, confirmPassword, true);
+        }, 100);
+    });
+
+    termsCheck.addEventListener('change', function() {
+        validationState.terms.isValid = this.checked;
+        if (this.checked) {
+            hideFeedback(termsCheckFeedback);
+        } else {
+            showFeedback(termsCheckFeedback, 'You must agree to the Terms of Service and Privacy Policy', 'danger');
+        }
+    });
+
+    // Step validation functions
+    function validateStep1() {
+        const nameValid = validateName(nameInput.value.trim(), true);
+        const emailValid = validationState.email.isValid && validationState.email.isAvailable;
+        
+        if (!emailValid && validateEmailFormat(emailInput.value.trim())) {
+            emailInput.classList.add('is-invalid');
+            showFeedback(emailFeedback, 'Please wait for email verification to complete', 'warning');
+        }
+        
+        return nameValid && emailValid;
+    }
+    
+    function validateStep2() {
+        const passwordValid = validatePassword(passwordInput.value, true);
+        const confirmPasswordValid = validatePasswordConfirmation(passwordInput.value, retypePasswordInput.value, true);
+        
+        return passwordValid && confirmPasswordValid;
+    }
+    
+    function validateStep3() {
+        const termsValid = termsCheck.checked;
+        validationState.terms.isValid = termsValid;
+        
+        if (!termsValid) {
+            showFeedback(termsCheckFeedback, 'You must agree to the Terms of Service and Privacy Policy', 'danger');
+        } else {
+            hideFeedback(termsCheckFeedback);
+        }
+        
+        return termsValid;
+    }
+
+    // Enhanced step navigation
+    nextToStep2.addEventListener('click', async function() {
+        this.classList.add('btn-loading');
+        this.disabled = true;
+        
+        const btnText = this.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Validating...';
+        
+        try {
+            if (!validateStep1()) {
+                return;
+            }
+            
+            // Final email check if not already validated
+            if (!validationState.email.isAvailable) {
+                const email = emailInput.value.trim().toLowerCase();
+                const emailCheck = await checkEmailAvailability(email);
+                
+                if (!emailCheck.available) {
+                    emailExistsMessage.innerHTML = emailCheck.message;
+                    if (typeof $ !== 'undefined' && $.fn.modal) {
+                        $('#emailExistsModal').modal('show');
+                    }
+                    return;
+                }
+            }
+            
+            showStep(2);
+            
+        } finally {
+            this.classList.remove('btn-loading');
+            this.disabled = false;
+            btnText.textContent = originalText;
+        }
+    });
+    
+    nextToStep3.addEventListener('click', function() {
+        if (validateStep2()) {
+            showStep(3);
+        }
+    });
+    
+    backToStep1.addEventListener('click', function() {
+        showStep(1);
+    });
+    
+    backToStep2.addEventListener('click', function() {
+        showStep(2);
+    });
+    
+    // Show step function
+    function showStep(stepNumber) {
+        // Hide all steps
+        [step1, step2, step3].forEach(step => step.classList.remove('active'));
+        
+        // Reset step indicators
+        [stepIndicator1, stepIndicator2, stepIndicator3].forEach(indicator => {
+            indicator.classList.remove('active', 'completed');
+        });
+        
+        // Show the requested step and update indicators
+        if (stepNumber === 1) {
+            step1.classList.add('active');
+            stepIndicator1.classList.add('active');
+        } else if (stepNumber === 2) {
+            step2.classList.add('active');
+            stepIndicator1.classList.add('completed');
+            stepIndicator2.classList.add('active');
+            // Focus on first input
+            setTimeout(() => passwordInput.focus(), 100);
+        } else if (stepNumber === 3) {
+            step3.classList.add('active');
+            stepIndicator1.classList.add('completed');
+            stepIndicator2.classList.add('completed');
+            stepIndicator3.classList.add('active');
+        }
+    }
+    
+    // Password toggle functionality
+    function togglePasswordVisibility(input, toggle) {
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        
+        const icon = toggle.querySelector('i');
+        icon.className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    }
+    
+    passwordToggle.addEventListener('click', function() {
+        togglePasswordVisibility(passwordInput, passwordToggle);
+    });
+    
+    retypePasswordToggle.addEventListener('click', function() {
+        togglePasswordVisibility(retypePasswordInput, retypePasswordToggle);
+    });
+    
+    // Enhanced form submission
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        createAccount.classList.add('btn-loading');
+        createAccount.disabled = true;
+        
+        const btnText = createAccount.querySelector('.btn-text');
+        const originalText = btnText.textContent;
+        btnText.textContent = 'Creating Account...';
+        
+        try {
+            // Validate all steps
+            const step1Valid = validateStep1();
+            const step2Valid = validateStep2();
+            const step3Valid = validateStep3();
+            
+            if (!step1Valid || !step2Valid || !step3Valid) {
+                // Show the first invalid step
+                if (!step1Valid) showStep(1);
+                else if (!step2Valid) showStep(2);
+                else if (!step3Valid) showStep(3);
+                return;
+            }
+            
+            // Final email availability check
+            const email = emailInput.value.trim().toLowerCase();
+            if (!validationState.email.isAvailable) {
+                const emailCheck = await checkEmailAvailability(email);
+                if (!emailCheck.available) {
+                    emailExistsMessage.innerHTML = emailCheck.message;
+                    if (typeof $ !== 'undefined' && $.fn.modal) {
+                        $('#emailExistsModal').modal('show');
+                    }
+                    showStep(1);
+                    return;
+                }
+            }
+            
+            // Submit form
+            this.submit();
+            
+        } catch (error) {
+            console.error('Form submission error:', error);
+            showFeedback(emailFeedback, 'An error occurred. Please try again.', 'danger');
+        } finally {
+            createAccount.classList.remove('btn-loading');
+            createAccount.disabled = false;
+            btnText.textContent = originalText;
+        }
+    });
+
+    // Initialize form
+    validatePassword('', false); // Initialize password strength meter
+    
+    // Focus on first input
+    setTimeout(() => nameInput.focus(), 100);
+});
+</script>
+{% endblock %}

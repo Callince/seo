@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Website Crawler{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/site-tools.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-dark">Website Crawler</h1>
+    
+    <div class="card mb-4 compact-card">
+        <div class="card-header py-2 d-flex align-items-center">
+            <h5 class="mb-0 text-dark">Analyze and visualize web page structure</h5>
+        </div>
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div>{{ error }}</div>
+                </div>
+            {% endif %}
+            <form method="POST" id="crawlerForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+              <!-- Mobile search section (hidden on desktop) -->
+                <div class="mobile-search-container d-none">
+                    <div class="mb-2">
+                        <label for="mobile-url" class="text-dark mb-1">
+                            <i class="fas fa-link me-1 text-primary"></i>Enter Website URL:
+                        </label>
+                    </div>
+                    <div class="d-flex w-100">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                            <input type="text" class="form-control search-input" id="mobile-url" name="url" 
+                                   placeholder="Enter a website URL" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Desktop search section (hidden on mobile) -->
+                <div class="desktop-search-container">
+                    <div class="form-group mb-3 d-flex align-items-center">
+                        <label for="url" class="me-2 mb-0 text-dark" style="white-space: nowrap;">
+                            <i class="fas fa-link me-1 text-primary"></i>Enter Website URL:
+                        </label>
+                        <div class="search-bar input-group">
+                            <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                            <input type="text" class="form-control search-input" id="url" name="url" 
+                                  placeholder="Enter a website URL (http:// or https:// will be added automatically)" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary compact-btn">
+                    <i class="fas fa-search me-2"></i> Start Crawling
+                </button>
+            </form>
+            
+            <hr class="my-4">
+            
+            <div>
+                <h5 class="fw-bold text-dark mb-3"><i class="fas fa-star me-2 text-warning"></i> Features</h5>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="me-3">
+                        <i class="fas fa-project-diagram text-primary fa-lg"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-1 fw-semibold text-dark">Link Analysis</h6>
+                        <p class="text-muted mb-0 small">Map all internal and external links</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('crawlerForm');
+    const urlInput = document.getElementById('url');
+    const mobileUrlInput = document.getElementById('mobile-url');
+    let hasSubmitted = false;
+
+    function ensureHttpsPrefix(url) {
+        url = url.trim();
+        if (!url) return '';
+        url = url.replace(/^(https?:\/\/)?(www\.)?/i, '');
+        const preferHttp = url.includes('http:') || url.toLowerCase().includes('http://');
+        return preferHttp ? 'http://' + url : 'https://' + url;
+    }
+
+    function setFormDisplay() {
+        const isMobile = window.innerWidth <= 768;
+        const mobileContainer = document.querySelector('.mobile-search-container');
+        const desktopContainer = document.querySelector('.desktop-search-container');
+        if (isMobile) {
+            mobileContainer.classList.remove('d-none');
+            desktopContainer.classList.add('d-none');
+        } else {
+            mobileContainer.classList.add('d-none');
+            desktopContainer.classList.remove('d-none');
+        }
+    }
+
+    setFormDisplay();
+    window.addEventListener('resize', setFormDisplay);
+
+    if (urlInput && mobileUrlInput) {
+        urlInput.addEventListener('input', () => mobileUrlInput.value = urlInput.value);
+        mobileUrlInput.addEventListener('input', () => urlInput.value = mobileUrlInput.value);
+    }
+
+    function handleInputFormat(input, syncInput) {
+        input.addEventListener('input', function () {
+            const cursorPos = this.selectionStart;
+            const originalLength = this.value.length;
+            if (this.value.length > 3 && this.value.indexOf('.') !== -1) {
+                if (!this.value.startsWith('http://') && !this.value.startsWith('https://') &&
+                    !this.value.endsWith('http://') && !this.value.endsWith('https://')) {
+                    const isAtEnd = cursorPos === originalLength;
+                    const formatted = ensureHttpsPrefix(this.value);
+                    if (formatted !== this.value) {
+                        this.value = formatted;
+                        if (syncInput) syncInput.value = formatted;
+                        const diff = this.value.length - originalLength;
+                        this.selectionStart = this.selectionEnd = isAtEnd ? this.value.length : cursorPos + diff;
+                    }
+                }
+            }
+        });
+
+        input.addEventListener('blur', function () {
+            this.value = ensureHttpsPrefix(this.value);
+            if (syncInput) syncInput.value = this.value;
+        });
+    }
+
+    if (urlInput && mobileUrlInput) {
+        handleInputFormat(urlInput, mobileUrlInput);
+        handleInputFormat(mobileUrlInput, urlInput);
+    }
+
+    form.addEventListener('submit', function(e) {
+        // Prevent double submission
+        if (hasSubmitted) {
+            e.preventDefault();
+            return;
+        }
+
+        // Prevent default to format URL first
+        e.preventDefault();
+
+        // Format the URL
+        const activeInput = window.innerWidth <= 768 ? mobileUrlInput : urlInput;
+        const formattedUrl = ensureHttpsPrefix(activeInput.value);
+
+        // Set values directly instead of creating new inputs
+        if (urlInput) urlInput.value = formattedUrl;
+        if (mobileUrlInput) mobileUrlInput.value = formattedUrl;
+
+        // Mark as submitted and submit the form
+        hasSubmitted = true;
+
+        // Show loading indicator
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Starting Crawler...';
+        }
+
+        // Submit the form
+        form.submit();
+    });
+
+    if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+        const tooltips = [].slice.call(document.querySelectorAll('[title]'));
+        tooltips.map(el => new bootstrap.Tooltip(el));
+    }
+
+    {% if auto_submit_url %}
+    if (urlInput && form && !hasSubmitted) {
+        urlInput.value = "{{ auto_submit_url }}";
+        if (mobileUrlInput) mobileUrlInput.value = "{{ auto_submit_url }}";
+        setTimeout(() => {
+            hasSubmitted = true;
+            form.submit();
+        }, 150);
+    }
+    {% endif %}
+});
+</script>
+
+{% endblock %}

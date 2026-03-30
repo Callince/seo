@@ -1,0 +1,273 @@
+{% extends "base2.html" %}
+
+{% block title %}Help Center | SEO Dada{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">Help Center</h1>
+                <p class="text-lg text-white/90">
+                    Comprehensive guide to using Fourth Dimension SEO Dada. Learn how to use our powerful analysis tools, manage your account, and optimize your website for search engines.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12">
+                <!-- Getting Started -->
+                <div class="bg-blue-50 border-l-4 border-primary rounded-lg p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-3">
+                        <i class="fas fa-rocket"></i>
+                        Welcome to Fourth Dimension SEO Dada
+                    </h2>
+                    <p class="text-gray-700">
+                        Our platform helps you analyze websites comprehensively with tools for link analysis, SEO optimization, content analysis, and more. Get started by signing up, choosing a subscription plan, and exploring our powerful analysis tools.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-tools text-primary"></i>
+                    Analysis Tools Overview
+                </h2>
+                <p class="mb-6 text-gray-700">
+                    Fourth Dimension provides six powerful analysis tools to help you understand and optimize websites:
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">URL Search (1 Token)</h3>
+                <p class="mb-3 text-gray-700">
+                    Analyze all links on a webpage, categorize internal vs external links, and respect robots.txt rules. Navigate to URL Search, enter the website URL, choose whether to respect robots.txt, and click Analyze.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Keyword Analysis (3 Tokens)</h3>
+                <p class="mb-3 text-gray-700">
+                    Extract text content and analyze keyword density, frequency, and distribution across the page. Enter up to 10 keywords (comma-separated) and get comprehensive keyword insights including density percentages and frequency counts.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Image Analysis (2 Tokens)</h3>
+                <p class="mb-3 text-gray-700">
+                    Find all images on a page with details like file size, dimensions, alt text, and optimization status. Perfect for identifying image optimization opportunities and ensuring all images have proper alt text for accessibility.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Heading Analysis (1 Token)</h3>
+                <p class="mb-3 text-gray-700">
+                    Examine the heading structure (H1-H6) for SEO optimization and content hierarchy. Ensure your pages follow proper heading hierarchy and include target keywords in headings.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Meta Tag Analysis (2 Tokens)</h3>
+                <p class="mb-3 text-gray-700">
+                    Extract and analyze meta tags, Open Graph data, and JSON-LD schema markup. Optimize your title tags (50-60 characters), meta descriptions (150-160 characters), and social media tags.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Site Structure (2 Tokens)</h3>
+                <p class="mb-6 text-gray-700">
+                    Comprehensive website crawling with visual representation of site architecture. Start from any URL and the crawler will follow all internal links, respect robots.txt rules, check HTTP status codes, and build a complete site map.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-user-cog text-primary"></i>
+                    Account Management
+                </h2>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">Profile Management</h3>
+                <p class="mb-3 text-gray-700">
+                    Update your personal information, change passwords, and manage account settings. Navigate to Profile from the main menu to update your name, change password (requires current password), and view account activity.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Password Security</h3>
+                <p class="mb-3 text-gray-700">Your password must meet these requirements:</p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>At least 8 characters long</li>
+                    <li>Contains uppercase and lowercase letters</li>
+                    <li>Includes at least one number</li>
+                    <li>Has at least one special character (!@#$%^&*)</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Email Verification</h3>
+                <p class="mb-6 text-gray-700">
+                    If you haven't verified your email or need to resend verification, go to the login page, click "Resend Verification", enter your email address, and check your inbox for the verification link.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-credit-card text-primary"></i>
+                    Subscriptions & Token System
+                </h2>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
+                        <i class="fas fa-coins"></i>
+                        Understanding Tokens
+                    </h3>
+                    <p class="text-gray-700">
+                        Our platform uses a token-based system. Each analysis tool consumes a certain number of tokens. You get daily tokens with your subscription, and can purchase additional tokens when needed. Daily tokens reset every 24 hours, while additional tokens expire when your subscription ends.
+                    </p>
+                </div>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Subscription Plans</h3>
+                <p class="mb-3 text-gray-700">Visit the Subscriptions page to view available plans and features. Each plan includes:</p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>Daily token allocation</li>
+                    <li>Access to all analysis tools</li>
+                    <li>Search history and exports</li>
+                    <li>Email support</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Purchasing Additional Tokens</h3>
+                <p class="mb-3 text-gray-700">To purchase additional tokens:</p>
+                <ol class="list-decimal list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>Go to your Subscriptions page</li>
+                    <li>Click "Purchase Additional Tokens"</li>
+                    <li>Select the number of tokens you need</li>
+                    <li>Complete payment via Razorpay</li>
+                    <li>Tokens are immediately added to your account</li>
+                </ol>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-tachometer-alt text-primary"></i>
+                    Dashboard
+                </h2>
+                <p class="mb-3 text-gray-700">
+                    Your dashboard provides an overview of your account activity and usage statistics including daily token usage and remaining tokens, total analyses performed, most used analysis tools, and weekly usage trends.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">Subscription Overview</h3>
+                <p class="mb-6 text-gray-700">
+                    The dashboard shows your current subscription status including active plan details, token usage progress, subscription expiry date, and auto-renewal status.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-history text-primary"></i>
+                    Search History
+                </h2>
+                <p class="mb-3 text-gray-700">
+                    Track all your previous analyses and easily re-run them or reference past results. Click Search History in the main menu to view a chronological list of all analyses. Filter by date range or analysis tool, and click on any entry to view details.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">History Information</h3>
+                <p class="mb-3 text-gray-700">Each entry includes:</p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>URL Analyzed: The website or page examined</li>
+                    <li>Tool Used: Which analysis tool was used</li>
+                    <li>Date & Time: When the analysis was performed</li>
+                    <li>Search Count: Number of times this URL was analyzed</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-download text-primary"></i>
+                    Exports & Downloads
+                </h2>
+                <p class="mb-3 text-gray-700">
+                    Export your analysis results in various formats for further processing or reporting. Download structured CSV data for link analysis results, image information, heading structure, meta tag data, and site structure.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">How to Export Data</h3>
+                <ol class="list-decimal list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>Complete any analysis using our tools</li>
+                    <li>Look for the Download or Export button</li>
+                    <li>Choose your preferred format (usually CSV)</li>
+                    <li>File will download automatically</li>
+                </ol>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-wrench text-primary"></i>
+                    Troubleshooting
+                </h2>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3 mt-6">Analysis Not Working</h3>
+                <p class="mb-3 text-gray-700"><strong>Possible Causes:</strong></p>
+                <ul class="list-disc list-inside space-y-2 mb-3 text-gray-700 ml-4">
+                    <li>Website blocks automated crawling</li>
+                    <li>Invalid or non-existent URL</li>
+                    <li>Insufficient tokens remaining</li>
+                    <li>Network connectivity issues</li>
+                </ul>
+                <p class="mb-3 text-gray-700"><strong>Solutions:</strong></p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>Verify the URL is correct and accessible</li>
+                    <li>Check your token balance</li>
+                    <li>Try a different URL to test functionality</li>
+                    <li>Contact support if issues persist</li>
+                </ul>
+
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Access Denied Errors</h3>
+                <p class="mb-3 text-gray-700"><strong>Common Causes:</strong></p>
+                <ul class="list-disc list-inside space-y-2 mb-3 text-gray-700 ml-4">
+                    <li>Subscription expired</li>
+                    <li>Daily token limit reached</li>
+                    <li>Account not verified</li>
+                </ul>
+                <p class="mb-3 text-gray-700"><strong>Solutions:</strong></p>
+                <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700 ml-4">
+                    <li>Check subscription status</li>
+                    <li>Purchase additional tokens</li>
+                    <li>Verify your email address</li>
+                    <li>Renew expired subscription</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-question-circle text-primary"></i>
+                    Frequently Asked Questions
+                </h2>
+
+                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-green-800 mb-3">
+                        What happens when I run out of daily tokens?
+                    </h3>
+                    <p class="text-gray-700">
+                        When you exhaust your daily token allocation, you can either purchase additional tokens immediately or wait until the next day when your daily tokens reset. Additional tokens can be purchased in bundles of 10, 25, 50, or 100.
+                    </p>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-blue-800 mb-3">
+                        Can I analyze password-protected websites?
+                    </h3>
+                    <p class="text-gray-700">
+                        Our tools can only analyze publicly accessible web pages. Password-protected, login-required, or private areas of websites cannot be analyzed as our crawlers don't have authentication credentials.
+                    </p>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-yellow-800 mb-3">
+                        How accurate is the SEO analysis?
+                    </h3>
+                    <p class="text-gray-700">
+                        Our analysis follows current SEO best practices and guidelines. However, SEO is complex and involves many factors. Use our results as guidance alongside other SEO tools and professional expertise for comprehensive optimization.
+                    </p>
+                </div>
+
+                <div class="bg-purple-50 border-l-4 border-purple-500 rounded-lg p-6 mb-6">
+                    <h3 class="text-lg font-bold text-purple-800 mb-3">
+                        Can I cancel my subscription anytime?
+                    </h3>
+                    <p class="text-gray-700">
+                        Yes, you can cancel your subscription at any time from the Subscriptions page. You'll continue to have access until your current billing period ends. Auto-renewal can be disabled without canceling immediately.
+                    </p>
+                </div>
+
+                <!-- Contact section -->
+                <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Need More Help?</h3>
+                    <p class="text-gray-700 mb-4">If you have any questions or need additional support, please contact our team:</p>
+                    <div class="mb-6">
+                        <p class="font-semibold text-gray-800 mb-2">Fourth Dimension SEO Dada</p>
+                        <p class="text-gray-700 mb-1">📧 Email: support@seodada.com</p>
+                        <p class="text-gray-700">📍 Address: Shyamala Towers, 3rd floor, No. 136, Arcot Rd, Saligramam, Chennai, Tamil Nadu 600092</p>
+                    </div>
+                    <a href="mailto:support@seodada.com" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                        <i class="fas fa-envelope"></i>
+                        Contact Support
+                    </a>
+                </div>
+
+                <!-- Last updated -->
+                <div class="text-center pt-8 border-t border-gray-200">
+                    <p class="text-gray-500 text-sm">Last Updated: June 12, 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

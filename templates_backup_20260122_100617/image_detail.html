@@ -1,0 +1,1249 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- CSRF Token for AJAX requests -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detail-pages.css') }}">
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; backdrop-filter: blur(3px);">
+    <div style="text-align: center;">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem; border-width: 0.3em;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <h5 class="text-primary mt-3 mb-2">Loading Images...</h5>
+        <p class="text-muted mb-0 small">Please wait while we analyze the images.</p>
+    </div>
+</div>
+
+<div class="container my-4">
+  <h1 class="text-center mb-4" style="color: var(--primary-color);">Image Analysis Results</h1>
+  
+<!-- Header Card -->
+<div class="card mb-4 shadow-sm">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <!-- Left side: Title and link -->
+    <div class="d-flex align-items-center flex-wrap">
+      <i class="fas fa-image me-2 text-white"></i>
+      <span class="fw-bold text-white me-1">Analyzing:</span>
+      <a href="{{ link }}" target="_blank" class="text-decoration-underline text-white text-break" title="Open image source in new tab">
+        {{ link }}
+      </a>
+    </div>
+
+    <!-- Right side: Buttons -->
+    <div class="d-flex gap-2 flex-wrap">
+      <a href="{{ url_for('image_search') }}" class="btn btn-outline-light back-to-search" aria-label="Back to image search">
+        <i class="fas fa-arrow-left me-1"></i> Back to Search
+      </a>
+      <button id="downloadCsvBtn" class="btn btn-outline-light" aria-label="Download CSV report">
+        <i class="fas fa-file-csv me-1"></i> CSV
+      </button>
+      <!-- Download Selected button is now always visible but disabled when nothing is selected -->
+      <button id="downloadSelectedBtn" class="btn btn-success" aria-label="Download selected images" disabled>
+        <i class="fas fa-download me-1"></i> Download Selected (<span id="selectedCount">0</span>)
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!-- Filter & Counts Card -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <!-- Select All Row -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
+            <label class="form-check-label fw-bold" for="selectAllCheckbox">
+              Select All Images
+            </label>
+            <small class="text-muted ms-2">(Maximum 50 images can be selected for download)</small>
+          </div>
+        </div>
+      </div>
+      <div class="row align-items-center">
+        <!-- Filters -->
+        <div class="col-md-4 mb-3 mb-md-0">
+          <label for="extensionFilter" class="form-label visually-hidden">Filter by Extension</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-filter"></i></span>
+            <select id="extensionFilter" class="form-select" aria-label="Filter images by file extension">
+              <option value="">All Extensions</option>
+              {% set extensions = images|map(attribute='file_extension')|unique|list %}
+              {% for ext in extensions %}
+                <option value="{{ ext }}">{{ ext|upper }}</option>
+              {% endfor %}
+              <option value="error">Errors</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Search by Alt Text -->
+        <div class="col-md-4 mb-3 mb-md-0">
+          <label for="searchInput" class="form-label visually-hidden">Search</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search alt text or title" aria-label="Search images">
+          </div>
+        </div>
+        
+        <!-- Filter by SEO Status -->
+        <div class="col-md-4 mb-3 mb-md-0">
+          <label for="seoFilter" class="form-label visually-hidden">Filter by SEO Status</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-tag"></i></span>
+            <select id="seoFilter" class="form-select" aria-label="Filter by SEO status">
+              <option value="">All Images</option>
+              <option value="missing-alt">Missing Alt Text</option>
+              <option value="has-alt">Has Alt Text</option>
+              <option value="missing-title">Missing Title</option>
+              <option value="has-title">Has Title</option>
+              <option value="error">Errors</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <!-- SEO Counts -->
+      <div class="row text-center mt-4">
+          <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+              <div class="p-3 border rounded bg-light">
+                  <h6>Total Images</h6>
+                  <p class="mb-0 fs-4 fw-bold text-primary" id="totalImagesCount">
+                      <div class="spinner-border spinner-border-sm text-primary" role="status" id="totalImagesSpinner">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                  </p>
+              </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+              <div class="p-3 border rounded bg-light">
+                  <h6>Alt Text Present</h6>
+                  <p class="mb-0 fs-4 fw-bold text-primary" id="altTextCount">
+                      <div class="spinner-border spinner-border-sm text-primary" role="status" id="altTextSpinner">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                  </p>
+              </div>
+          </div>
+          <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+              <div class="p-3 border rounded bg-light">
+                  <h6>Missing Alt Text</h6>
+                  <p class="mb-0 fs-4 fw-bold text-primary" id="missingAltCount">
+                      <div class="spinner-border spinner-border-sm text-primary" role="status" id="missingAltSpinner">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                  </p>
+              </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+              <div class="p-3 border rounded bg-light">
+                  <h6>SEO Score</h6>
+                  <p class="mb-0 fs-4 fw-bold text-primary" id="seoScore">
+                      <div class="spinner-border spinner-border-sm text-primary" role="status" id="seoScoreSpinner">
+                          <span class="visually-hidden">Loading...</span>
+                      </div>
+                  </p>
+              </div>
+          </div>
+      </div>
+
+
+    </div>
+  </div>
+
+  <!-- No Results Message -->
+  <div id="noResults" class="alert alert-info text-center d-none" role="alert">
+    <i class="fas fa-info-circle me-2"></i> No images match your current filters.
+  </div>
+
+  <!-- Images Grid -->
+  <div class="row g-4" id="imagesContainer">
+    {% for image in images %}
+    {% set title_value = image.title|string if image.title else 'None' %}
+    {% set has_valid_title = title_value != 'None' and not title_value.startswith('None (') and title_value|trim != '' %}
+
+    <div class="col-lg-4 col-md-6 mb-4 image-card {% if image.is_error %}bg-danger-subtle{% endif %}" 
+        data-extension="{{ image.file_extension or 'error' }}" 
+        data-alt="{{ (image.alt_text or '')|lower }}" 
+        data-title="{{ (title_value or '')|lower }}"
+        data-seo="{% if not image.alt_text or image.alt_text == 'None' or image.alt_text|trim == '' %}missing-alt {% else %}has-alt {% endif %}{% if not has_valid_title %}missing-title {% else %}has-title {% endif %}{% if image.is_error %}error{% endif %}">
+
+      <div class="card h-100 shadow-sm border-0 hover-shadow {% if image.is_error %}border-danger{% endif %}">
+        <!-- Selection Checkbox -->
+        <div class="position-absolute top-0 start-0 m-2" style="z-index: 10;">
+          <input class="form-check-input image-checkbox" type="checkbox"
+                 data-url="{{ image.url }}"
+                 data-image-number="{{ image.image_number }}"
+                 id="imageCheck{{ image.image_number }}"
+                 {% if image.is_error %}disabled{% endif %}>
+        </div>
+        <div class="position-relative">
+          {% if image.is_error %}
+            <div class="card-img-top bg-danger-subtle d-flex align-items-center justify-content-center" style="height: 200px;">
+              <div class="text-center text-danger">
+                <i class="fas fa-exclamation-triangle fa-4x mb-3"></i>
+                <h5>Image Extraction Error</h5>
+              </div>
+            </div>
+          {% else %}
+            <img src="{{ image.url }}" class="card-img-top" alt="{{ image.alt_text or 'No alt text' }}" 
+                 style="height: 200px; object-fit: contain;" 
+                 onerror="this.onerror=null; this.src='{{ url_for('static', filename='img/broken-image.png') }}'; this.alt='Image failed to load'">
+          {% endif %}
+          
+          <div class="position-absolute top-0 end-0 m-2">
+            {% if image.is_error %}
+              <span class="badge rounded-pill bg-danger text-white">ERROR</span>
+            {% else %}
+              <span class="badge rounded-pill text-white" style="background-color: var(--primary-color);">{{ (image.file_extension or 'Unknown')|upper }}</span>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="card-body">
+          <h5 class="card-title d-flex justify-content-between align-items-center">
+            <span>{% if image.is_error %}Error {% endif %}Image {{ image.image_number }}</span>
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm {% if image.is_error %}btn-outline-danger{% else %}btn-outline-primary{% endif %} copy-url-btn"
+                      data-url="{{ image.url }}"
+                      title="Copy URL to clipboard">
+                <i class="fas fa-copy"></i>
+              </button>
+              {% if not image.is_error %}
+              <button class="btn btn-sm btn-success download-single-btn"
+                      data-url="{{ image.url }}"
+                      data-image-number="{{ image.image_number }}"
+                      title="Download this image">
+                <i class="fas fa-download"></i>
+              </button>
+              {% endif %}
+            </div>
+          </h5>
+          
+          <div class="card-text">
+            <table class="table table-sm table-borderless">
+              <tbody>
+                <tr>
+                  <th scope="row">URL:</th>
+                  <td>
+                    <a href="{{ image.url }}" target="_blank" 
+                       class="text-truncate d-inline-block" 
+                       style="max-width: 180px;" 
+                       title="{{ image.url }}">{{ image.url }}</a>
+                  </td>
+                </tr>
+                
+                {% if image.is_error %}
+                  <tr>
+                    <th scope="row">Error:</th>
+                    <td class="text-danger">
+                      {{ image.error or 'Unknown error occurred' }}
+                    </td>
+                  </tr>
+                  {% if image.details %}
+                    <tr>
+                      <th scope="row">Details:</th>
+                      <td class="text-muted small">
+                        {{ image.details[:300] }}{% if image.details|length > 300 %}...{% endif %}
+                      </td>
+                    </tr>
+                  {% endif %}
+                {% else %}
+                  <tr>
+                    <th scope="row">Title:</th>
+                    <td class="text-truncate" title="{{ image.title or 'None' }}">{{ image.title or 'None' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Alt Text:</th>
+                    <td class="text-truncate" title="{{ image.alt_text or 'None' }}">{{ image.alt_text or 'None' }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Size:</th>
+                    <td>{{ image.file_size }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Resolution:</th>
+                    <td>{{ image.resolution }}</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- SEO Analysis Badges -->
+          <div class="mt-3">
+              {% if image.is_error %}
+                  <span class="badge bg-danger mb-1">
+                      <i class="fas fa-exclamation-circle me-1"></i>
+                      Image Extraction Failed
+                  </span>
+              {% else %}
+                  {% if not image.alt_text or image.alt_text == 'None' or image.alt_text|trim == '' %}
+                      <span class="badge bg-danger mb-1">
+                          <i class="fas fa-times-circle me-1"></i>
+                          Missing Alt Text
+                      </span>
+                  {% else %}
+                      <span class="badge bg-success mb-1">
+                          <i class="fas fa-check-circle me-1"></i>
+                          Alt Text Present
+                      </span>
+                  {% endif %}
+
+                  {% set title_value = image.title|string if image.title else 'None' %}
+                  {% set has_valid_title = title_value != 'None' and not title_value.startswith('None (') and title_value|trim != '' %}
+                  
+                  {% if not has_valid_title %}
+                      <span class="badge bg-warning text-dark mb-1">
+                          <i class="fas fa-exclamation-triangle me-1"></i>
+                          Missing Title
+                      </span>
+                  {% else %}
+                      <span class="badge mb-1" style="background-color: var(--secondary-color); color: white;">
+                          <i class="fas fa-check-circle me-1"></i>
+                          Title Present
+                      </span>
+                  {% endif %}
+
+                  {% if image.file_size and image.file_size|float > 200 %}
+                      <span class="badge bg-warning text-dark mb-1">
+                          <i class="fas fa-weight-hanging me-1"></i>
+                          Large File Size
+                      </span>
+                  {% endif %}
+              {% endif %}
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- Error Image Details Modal -->
+      {% if image.is_error %}
+      <div class="modal fade" id="imageDetailsModal-{{ image.image_number }}" tabindex="-1" 
+           aria-labelledby="imageDetailsModalLabel-{{ image.image_number }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content border-danger">
+            <div class="modal-header bg-danger-subtle">
+              <h5 class="modal-title text-danger" id="imageDetailsModalLabel-{{ image.image_number }}">
+                <i class="fas fa-exclamation-triangle me-2"></i>Image Extraction Error
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="alert alert-danger">
+                <h6 class="alert-heading">Error Details</h6>
+                <p><strong>URL:</strong> {{ image.url }}</p>
+                <p><strong>Error:</strong> {{ image.error or 'Unknown error occurred' }}</p>
+                
+                {% if image.details %}
+                  <hr>
+                  <p class="mb-0">
+                    <strong>Additional Details:</strong><br>
+                    {{ image.details }}
+                  </p>
+                {% endif %}
+              </div>
+              
+              <div class="card mt-3">
+                <div class="card-header">
+                  <h6 class="mb-0">Troubleshooting Suggestions</h6>
+                </div>
+                <div class="card-body">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                      <i class="fas fa-globe me-2"></i>Verify the image URL is accessible
+                    </li>
+                    <li class="list-group-item">
+                      <i class="fas fa-lock me-2"></i>Check for SSL/security restrictions
+                    </li>
+                    <li class="list-group-item">
+                      <i class="fas fa-server me-2"></i>Ensure the server allows image downloads
+                    </li>
+                    <li class="list-group-item">
+                      <i class="fas fa-network-wired me-2"></i>Check network connectivity
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary copy-url-btn" data-url="{{ image.url }}">
+                <i class="fas fa-copy me-1"></i> Copy URL</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- SOLUTION: Loading Overlay for Image Detail Page -->
+<div id="loading-overlay" style="display: none;">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<!-- Add this JavaScript section to your image_detail.html template -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Image detail page loaded');
+
+    // SOLUTION: Ensure loading overlay is hidden on image detail page
+    function hideLoadingOverlay() {
+        // Check multiple possible loading overlay locations
+        const loadingOverlays = [
+            document.getElementById('loading-overlay'),
+            document.querySelector('.loading-overlay'),
+            document.querySelector('#loading'),
+            window.parent && window.parent.document.getElementById('loading-overlay'),
+            window.parent && window.parent.document.querySelector('.loading-overlay')
+        ].filter(Boolean);
+        
+        loadingOverlays.forEach(function(loadingOverlay) {
+            if (loadingOverlay) {
+                console.log('Found and hiding loading overlay');
+                loadingOverlay.style.display = 'none';
+                loadingOverlay.style.visibility = 'hidden';
+                loadingOverlay.style.opacity = '0';
+                loadingOverlay.classList.add('hide-immediate');
+            }
+        });
+
+        // Also check for any loading overlays in the body
+        const allLoadingOverlays = document.querySelectorAll('[id*="loading"], [class*="loading"], [class*="spinner"]');
+        allLoadingOverlays.forEach(function(overlay) {
+            if (overlay.style.position === 'fixed' || overlay.style.position === 'absolute') {
+                overlay.style.display = 'none';
+                overlay.style.visibility = 'hidden';
+                overlay.style.opacity = '0';
+            }
+        });
+
+        // Remove loading class from body
+        document.body.classList.remove('loading');
+        if (window.parent && window.parent.document.body) {
+            window.parent.document.body.classList.remove('loading');
+        }
+    }
+
+    // SOLUTION: Check and clear sessionStorage loading flag
+    try {
+        const wasLoading = sessionStorage.getItem('imageDetailLoading');
+        if (wasLoading === 'true') {
+            console.log('Clearing imageDetailLoading flag from sessionStorage');
+            sessionStorage.removeItem('imageDetailLoading');
+            sessionStorage.removeItem('imageDetailLoadTime');
+        }
+    } catch (e) {
+        console.log('Could not access sessionStorage:', e);
+    }
+
+    // SOLUTION: Immediate and aggressive loading overlay management
+    console.log('Hiding loading overlay immediately');
+    hideLoadingOverlay();
+
+    // Multiple fallbacks to ensure loading is hidden with shorter intervals
+    setTimeout(hideLoadingOverlay, 10);
+    setTimeout(hideLoadingOverlay, 50);
+    setTimeout(hideLoadingOverlay, 100);
+    setTimeout(hideLoadingOverlay, 250);
+    setTimeout(hideLoadingOverlay, 500);
+    setTimeout(hideLoadingOverlay, 1000);
+
+    // Handle page visibility
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            console.log('Page became visible, hiding loading overlay');
+            hideLoadingOverlay();
+        }
+    });
+
+    // Handle window focus
+    window.addEventListener('focus', function() {
+        console.log('Window focused, hiding loading overlay');
+        hideLoadingOverlay();
+    });
+
+    // Handle page show (back button)
+    window.addEventListener('pageshow', function() {
+        console.log('Page show event, hiding loading overlay');
+        hideLoadingOverlay();
+    });
+
+    // Handle back button clicks and navigation to image search
+    const backButtons = document.querySelectorAll('a[href*="imagesearch"], .back-to-search, a[href*="index"]');
+    backButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            console.log('Back button clicked, hiding loading overlay');
+            hideLoadingOverlay();
+            // Clear sessionStorage flags
+            try {
+                sessionStorage.removeItem('imageDetailLoading');
+                sessionStorage.removeItem('imageDetailLoadTime');
+            } catch (e) {
+                console.log('Could not access sessionStorage:', e);
+            }
+        });
+    });
+
+    // Handle internal link clicks to other image detail pages
+    const internalLinks = document.querySelectorAll('a[href*="imagedetail"]');
+    internalLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+            console.log('Internal image detail link clicked');
+            // Add spin to image icon
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.classList.add('spin-icon');
+            }
+
+            // Show loading for navigation to other image detail pages
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.visibility = 'visible';
+                loadingOverlay.style.opacity = '1';
+            }
+
+            // Set sessionStorage flag for the next page
+            try {
+                sessionStorage.setItem('imageDetailLoading', 'true');
+                sessionStorage.setItem('imageDetailLoadTime', Date.now().toString());
+            } catch (e) {
+                console.log('Could not access sessionStorage:', e);
+            }
+
+            // Safety timeout
+            setTimeout(hideLoadingOverlay, 3000);
+        });
+    });
+    // Function to hide all spinners
+    function hideAllSpinners() {
+        const spinners = [
+            'totalImagesSpinner',
+            'altTextSpinner',
+            'missingAltSpinner',
+            'seoScoreSpinner'
+        ];
+        
+        spinners.forEach(spinnerId => {
+            const spinner = document.getElementById(spinnerId);
+            if (spinner) {
+                spinner.style.display = 'none';
+            }
+        });
+    }
+
+    // Function to update counts and calculate SEO score based on visible cards
+    function updateStats() {
+        const allCards = document.querySelectorAll('.image-card');
+        const visibleCards = document.querySelectorAll('.image-card:not(.d-none)');
+        const totalImages = visibleCards.length; // Changed to count only visible cards
+
+        if (totalImages === 0) {
+            const noResults = document.getElementById('noResults');
+            if (noResults) {
+                noResults.classList.remove('d-none');
+            }
+
+            // Update display to show zeros
+            const totalImagesCount = document.getElementById('totalImagesCount');
+            const altTextCount = document.getElementById('altTextCount');
+            const missingAltCount = document.getElementById('missingAltCount');
+            const scoreElement = document.getElementById('seoScore');
+            hideAllSpinners();
+            if (totalImagesCount) totalImagesCount.innerText = '0';
+            if (altTextCount) altTextCount.innerText = '0';
+            if (missingAltCount) missingAltCount.innerText = '0';
+            if (scoreElement) {
+                scoreElement.innerText = '0%';
+                scoreElement.classList.remove('text-success', 'text-warning', 'text-danger');
+            }
+            return;
+        } else {
+            const noResults = document.getElementById('noResults');
+            if (noResults) {
+                noResults.classList.add('d-none');
+            }
+        }
+
+        // Count images with alt text (excluding error images) only from visible cards
+        let altCount = 0;
+        let errorCount = 0;
+
+        visibleCards.forEach(card => {
+            if (card.classList.contains('bg-danger-subtle')) {
+                errorCount++;
+            } else {
+                const altText = card.getAttribute('data-alt');
+                if (altText && altText !== '' && altText !== 'none' && altText.trim() !== '') {
+                    altCount++;
+                }
+            }
+        });
+
+        const noAltCount = totalImages - altCount - errorCount;
+
+        // Calculate SEO score (excluding error images)
+        const seoScore = (totalImages - errorCount) > 0 
+            ? Math.round((altCount / (totalImages - errorCount)) * 100) 
+            : 0;
+        // Hide all spinners before updating values
+        hideAllSpinners();
+        // Update display
+        const totalImagesCount = document.getElementById('totalImagesCount');
+        const altTextCount = document.getElementById('altTextCount');
+        const missingAltCount = document.getElementById('missingAltCount');
+        const scoreElement = document.getElementById('seoScore');
+
+        if (totalImagesCount) totalImagesCount.innerText = totalImages;
+        if (altTextCount) altTextCount.innerText = altCount;
+        if (missingAltCount) missingAltCount.innerText = noAltCount;
+        if (scoreElement) {
+            scoreElement.innerText = seoScore + '%';
+            // Color-code SEO score
+            scoreElement.classList.remove('text-success', 'text-warning', 'text-danger');
+            if (seoScore >= 90) {
+                scoreElement.classList.add('text-success');
+            } else if (seoScore >= 70) {
+                scoreElement.classList.add('text-warning');
+            } else {
+                scoreElement.classList.add('text-danger');
+            }
+        }
+    }
+
+    // Update stats after a short delay to allow DOM to fully render
+    setTimeout(function() {
+        updateStats();
+    }, 300);
+
+    // Handle CSV download without page redirect
+    const downloadCsvBtn = document.getElementById('downloadCsvBtn');
+    if (downloadCsvBtn) {
+        downloadCsvBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default navigation
+
+            // Get the current link from the page
+            const linkElement = document.querySelector('a[href*="{{ link }}"]');
+            const currentLink = '{{ link }}';
+
+            // Create download URL
+            const downloadUrl = "{{ url_for('download_image_csv') }}?link=" + encodeURIComponent(currentLink);
+
+            // Show loading state
+            const originalHtml = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Downloading...';
+            this.disabled = true;
+
+            // Create a temporary anchor element for download
+            const tempLink = document.createElement('a');
+            tempLink.href = downloadUrl;
+            tempLink.download = 'image_analysis.csv';
+            tempLink.style.display = 'none';
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+
+            // Reset button state after download
+            setTimeout(() => {
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3';
+                successMsg.style.zIndex = '9999';
+                successMsg.innerHTML = '<i class="fas fa-check-circle me-2"></i> CSV file downloaded successfully as image_analysis.csv <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                document.body.appendChild(successMsg);
+
+                // Auto-remove success message after 3 seconds
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 3000);
+            }, 1000);
+        });
+    }
+
+    // Filter functions
+    function applyFilters() {
+        const extensionFilter = document.getElementById('extensionFilter');
+        const searchInput = document.getElementById('searchInput');
+        const seoFilter = document.getElementById('seoFilter');
+
+        if (!extensionFilter || !searchInput || !seoFilter) return;
+
+        const extensionValue = extensionFilter.value.toLowerCase();
+        const searchQuery = searchInput.value.toLowerCase();
+        const seoValue = seoFilter.value;
+
+        const cards = document.querySelectorAll('.image-card');
+
+        cards.forEach(card => {
+            const ext = card.getAttribute('data-extension');
+            const isErrorCard = card.classList.contains('bg-danger-subtle');
+            const alt = card.getAttribute('data-alt').toLowerCase();
+            const title = card.getAttribute('data-title').toLowerCase();
+            const seoStatus = card.getAttribute('data-seo');
+
+            // Check extension filter
+            const matchesExtension = !extensionValue || 
+                                    ext.toLowerCase() === extensionValue || 
+                                    (isErrorCard && extensionValue === 'error');
+
+            // Check search query
+            const matchesSearch = !searchQuery || 
+                                alt.includes(searchQuery) || 
+                                title.includes(searchQuery);
+
+            // Check SEO filter
+            const matchesSeo = !seoValue || 
+                             seoStatus.includes(seoValue) || 
+                             (isErrorCard && seoValue === 'error');
+
+            if (matchesExtension && matchesSearch && matchesSeo) {
+                card.classList.remove('d-none');
+            } else {
+                card.classList.add('d-none');
+            }
+        });
+
+        // Update stats after filtering
+        updateStats();
+        // IMPORTANT: Update selected count after filtering
+        updateSelectedCount();
+    }
+
+    // Initialize filters
+    const extensionFilter = document.getElementById('extensionFilter');
+    const searchInput = document.getElementById('searchInput');
+    const seoFilter = document.getElementById('seoFilter');
+
+    if (extensionFilter) extensionFilter.addEventListener('change', applyFilters);
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (seoFilter) seoFilter.addEventListener('change', applyFilters);
+
+    // Copy URL buttons
+    document.querySelectorAll('.copy-url-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            navigator.clipboard.writeText(url).then(() => {
+                // Create and show a temporary tooltip
+                const originalTitle = this.getAttribute('title');
+                this.setAttribute('title', 'Copied!');
+                this.classList.add('btn-success');
+                this.classList.remove('btn-outline-danger', 'btn-outline-primary', 'btn-primary');
+
+                setTimeout(() => {
+                    this.setAttribute('title', originalTitle || 'Copy URL to clipboard');
+                    this.classList.remove('btn-success');
+                    if (this.closest('.image-card').classList.contains('bg-danger-subtle')) {
+                        this.classList.add('btn-outline-danger');
+                    } else {
+                        this.classList.add('btn-outline-primary');
+                    }
+                }, 1500);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        });
+    });
+
+    // Image error handling
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('error', function() {
+            // Use a placeholder or handle the error appropriately
+            this.alt = 'Image failed to load';
+            // You might want to set a placeholder image here
+        });
+    });
+
+    // Initialize stats on page load
+    updateStats();
+
+    // ============= IMAGE SELECTION AND DOWNLOAD FUNCTIONALITY =============
+
+    // Get references to elements
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const downloadSelectedBtn = document.getElementById('downloadSelectedBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+
+    // FIXED: Function to update selected count and button state
+    // Maximum number of images that can be selected for download
+    const MAX_SELECTION_LIMIT = 50;
+
+    function updateSelectedCount() {
+        // Get all visible checkboxes (not hidden by filters and not disabled)
+        const visibleCheckboxes = document.querySelectorAll('.image-card:not(.d-none) .image-checkbox:not(:disabled)');
+        const checkedCheckboxes = document.querySelectorAll('.image-card:not(.d-none) .image-checkbox:checked:not(:disabled)');
+        const checkedCount = checkedCheckboxes.length;
+        
+        console.log('Updating selected count:', checkedCount);
+        
+        // FIXED: Always get fresh reference to the count span (in case button HTML was reset)
+        const currentSelectedCountSpan = document.getElementById('selectedCount');
+        
+        // Update the count display
+        if (currentSelectedCountSpan) {
+            currentSelectedCountSpan.textContent = checkedCount;
+        }
+
+        // Enable/disable button based on selection
+        if (downloadSelectedBtn) {
+            if (checkedCount > 0) {
+                downloadSelectedBtn.disabled = false;
+                downloadSelectedBtn.classList.remove('disabled');
+            } else {
+                downloadSelectedBtn.disabled = true;
+                downloadSelectedBtn.classList.add('disabled');
+            }
+        }
+
+        // Update select all checkbox state
+        if (selectAllCheckbox) {
+            if (visibleCheckboxes.length === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.disabled = true;
+            } else {
+                selectAllCheckbox.disabled = false;
+                // Calculate how many can be selected (min of visible or MAX_SELECTION_LIMIT)
+                const maxSelectable = Math.min(visibleCheckboxes.length, MAX_SELECTION_LIMIT);
+                if (checkedCount === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedCount >= maxSelectable) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+            }
+        }
+    }
+
+    // Function to show selection limit warning popup
+    function showSelectionLimitPopup() {
+        // Check if modal already exists
+        let modal = document.getElementById('selectionLimitModal');
+        if (!modal) {
+            // Create the modal HTML
+            const modalHtml = `
+                <div class="modal fade" id="selectionLimitModal" tabindex="-1" aria-labelledby="selectionLimitModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header bg-warning">
+                                <h5 class="modal-title" id="selectionLimitModalLabel">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Selection Limit Reached
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center py-4">
+                                <i class="fas fa-images fa-3x text-warning mb-3"></i>
+                                <h5>Maximum Selection Limit</h5>
+                                <p class="mb-0">You can only select up to <strong>${MAX_SELECTION_LIMIT} images</strong> at a time for download.</p>
+                                <p class="text-muted small mt-2">Please deselect some images before selecting more.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                    <i class="fas fa-check me-1"></i>OK, Got it
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            modal = document.getElementById('selectionLimitModal');
+        }
+        
+        // Show the modal
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+    }
+
+    // Function to check if selection limit is reached
+    function isSelectionLimitReached() {
+        const checkedCount = document.querySelectorAll('.image-card:not(.d-none) .image-checkbox:checked:not(:disabled)').length;
+        return checkedCount >= MAX_SELECTION_LIMIT;
+    }
+
+    // FIXED: Use event delegation for checkbox events - this never loses bindings
+    // Event delegation attaches ONE listener to the parent container
+    // This works even after DOM changes, filters, or downloads
+    const imagesContainer = document.getElementById('imagesContainer');
+    if (imagesContainer) {
+        imagesContainer.addEventListener('change', function(e) {
+            // Check if the changed element is an image checkbox
+            if (e.target && e.target.classList.contains('image-checkbox')) {
+                console.log('Checkbox changed (delegated):', e.target.checked);
+                
+                // If trying to check and limit is already reached, prevent and show popup
+                if (e.target.checked && isSelectionLimitReached()) {
+                    // Uncheck this checkbox since we're at the limit
+                    // (the count was already at limit before this check)
+                    const currentCount = document.querySelectorAll('.image-card:not(.d-none) .image-checkbox:checked:not(:disabled)').length;
+                    if (currentCount > MAX_SELECTION_LIMIT) {
+                        e.target.checked = false;
+                        showSelectionLimitPopup();
+                        return;
+                    }
+                }
+                
+                updateSelectedCount();
+            }
+        });
+    }
+
+    // Select all functionality - Limited to MAX_SELECTION_LIMIT images
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const isChecked = this.checked;
+            console.log('Select all changed:', isChecked);
+            
+            // Only select/deselect visible and enabled checkboxes
+            const visibleCheckboxes = Array.from(document.querySelectorAll('.image-card:not(.d-none) .image-checkbox:not(:disabled)'));
+            
+            if (isChecked) {
+                // If selecting, only select up to MAX_SELECTION_LIMIT images
+                const alreadyChecked = visibleCheckboxes.filter(cb => cb.checked).length;
+                let selectedCount = 0;
+                
+                visibleCheckboxes.forEach(checkbox => {
+                    if (selectedCount < MAX_SELECTION_LIMIT) {
+                        checkbox.checked = true;
+                        selectedCount++;
+                    } else {
+                        checkbox.checked = false;
+                    }
+                });
+                
+                // Show warning if there are more images than the limit
+                if (visibleCheckboxes.length > MAX_SELECTION_LIMIT) {
+                    showSelectionLimitPopup();
+                }
+            } else {
+                // If deselecting, deselect all
+                visibleCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+            }
+            
+            updateSelectedCount();
+        });
+    }
+
+    // Initial binding of checkbox events - now using event delegation above
+    // No need to call bindCheckboxEvents() anymore;
+
+    // Download single image
+    document.querySelectorAll('.download-single-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const imageUrl = this.getAttribute('data-url');
+            const imageNumber = this.getAttribute('data-image-number');
+
+            // Show loading state
+            const originalHtml = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            this.disabled = true;
+
+            // Download image
+            downloadImage(imageUrl, imageNumber).then(() => {
+                // Success
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                }, 1500);
+            }).catch(error => {
+                console.error('Download failed:', error);
+                this.innerHTML = '<i class="fas fa-times"></i>';
+                setTimeout(() => {
+                    this.innerHTML = originalHtml;
+                    this.disabled = false;
+                }, 1500);
+                alert('Failed to download image. Please try again.');
+            });
+        });
+    });
+
+    // Download selected images as ZIP
+    if (downloadSelectedBtn) {
+        downloadSelectedBtn.addEventListener('click', function() {
+            // Check if button is disabled
+            if (this.disabled) {
+                return;
+            }
+
+            const selectedCheckboxes = document.querySelectorAll('.image-checkbox:checked:not(:disabled)');
+
+            if (selectedCheckboxes.length === 0) {
+                alert('Please select at least one image to download.');
+                return;
+            }
+
+            // Collect selected image URLs and numbers
+            const selectedImages = Array.from(selectedCheckboxes).map(checkbox => ({
+                url: checkbox.getAttribute('data-url'),
+                image_number: checkbox.getAttribute('data-image-number')
+            }));
+
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Downloading...';
+            this.disabled = true;
+
+            // Download images as ZIP
+            downloadImagesAsZip(selectedImages).then(() => {
+                this.innerHTML = '<i class="fas fa-check me-1"></i> Downloaded!';
+                
+                // Uncheck all checkboxes after successful download
+                document.querySelectorAll('.image-checkbox:checked').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Update select all checkbox
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                }
+                
+                setTimeout(() => {
+                    // FIXED: Reset button HTML with proper structure instead of using originalHtml
+                    // The originalHtml contained the old count, which caused the issue
+                    this.innerHTML = '<i class="fas fa-download me-1"></i> Download Selected (<span id="selectedCount">0</span>)';
+                    // Update count after unchecking - this will set proper count and button state
+                    updateSelectedCount();
+                }, 2000);
+            }).catch(error => {
+                console.error('ZIP download failed:', error);
+                this.innerHTML = '<i class="fas fa-times me-1"></i> Failed';
+                setTimeout(() => {
+                    // FIXED: Reset button HTML with proper structure instead of using originalHtml
+                    this.innerHTML = '<i class="fas fa-download me-1"></i> Download Selected (<span id="selectedCount">0</span>)';
+                    // Re-enable based on current selection state
+                    updateSelectedCount();
+                }, 2000);
+                alert('Failed to download images. Please try again.');
+            });
+        });
+    }
+
+    // Helper function to get CSRF token
+    function getCsrfToken() {
+        const token = document.querySelector('meta[name="csrf-token"]');
+        if (!token) {
+            console.error('CSRF token not found in page');
+            return null;
+        }
+        return token.getAttribute('content');
+    }
+
+    // Helper function to download a single image
+    async function downloadImage(url, imageNumber) {
+        try {
+            // Get CSRF token
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                throw new Error('CSRF token not found. Please refresh the page.');
+            }
+
+            const response = await fetch('/download_single_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // Include CSRF token
+                },
+                credentials: 'same-origin',  // Include cookies
+                body: JSON.stringify({ url: url, image_number: imageNumber })
+            });
+
+            if (!response.ok) {
+                // Try to get error message from response
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `Download failed with status ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+
+            // Get filename from Content-Disposition header if available
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = `image_${imageNumber}.jpg`; // Default filename
+
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                if (filenameMatch && filenameMatch[1]) {
+                    filename = filenameMatch[1].replace(/['"]/g, '');
+                }
+            }
+
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup after download
+            setTimeout(() => {
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+            }, 100);
+            
+        } catch (error) {
+            console.error('Download error:', error);
+            throw error;
+        }
+    }
+
+    // Helper function to download multiple images as ZIP
+    async function downloadImagesAsZip(images) {
+        try {
+            // Get CSRF token
+            const csrfToken = getCsrfToken();
+            if (!csrfToken) {
+                throw new Error('CSRF token not found. Please refresh the page.');
+            }
+
+            const response = await fetch('/download_images_zip', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken  // Include CSRF token
+                },
+                credentials: 'same-origin',  // Include cookies
+                body: JSON.stringify({ images: images })
+            });
+
+            if (!response.ok) {
+                // Try to get error message from response
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `ZIP download failed with status ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            
+            // Get filename from header or use default with timestamp
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = `images_${new Date().getTime()}.zip`;
+            
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                if (filenameMatch && filenameMatch[1]) {
+                    filename = filenameMatch[1].replace(/['"]/g, '');
+                }
+            }
+            
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup after download
+            setTimeout(() => {
+                window.URL.revokeObjectURL(downloadUrl);
+                document.body.removeChild(a);
+            }, 100);
+            
+        } catch (error) {
+            console.error('ZIP download error:', error);
+            throw error;
+        }
+    }
+
+    // Initialize selected count on page load
+    updateSelectedCount();
+
+    // FIXED: MutationObserver now only updates count - event delegation handles checkbox events
+    // No need to rebind events since delegation works automatically
+    const observer = new MutationObserver(function(mutations) {
+        let shouldUpdate = false;
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList' || mutation.type === 'attributes') {
+                shouldUpdate = true;
+            }
+        });
+        if (shouldUpdate) {
+            // Small delay to ensure DOM is fully updated
+            setTimeout(() => {
+                updateSelectedCount();
+            }, 100);
+        }
+    });
+
+    // Start observing the images container for changes (use existing reference or get new one)
+    const observerContainer = document.getElementById('imagesContainer');
+    if (observerContainer) {
+        observer.observe(observerContainer, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+
+    // SOLUTION: Also hide loading when window loads
+    window.addEventListener('load', function() {
+        console.log('Window load event triggered');
+        setTimeout(function() {
+            const loadingOverlays = [
+                document.getElementById('loading-overlay'),
+                window.parent && window.parent.document.getElementById('loading-overlay')
+            ].filter(Boolean);
+
+            loadingOverlays.forEach(function(loadingOverlay) {
+                if (loadingOverlay) {
+                    console.log('Window load: hiding loading overlay');
+                    loadingOverlay.style.display = 'none';
+                    loadingOverlay.style.visibility = 'hidden';
+                    loadingOverlay.style.opacity = '0';
+                    loadingOverlay.classList.add('hide-immediate');
+                }
+            });
+
+            // Remove loading class from body
+            document.body.classList.remove('loading');
+            if (window.parent && window.parent.document.body) {
+                window.parent.document.body.classList.remove('loading');
+            }
+
+            // Clear sessionStorage flag
+            try {
+                sessionStorage.removeItem('imageDetailLoading');
+                sessionStorage.removeItem('imageDetailLoadTime');
+            } catch (e) {
+                console.log('Could not access sessionStorage:', e);
+            }
+        }, 100);
+    });
+
+    // SOLUTION: Enhanced beforeunload handling
+    window.addEventListener('beforeunload', function() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+            loadingOverlay.style.visibility = 'hidden';
+            loadingOverlay.style.opacity = '0';
+        }
+
+        // Clear sessionStorage flag when leaving the page
+        try {
+            sessionStorage.removeItem('imageDetailLoading');
+            sessionStorage.removeItem('imageDetailLoadTime');
+        } catch (e) {
+            console.log('Could not access sessionStorage:', e);
+        }
+    });
+});
+</script>
+
+
+
+{% endblock %}

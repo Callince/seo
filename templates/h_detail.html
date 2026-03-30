@@ -1,0 +1,434 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid my-5">
+  <h1 class="text-center mb-4">Heading Analysis Results</h1>
+
+  <div class="card shadow-sm mb-5">
+    <div class="card-header bg-dark text-white py-3">
+      <div class="d-flex align-items-center">
+        <i class="fas fa-heading me-2" aria-hidden="true"></i>
+        <span>
+          Analyzing: 
+          <a href="{{ url_input }}" target="_blank" class="text-white text-decoration-underline">
+            {{ url_input }}
+            <span class="visually-hidden">(opens in new tab)</span>
+          </a>
+        </span>
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+      <!-- Quick Actions -->
+      <section aria-labelledby="quick-actions-heading" class="mb-4">
+        <h2 id="quick-actions-heading" class="h5 mb-3">Quick Actions</h2>
+        <div class="d-flex flex-wrap gap-2">
+          <a href="{{ url_for('download_h_csv', url=url_input) }}" class="btn btn-primary" download>
+            <i class="fas fa-download me-2" aria-hidden="true"></i> Download CSV
+          </a>
+          <a href="{{ url_for('h_search') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2" aria-hidden="true"></i> Back to Search
+          </a>
+        </div>
+      </section>
+
+      <!-- Split layout -->
+      <div class="row">
+        <!-- Left side: Heading Counts & Headings Table -->
+        <div class="col-lg-8">
+          <section aria-labelledby="count-summary-heading" class="mb-4">
+            <h2 id="count-summary-heading" class="h5 mb-3">Heading Distribution</h2>
+            
+            {% if tag_counts %}
+              <div class="card bg-light mb-4">
+                <div class="card-body">
+                  <!-- Heading hierarchy visualization -->
+                  <h3 class="h6 mb-3">Heading Hierarchy</h3>
+                  <div class="bg-white p-3 rounded">
+                    <div class="d-flex align-items-end mb-3" style="height: 150px;">
+                      {% for tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] %}
+                        {% set count = tag_counts.get(tag, 0) %}
+                        {% if count > 0 or tag in ['h1', 'h2', 'h3'] %}
+                          {% set percent = (count / headings_in_order|length * 100)|round|int if count > 0 else 0 %}
+                          {% set min_height = 10 %}
+                          {% set bar_height = [percent * 1.35, min_height]|max if count > 0 else min_height %}
+                          <div class="mx-1 flex-grow-1 text-center">
+                            <div class="d-flex flex-column align-items-center">
+                              <span class="small mb-1">{{ count }}</span>
+                              <div
+                                style="height: {{ bar_height }}px; width: 100%;"
+                                class="bg-{% if tag == 'h1' %}primary{% elif tag == 'h2' %}success{% elif tag == 'h3' %}info{% elif tag == 'h4' %}warning{% elif tag == 'h5' %}danger{% else %}secondary{% endif %}">
+                              </div>
+                              <span class="small mt-1">{{ tag|upper }}</span>
+                            </div>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                  </div>
+
+                  <!-- Summary Statistics -->
+                  <h3 class="h6 mb-3 mt-4">Summary Statistics</h3>
+                  <div class="row g-3">
+                    <!-- Total Headings -->
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center bg-white p-3 rounded h-100">
+                        <i class="fas fa-hashtag fa-lg me-3 text-primary" aria-hidden="true"></i>
+                        <div>
+                          <div class="small text-muted">Total Headings</div>
+                          <div class="fw-bold fs-4">{{ headings_in_order|length }}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Average Length -->
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center bg-white p-3 rounded h-100">
+                        <i class="fas fa-text-width fa-lg me-3 text-success" aria-hidden="true"></i>
+                        <div>
+                          <div class="small text-muted">Average Length</div>
+                          <div class="fw-bold fs-4">
+                            {% set total_length = namespace(value=0) %}
+                            {% for heading in headings_in_order %}
+                              {% set total_length.value = total_length.value + heading.text|length %}
+                            {% endfor %}
+                            {{ (total_length.value / headings_in_order|length)|round|int }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Longest Heading -->
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center bg-white p-3 rounded h-100">
+                        <i class="fas fa-ruler fa-lg me-3 text-info" aria-hidden="true"></i>
+                        <div>
+                          <div class="small text-muted">Longest Heading</div>
+                          <div class="fw-bold fs-4">
+                            {% set max_length = namespace(value=0) %}
+                            {% for heading in headings_in_order %}
+                              {% if heading.text|length > max_length.value %}
+                                {% set max_length.value = heading.text|length %}
+                              {% endif %}
+                            {% endfor %}
+                            {{ max_length.value }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Basic SEO Analysis -->
+                  <h3 class="h6 mb-3 mt-4">Heading SEO Analysis</h3>
+                  <ul class="list-group">
+                    <!-- Check H1 count -->
+                    <li class="list-group-item d-flex align-items-center">
+                      {% if tag_counts.get('h1', 0) == 1 %}
+                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
+                        <span>Single H1 tag (recommended)</span>
+                      {% elif tag_counts.get('h1', 0) == 0 %}
+                        <i class="fas fa-times-circle text-danger me-2" aria-hidden="true"></i>
+                        <span>Missing H1 tag (required for SEO)</span>
+                      {% else %}
+                        <i class="fas fa-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                        <span>Multiple H1 tags ({{ tag_counts.get('h1') }}) found (not recommended)</span>
+                      {% endif %}
+                    </li>
+
+                    <!-- Check if all H1 are under 60 chars (all_h1_under_60 is computed in Python) -->
+                    <li class="list-group-item d-flex align-items-center">
+                      {% if tag_counts.get('h1', 0) == 0 %}
+                          <!-- No H1 found → do not show H1 length message -->
+                          <i class="fas fa-times-circle text-danger me-2" aria-hidden="true"></i>
+                          <span>No H1 tag found — cannot measure length.</span>
+
+                      {% elif tag_counts.get('h1', 0) == 1 %}
+                          {% if all_h1_under_60 %}
+                              <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
+                              <span>H1 length is optimal (under 60 characters)</span>
+                          {% else %}
+                              <i class="fas fa-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                              <span>H1 tag exceeds recommended length</span>
+                          {% endif %}
+
+                      {% else %}
+                          <!-- Multiple H1 tags -->
+                          <i class="fas fa-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                          <span>Multiple H1 tags detected — cannot evaluate proper length.</span>
+                      {% endif %}
+                    </li>
+
+
+                    <!-- Check heading hierarchy -->
+                    <li class="list-group-item d-flex align-items-center">
+                      {% set proper_hierarchy = true %}
+                      {% for i in range(1, 6) %}
+                        {% if tag_counts.get('h' ~ (i+1), 0) > 0 and tag_counts.get('h' ~ i, 0) == 0 %}
+                          {% set proper_hierarchy = false %}
+                        {% endif %}
+                      {% endfor %}
+                      {% if proper_hierarchy %}
+                        <i class="fas fa-check-circle text-success me-2" aria-hidden="true"></i>
+                        <span>Proper heading hierarchy</span>
+                      {% else %}
+                        <i class="fas fa-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                        <span>Improper heading hierarchy (skipping levels)</span>
+                      {% endif %}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            {% else %}
+              <!-- No headings found -->
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2" aria-hidden="true"></i> No headings found on this page.
+              </div>
+            {% endif %}
+
+            <!-- Detailed Headings Table -->
+            {% if headings_in_order %}
+              <h3 class="h5 mb-3">All Headings (DOM Order)</h3>
+
+              <!-- Search Box for Highlighting -->
+              <div class="mb-3">
+                <div class="input-group">
+                  <input type="text" id="headingSearchInput" class="form-control" placeholder="Enter a word to highlight in headings...">
+                  <button class="btn btn-primary" type="button" id="headingSearchBtn">
+                    <i class="fas fa-search me-1"></i> Search
+                  </button>
+                  <button class="btn btn-outline-secondary" type="button" id="headingClearBtn">
+                    <i class="fas fa-times me-1"></i> Clear
+                  </button>
+                </div>
+                <small class="text-muted" id="searchResultCount"></small>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" width="10%">Tag</th>
+                      <th scope="col" width="75%">Text</th>
+                      <th scope="col" width="15%" class="text-end">Length</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for heading in headings_in_order %}
+                    <tr>
+                      <td>
+                        <span class="badge bg-{% if heading.tag == 'h1' %}primary{% elif heading.tag == 'h2' %}success{% elif heading.tag == 'h3' %}info{% elif heading.tag == 'h4' %}warning{% elif heading.tag == 'h5' %}danger{% else %}secondary{% endif %}">
+                          {{ heading.tag|upper }}
+                        </span>
+                      </td>
+                      <td style="text-indent: {{ (heading.level - 1) * 2 }}em;">
+                        <!-- Show '[No content]' if heading.text is empty -->
+                        <div class="text-truncate heading-text-cell" style="max-width: 500px;" title="{{ heading.text }}" data-original-text="{{ heading.text }}">
+                          {% if heading.text %}
+                            {{ heading.text }}
+                          {% else %}
+                            <em class="text-muted">[No content]</em>
+                          {% endif %}
+                        </div>
+                      </td>
+                      <td class="text-end">
+                        <!-- Highlight length if > 60 -->
+                        <span {% if heading.text|length > 60 %}class="text-warning fw-bold"{% endif %}>
+                          {{ heading.text|length }}
+                        </span>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            {% endif %}
+          </section>
+        </div>
+
+        <!-- Right side: Additional content / recommendations -->
+        <div class="col-lg-4">
+          <!-- If you have recent analyses -->
+          {% if home_links %}
+          <section aria-labelledby="recent-analyses-heading" class="mb-4">
+            <h2 id="recent-analyses-heading" class="h5 mb-3">Related Links</h2>
+            <div class="list-group" style="max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem;">
+              {% for hlink in home_links %}
+                <a href="{{ url_for('h_detail', url=hlink|safe) }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                  <i class="fas fa-history me-2 text-muted" aria-hidden="true"></i>
+                  <span class="text-truncate">{{ hlink }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </section>
+          {% endif %}
+
+          <!-- Customized suggestions or tools -->
+          <section aria-labelledby="recommendations-heading" class="mb-4">
+            <h2 id="recommendations-heading" class="h5 mb-3">Recommendations</h2>
+            <div class="card bg-light">
+              <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                  <i class="fas fa-lightbulb text-warning me-2 fa-lg" aria-hidden="true"></i>
+                  <h3 class="h6 mb-0">Suggested Improvements</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                  <!-- If multiple or zero H1s -->
+                  {% if tag_counts.get('h1', 0) != 1 %}
+                  <li class="list-group-item bg-transparent px-0">
+                    <div class="fw-medium">Fix H1 Issues</div>
+                    <p class="small text-muted mb-0">
+                      {% if tag_counts.get('h1', 0) == 0 %}
+                        Add a single H1 tag that clearly describes your page content.
+                      {% else %}
+                        Consolidate multiple H1 tags into a single, descriptive H1.
+                      {% endif %}
+                    </p>
+                  </li>
+                  {% endif %}
+
+                  <!-- Check for empty headings -->
+                  {% set empty_heading_count = 0 %}
+                  {% for heading in headings_in_order %}
+                    {% if heading.text|length == 0 %}
+                      {% set empty_heading_count = empty_heading_count + 1 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if empty_heading_count > 0 %}
+                  <li class="list-group-item bg-transparent px-0">
+                    <div class="fw-medium">Empty Headings</div>
+                    <p class="small text-muted mb-0">
+                      {{ empty_heading_count }} heading(s) have no text. Consider adding content or removing them.
+                    </p>
+                  </li>
+                  {% endif %}
+
+                  <!-- Check for hierarchy issues (already done above in a different form) -->
+                  {% set proper_hierarchy = true %}
+                  {% for i in range(1, 6) %}
+                    {% if tag_counts.get('h' ~ (i+1), 0) > 0 and tag_counts.get('h' ~ i, 0) == 0 %}
+                      {% set proper_hierarchy = false %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if not proper_hierarchy %}
+                  <li class="list-group-item bg-transparent px-0">
+                    <div class="fw-medium">Fix Heading Hierarchy</div>
+                    <p class="small text-muted mb-0">Ensure proper nesting of headings without skipping levels (e.g., H1 → H2 → H3).</p>
+                  </li>
+                  {% endif %}
+
+                  <!-- Check for long headings (> 60 chars) -->
+                  {% set long_headings = namespace(count=0) %}
+                  {% for heading in headings_in_order %}
+                    {% if heading.text|length > 60 %}
+                      {% set long_headings.count = long_headings.count + 1 %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if long_headings.count > 0 %}
+                  <li class="list-group-item bg-transparent px-0">
+                    <div class="fw-medium">Optimize Heading Length</div>
+                    <p class="small text-muted mb-0">
+                      {{ long_headings.count }} heading(s) exceed 60 characters. Consider making them more concise.
+                    </p>
+                  </li>
+                  {% endif %}
+
+                  <!-- Recommend subheadings if H2 is missing but there's at least one H1 -->
+                  {% if tag_counts.get('h2', 0) == 0 and tag_counts.get('h1', 0) > 0 %}
+                  <li class="list-group-item bg-transparent px-0">
+                    <div class="fw-medium">Add Subheadings</div>
+                    <p class="small text-muted mb-0">Consider adding H2 subheadings to improve content structure and readability.</p>
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/detail-pages.css') }}">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('headingSearchInput');
+  const searchBtn = document.getElementById('headingSearchBtn');
+  const clearBtn = document.getElementById('headingClearBtn');
+  const resultCount = document.getElementById('searchResultCount');
+  const headingCells = document.querySelectorAll('.heading-text-cell');
+
+  if (!searchInput || !searchBtn || !clearBtn) return;
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function highlightText(searchTerm) {
+    let matchCount = 0;
+    const term = searchTerm.trim().toLowerCase();
+
+    headingCells.forEach(function(cell) {
+      const originalText = cell.getAttribute('data-original-text');
+
+      if (!originalText) {
+        cell.innerHTML = '<em class="text-muted">[No content]</em>';
+        return;
+      }
+
+      if (!term) {
+        cell.textContent = originalText;
+        return;
+      }
+
+      const lowerText = originalText.toLowerCase();
+      const index = lowerText.indexOf(term);
+
+      if (index !== -1) {
+        matchCount++;
+        const escapedText = escapeHtml(originalText);
+        const regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+        cell.innerHTML = escapedText.replace(regex, '<span class="highlight-match">$1</span>');
+      } else {
+        cell.textContent = originalText;
+      }
+    });
+
+    if (term) {
+      resultCount.textContent = matchCount + ' heading(s) found with "' + searchTerm.trim() + '"';
+    } else {
+      resultCount.textContent = '';
+    }
+  }
+
+  function clearHighlights() {
+    searchInput.value = '';
+    resultCount.textContent = '';
+    headingCells.forEach(function(cell) {
+      const originalText = cell.getAttribute('data-original-text');
+      if (originalText) {
+        cell.textContent = originalText;
+      } else {
+        cell.innerHTML = '<em class="text-muted">[No content]</em>';
+      }
+    });
+  }
+
+  searchBtn.addEventListener('click', function() {
+    highlightText(searchInput.value);
+  });
+
+  clearBtn.addEventListener('click', clearHighlights);
+
+  searchInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      highlightText(searchInput.value);
+    }
+  });
+});
+</script>
+{% endblock %}

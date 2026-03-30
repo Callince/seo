@@ -1,0 +1,602 @@
+{% extends "base2.html" %}
+
+{% block title %}Meta Analysis Tool – Instantly Check Meta Titles & Descriptions{% endblock %}
+{% block meta %}<meta name="description" content="Use our meta-analysis tool to check titles, descriptions, keywords, and on-page metadata instantly.">{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-red-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-tags text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">Meta Analysis Tool</span>- Check Your Meta Titles and Descriptions Instantly
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Use our meta analysis tool to check titles, descriptions, keywords, and on page metadata in seconds. You get clear website meta tag analysis results so you know what is helping your search visibility and what needs fixing.
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('meta_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start Meta Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is Meta Tag Analysis Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is Meta Tag Analysis?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Meta analysis means checking how search engines read the hidden information behind each page. We show if your titles and descriptions match your content and what users are searching for.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Many teams use this kind of review to keep metadata accurate and meaningful. Our meta tag analysis tool gives you a simple report so you can improve your metadata without guessing.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Accurate Metadata</h4>
+                                <p class="text-gray-600 text-sm">Ensure titles and descriptions match content</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">User Intent Alignment</h4>
+                                <p class="text-gray-600 text-sm">Match what people search for online</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Search Engine Clarity</h4>
+                                <p class="text-gray-600 text-sm">Help crawlers understand your pages</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Meta Tags Matter Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Why Meta Tags Matter for SEO and Click Through Rates</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Meta tags decide how your page looks in Google results. Our meta analysis helps you keep them clear and correct.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mouse-pointer text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Increased Clicks and Impressions</h3>
+                            <p class="text-gray-600">
+                                A good title and description attract more clicks and help search engines understand your page.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-check-double text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Content Alignment</h3>
+                            <p class="text-gray-600">
+                                When metadata matches your page, tools like a metadata website checker confirm everything is in sync.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-eye text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved Visibility</h3>
+                            <p class="text-gray-600">
+                                Better tags improve ranking and bring more organic traffic.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-red-50 to-white p-8 rounded-2xl border border-red-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-handshake text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">User Trust</h3>
+                            <p class="text-gray-600">
+                                Clear metadata builds trust because people know exactly what they will get after clicking.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Meta Tag Analysis Tool- How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    We keep meta analysis simple so you can scan any page fast.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Enter Your URL</h3>
+                    <p class="text-gray-600 text-sm">
+                        Add your page link to start.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Instant Scan</h3>
+                    <p class="text-gray-600 text-sm">
+                        We review titles, descriptions, keywords, and other metadata.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Check Website Meta Tag</h3>
+                    <p class="text-gray-600 text-sm">
+                        You can check website meta tag details in seconds with no technical steps.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Refine Metadata</h3>
+                    <p class="text-gray-600 text-sm">
+                        We show what to improve so your metadata communicates clearly to users and search engines.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meta Title Analyzer Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Meta Title Analyzer - Optimize Your Page Titles for SEO</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Your title is the first thing people see in search results. Our meta analysis includes a meta title analyzer that checks length, clarity, and keyword placement so your title reflects your page properly.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-ruler text-blue-600"></i>
+                            </div>
+                            <span class="text-gray-700">Check title length (50-60 characters)</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-key text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Analyze keyword placement</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-eye text-purple-600"></i>
+                            </div>
+                            <span class="text-gray-700">Evaluate clarity and readability</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Title Optimization Benefits</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Higher click-through rates from search results</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Better search engine understanding</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Improved user confidence and trust</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Accurate content representation</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meta Description Analyzer Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Meta Description Analyzer- Improve CTR and Search Visibility</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Your description is a short summary users read before clicking. Our meta analysis includes a meta description analyzer that checks length, tone, and relevance so your message fits search display limits and matches your content.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-text-width text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Length Check</h3>
+                    <p class="text-gray-600">
+                        Check if descriptions fit within display limits.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-comment-dots text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Tone Analysis</h3>
+                    <p class="text-gray-600">
+                        Evaluate if tone feels clear and engaging.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-bullseye text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Relevance Check</h3>
+                    <p class="text-gray-600">
+                        Confirm descriptions match page content.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metadata Website Checker Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Complete Metadata Review</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Titles and descriptions</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Robots tags and directives</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Social tags (Open Graph, Twitter)</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Canonical tags and redirects</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Metadata Website Checker- Check All On Page Metadata</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        A full meta analysis also reviews every metadata element on your page. Our website meta data checker scans titles, descriptions, robots tags, social tags, and more.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        When paired with a website meta checker, you get a full view of metadata health, so you avoid mistakes that affect indexing and traffic.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Common Issues Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Common Meta Tag Issues and How to Fix Them</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our meta analysis highlights the usual problems that hurt rankings.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-gradient-to-br from-red-50 to-white p-6 rounded-xl border border-red-100">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Missing Tags</h3>
+                    <p class="text-gray-600 text-sm">Find gaps quickly using a meta tag analyser.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-yellow-50 to-white p-6 rounded-xl border border-yellow-100">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-clone text-yellow-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Duplicate Entries</h3>
+                    <p class="text-gray-600 text-sm">Make each page unique so search engines do not get confused.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border border-blue-100">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-text-width text-blue-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Long Descriptions</h3>
+                    <p class="text-gray-600 text-sm">Shorten long lines to match ideal limits.</p>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-6 rounded-xl border border-purple-100">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-question-circle text-purple-600"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Unclear Titles</h3>
+                    <p class="text-gray-600 text-sm">Rewrite for clarity using an seo tools meta tag analyzer.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    Small fixes here can make a big improvement in search results.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Practices Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Best Practices for Writing Meta Tags That Rank</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Strong tags stay simple and focused. Our meta analysis gives you a clean checklist to follow.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Best Practices
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Keep titles short and descriptions clear</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use a website meta keyword checker to confirm keywords match content</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Avoid irrelevant filler words</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Make sure metadata reflects page content</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Pro Tips
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Accurate tags help search engines index faster</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Add a clear call to action in descriptions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Check how tags appear in search results</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Update tags when content changes</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about Meta Analysis</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">What happens if my website has missing or duplicate meta tags?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Missing or duplicated tags make it harder for search engines to understand your pages. Our meta analysis shows the errors so you can fix them quickly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How long should my meta title and description be?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Titles should stay around 50 to 60 characters. Descriptions should be around 150 to 160 characters. Our description tool helps you stay in range.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Do meta keywords still matter for SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            They are not as important as before, but they can still give context. A website meta keyword checker helps you confirm that they match your page.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Should every page have a unique meta title and description?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Unique metadata helps search engines tell your pages apart and index them correctly.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Can meta tag optimization improve my traffic?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Clear and accurate tags lead to more clicks and better visibility over time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your Meta Tags?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start your <strong>meta analysis</strong> today and improve your search visibility with our powerful <strong>meta tag analysis tool</strong>
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('meta_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start Meta Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

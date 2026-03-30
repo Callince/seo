@@ -1,0 +1,1043 @@
+{
+    "domain": "dacd8a18-fa4c-4d64-8ac4-03104bfd3759",
+    "statistics": {
+        "total_links": 106,
+        "home_links": 101,
+        "external_links": 5,
+        "successful_crawls": 21,
+        "crawl_success_rate": "20.79%"
+    },
+    "status_codes": {
+        "https://cimidaxil.com/": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/product/cimidaxil-d": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/wp-content/themes/cimidaxil/assets/SF-Pro-Display/TTF/SF-PRO-DISPLAY-REGULAR.ttf": {
+            "status": 200,
+            "error": "Non-HTML content: application/octet-stream"
+        },
+        "https://cimidaxil.com/faq": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/blog": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/terms-of-service": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/testimonials": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/contact-information": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/contact-us": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/privacy-policy": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/about-us": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2F": {
+            "status": 200,
+            "error": "Non-HTML content: application/json; charset=utf-8"
+        },
+        "https://cimidaxil.com/xmlrpc.php?rsd=": {
+            "status": "not connected",
+            "error": "ClientError: [Errno 104] Connection reset by peer"
+        },
+        "https://cimidaxil.com/blog/caring-for-diabetic-foot-ulcers-at-home": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/blog/cleansing-of-diabetic-wounds": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/blog/diabetic-foot-ulcers-heal-without-surgery": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/t,document.head.appendChild(n)}}),function": {
+            "status": 404,
+            "error": "HTTP Error 404"
+        },
+        "https://cimidaxil.com/shipping-policy": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/refund-policy": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/wp-json": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/web-stories/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/comments/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/2": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/my-account": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/product/73": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/product/cimidaxil-d/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fproduct%2Fcimidaxil-d%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=73": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/product/t,document.head.appendChild(n)}}),function": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/767": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Ffaq%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=767": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/blood-circulation-slows-healing-in-diabetic-wounds": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/infected-bed-sores": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/page/6": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/page/2": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/bed-sore-ointment-vs-spray": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/diabetic-foot-ulcers-take-longer-to-heal": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-content/cache/flying-press/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2": {
+            "status": 200,
+            "error": "Non-HTML content: application/font-woff2"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/bed-sore-dressings": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/1210": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/pressure-relief-helps-bed-sore-healing": {
+            "status": 200,
+            "error": "No error"
+        },
+        "https://cimidaxil.com/blog/page/3": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=1210": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/666": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=666": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fterms-of-service%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=512": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Ftestimonials%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/512": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fcontact-information%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=635": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/635": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fcontact-us%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=401": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/401": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/600": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=600": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fprivacy-policy%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=397": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/xmlrpc.php": {
+            "status": "not connected",
+            "error": "ClientError: [Errno 104] Connection reset by peer"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fabout-us%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-content/cache/flying-press/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2": {
+            "status": 200,
+            "error": "Non-HTML content: application/font-woff2"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/397": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/category/uncategorized": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=3502": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/posts/3502": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/t,document.head.appendChild(n)}}),function": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2Fcaring-for-diabetic-foot-ulcers-at-home%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/caring-for-diabetic-foot-ulcers-at-home/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/prevention-of-diabetic-foot-ulcers": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/diabetic-foot-ulcer-treatment": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2Fcleansing-of-diabetic-wounds%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/7-different-ways-to-cure-your-diabetic-wound": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/cleansing-of-diabetic-wounds/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/posts/3479": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/ways-to-treat-diabetic-wounds": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=3479": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2Fdiabetic-foot-ulcers-heal-without-surgery%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/posts/3462": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=3462": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/diabetic-foot-ulcers-heal-without-surgery/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/diabetic-foot-ulcer": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fshipping-policy%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/602": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=602": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=627": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Frefund-policy%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/pages/627": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/practices-for-cleaning-and-dressing-bed-sores": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/posts/3271": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/bed-sore-dressings/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2Fbed-sore-dressings%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=3271": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/?p=3281": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/wp/v2/posts/3281": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/bed-sore-stages": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/blog/pressure-relief-helps-bed-sore-healing/feed": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        },
+        "https://cimidaxil.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fcimidaxil.com%2Fblog%2Fpressure-relief-helps-bed-sore-healing%2F": {
+            "status": "not connected",
+            "error": "TimeoutError"
+        }
+    },
+    "home_links": {
+        "cimidaxil.com": {
+            "name": "cimidaxil.com",
+            "url": "https://cimidaxil.com",
+            "status": "Unknown",
+            "children": {
+                "blog": {
+                    "name": "blog",
+                    "url": "https://cimidaxil.com/blog",
+                    "status": 200,
+                    "children": {
+                        "category": {
+                            "name": "category",
+                            "url": "https://cimidaxil.com/blog/category",
+                            "status": "Unknown",
+                            "children": {
+                                "uncategorized": {
+                                    "name": "uncategorized",
+                                    "url": "https://cimidaxil.com/blog/category/uncategorized",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "infected-bed-sores": {
+                            "name": "infected-bed-sores",
+                            "url": "https://cimidaxil.com/blog/infected-bed-sores",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "cleansing-of-diabetic-wounds": {
+                            "name": "cleansing-of-diabetic-wounds",
+                            "url": "https://cimidaxil.com/blog/cleansing-of-diabetic-wounds",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/blog/cleansing-of-diabetic-wounds/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "practices-for-cleaning-and-dressing-bed-sores": {
+                            "name": "practices-for-cleaning-and-dressing-bed-sores",
+                            "url": "https://cimidaxil.com/blog/practices-for-cleaning-and-dressing-bed-sores",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "diabetic-foot-ulcers-take-longer-to-heal": {
+                            "name": "diabetic-foot-ulcers-take-longer-to-heal",
+                            "url": "https://cimidaxil.com/blog/diabetic-foot-ulcers-take-longer-to-heal",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "t,document.head.appendChild(n)}}),function": {
+                            "name": "t,document.head.appendChild(n)}}),function",
+                            "url": "https://cimidaxil.com/blog/t,document.head.appendChild(n)}}),function",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "caring-for-diabetic-foot-ulcers-at-home": {
+                            "name": "caring-for-diabetic-foot-ulcers-at-home",
+                            "url": "https://cimidaxil.com/blog/caring-for-diabetic-foot-ulcers-at-home",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/blog/caring-for-diabetic-foot-ulcers-at-home/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "diabetic-foot-ulcer": {
+                            "name": "diabetic-foot-ulcer",
+                            "url": "https://cimidaxil.com/blog/diabetic-foot-ulcer",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "diabetic-foot-ulcer-treatment": {
+                            "name": "diabetic-foot-ulcer-treatment",
+                            "url": "https://cimidaxil.com/blog/diabetic-foot-ulcer-treatment",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "page": {
+                            "name": "page",
+                            "url": "https://cimidaxil.com/blog/page",
+                            "status": "Unknown",
+                            "children": {
+                                "3": {
+                                    "name": "3",
+                                    "url": "https://cimidaxil.com/blog/page/3",
+                                    "status": "not connected",
+                                    "children": {}
+                                },
+                                "6": {
+                                    "name": "6",
+                                    "url": "https://cimidaxil.com/blog/page/6",
+                                    "status": "not connected",
+                                    "children": {}
+                                },
+                                "2": {
+                                    "name": "2",
+                                    "url": "https://cimidaxil.com/blog/page/2",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "blood-circulation-slows-healing-in-diabetic-wounds": {
+                            "name": "blood-circulation-slows-healing-in-diabetic-wounds",
+                            "url": "https://cimidaxil.com/blog/blood-circulation-slows-healing-in-diabetic-wounds",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "7-different-ways-to-cure-your-diabetic-wound": {
+                            "name": "7-different-ways-to-cure-your-diabetic-wound",
+                            "url": "https://cimidaxil.com/blog/7-different-ways-to-cure-your-diabetic-wound",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "bed-sore-ointment-vs-spray": {
+                            "name": "bed-sore-ointment-vs-spray",
+                            "url": "https://cimidaxil.com/blog/bed-sore-ointment-vs-spray",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "diabetic-foot-ulcers-heal-without-surgery": {
+                            "name": "diabetic-foot-ulcers-heal-without-surgery",
+                            "url": "https://cimidaxil.com/blog/diabetic-foot-ulcers-heal-without-surgery",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/blog/diabetic-foot-ulcers-heal-without-surgery/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "bed-sore-stages": {
+                            "name": "bed-sore-stages",
+                            "url": "https://cimidaxil.com/blog/bed-sore-stages",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "pressure-relief-helps-bed-sore-healing": {
+                            "name": "pressure-relief-helps-bed-sore-healing",
+                            "url": "https://cimidaxil.com/blog/pressure-relief-helps-bed-sore-healing",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/blog/pressure-relief-helps-bed-sore-healing/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "bed-sore-dressings": {
+                            "name": "bed-sore-dressings",
+                            "url": "https://cimidaxil.com/blog/bed-sore-dressings",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/blog/bed-sore-dressings/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "ways-to-treat-diabetic-wounds": {
+                            "name": "ways-to-treat-diabetic-wounds",
+                            "url": "https://cimidaxil.com/blog/ways-to-treat-diabetic-wounds",
+                            "status": "not connected",
+                            "children": {}
+                        },
+                        "prevention-of-diabetic-foot-ulcers": {
+                            "name": "prevention-of-diabetic-foot-ulcers",
+                            "url": "https://cimidaxil.com/blog/prevention-of-diabetic-foot-ulcers",
+                            "status": "not connected",
+                            "children": {}
+                        }
+                    }
+                },
+                "wp-json": {
+                    "name": "wp-json",
+                    "url": "https://cimidaxil.com/wp-json",
+                    "status": "not connected",
+                    "children": {
+                        "wp": {
+                            "name": "wp",
+                            "url": "https://cimidaxil.com/wp-json/wp",
+                            "status": "Unknown",
+                            "children": {
+                                "v2": {
+                                    "name": "v2",
+                                    "url": "https://cimidaxil.com/wp-json/wp/v2",
+                                    "status": "Unknown",
+                                    "children": {
+                                        "pages": {
+                                            "name": "pages",
+                                            "url": "https://cimidaxil.com/wp-json/wp/v2/pages",
+                                            "status": "Unknown",
+                                            "children": {
+                                                "767": {
+                                                    "name": "767",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/767",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "600": {
+                                                    "name": "600",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/600",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "666": {
+                                                    "name": "666",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/666",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "512": {
+                                                    "name": "512",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/512",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "1210": {
+                                                    "name": "1210",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/1210",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "602": {
+                                                    "name": "602",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/602",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "627": {
+                                                    "name": "627",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/627",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "2": {
+                                                    "name": "2",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/2",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "397": {
+                                                    "name": "397",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/397",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "401": {
+                                                    "name": "401",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/401",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "635": {
+                                                    "name": "635",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/pages/635",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                }
+                                            }
+                                        },
+                                        "posts": {
+                                            "name": "posts",
+                                            "url": "https://cimidaxil.com/wp-json/wp/v2/posts",
+                                            "status": "Unknown",
+                                            "children": {
+                                                "3502": {
+                                                    "name": "3502",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/posts/3502",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "3462": {
+                                                    "name": "3462",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/posts/3462",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "3281": {
+                                                    "name": "3281",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/posts/3281",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "3479": {
+                                                    "name": "3479",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/posts/3479",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                },
+                                                "3271": {
+                                                    "name": "3271",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/posts/3271",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                }
+                                            }
+                                        },
+                                        "product": {
+                                            "name": "product",
+                                            "url": "https://cimidaxil.com/wp-json/wp/v2/product",
+                                            "status": "Unknown",
+                                            "children": {
+                                                "73": {
+                                                    "name": "73",
+                                                    "url": "https://cimidaxil.com/wp-json/wp/v2/product/73",
+                                                    "status": "not connected",
+                                                    "children": {}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "oembed": {
+                            "name": "oembed",
+                            "url": "https://cimidaxil.com/wp-json/oembed",
+                            "status": "Unknown",
+                            "children": {
+                                "1.0": {
+                                    "name": "1.0",
+                                    "url": "https://cimidaxil.com/wp-json/oembed/1.0",
+                                    "status": "Unknown",
+                                    "children": {
+                                        "embed": {
+                                            "name": "embed",
+                                            "url": "https://cimidaxil.com/wp-json/oembed/1.0/embed",
+                                            "status": "Unknown",
+                                            "children": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "faq": {
+                    "name": "faq",
+                    "url": "https://cimidaxil.com/faq",
+                    "status": 200,
+                    "children": {}
+                },
+                "terms-of-service": {
+                    "name": "terms-of-service",
+                    "url": "https://cimidaxil.com/terms-of-service",
+                    "status": 200,
+                    "children": {}
+                },
+                "wp-content": {
+                    "name": "wp-content",
+                    "url": "https://cimidaxil.com/wp-content",
+                    "status": "Unknown",
+                    "children": {
+                        "themes": {
+                            "name": "themes",
+                            "url": "https://cimidaxil.com/wp-content/themes",
+                            "status": "Unknown",
+                            "children": {
+                                "cimidaxil": {
+                                    "name": "cimidaxil",
+                                    "url": "https://cimidaxil.com/wp-content/themes/cimidaxil",
+                                    "status": "Unknown",
+                                    "children": {
+                                        "assets": {
+                                            "name": "assets",
+                                            "url": "https://cimidaxil.com/wp-content/themes/cimidaxil/assets",
+                                            "status": "Unknown",
+                                            "children": {
+                                                "SF-Pro-Display": {
+                                                    "name": "SF-Pro-Display",
+                                                    "url": "https://cimidaxil.com/wp-content/themes/cimidaxil/assets/SF-Pro-Display",
+                                                    "status": "Unknown",
+                                                    "children": {
+                                                        "TTF": {
+                                                            "name": "TTF",
+                                                            "url": "https://cimidaxil.com/wp-content/themes/cimidaxil/assets/SF-Pro-Display/TTF",
+                                                            "status": "Unknown",
+                                                            "children": {
+                                                                "SF-PRO-DISPLAY-REGULAR.ttf": {
+                                                                    "name": "SF-PRO-DISPLAY-REGULAR.ttf",
+                                                                    "url": "https://cimidaxil.com/wp-content/themes/cimidaxil/assets/SF-Pro-Display/TTF/SF-PRO-DISPLAY-REGULAR.ttf",
+                                                                    "status": 200,
+                                                                    "children": {}
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "cache": {
+                            "name": "cache",
+                            "url": "https://cimidaxil.com/wp-content/cache",
+                            "status": "Unknown",
+                            "children": {
+                                "flying-press": {
+                                    "name": "flying-press",
+                                    "url": "https://cimidaxil.com/wp-content/cache/flying-press",
+                                    "status": "Unknown",
+                                    "children": {
+                                        "KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2": {
+                                            "name": "KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2",
+                                            "url": "https://cimidaxil.com/wp-content/cache/flying-press/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBHMdazQ.woff2",
+                                            "status": 200,
+                                            "children": {}
+                                        },
+                                        "KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2": {
+                                            "name": "KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2",
+                                            "url": "https://cimidaxil.com/wp-content/cache/flying-press/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMaxKUBHMdazTgWw.woff2",
+                                            "status": 200,
+                                            "children": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "contact-us": {
+                    "name": "contact-us",
+                    "url": "https://cimidaxil.com/contact-us",
+                    "status": 200,
+                    "children": {}
+                },
+                "product": {
+                    "name": "product",
+                    "url": "https://cimidaxil.com/product",
+                    "status": "Unknown",
+                    "children": {
+                        "cimidaxil-d": {
+                            "name": "cimidaxil-d",
+                            "url": "https://cimidaxil.com/product/cimidaxil-d",
+                            "status": 200,
+                            "children": {
+                                "feed": {
+                                    "name": "feed",
+                                    "url": "https://cimidaxil.com/product/cimidaxil-d/feed",
+                                    "status": "not connected",
+                                    "children": {}
+                                }
+                            }
+                        },
+                        "t,document.head.appendChild(n)}}),function": {
+                            "name": "t,document.head.appendChild(n)}}),function",
+                            "url": "https://cimidaxil.com/product/t,document.head.appendChild(n)}}),function",
+                            "status": "not connected",
+                            "children": {}
+                        }
+                    }
+                },
+                "about-us": {
+                    "name": "about-us",
+                    "url": "https://cimidaxil.com/about-us",
+                    "status": 200,
+                    "children": {}
+                },
+                "web-stories": {
+                    "name": "web-stories",
+                    "url": "https://cimidaxil.com/web-stories",
+                    "status": "Unknown",
+                    "children": {
+                        "feed": {
+                            "name": "feed",
+                            "url": "https://cimidaxil.com/web-stories/feed",
+                            "status": "not connected",
+                            "children": {}
+                        }
+                    }
+                },
+                "xmlrpc.php": {
+                    "name": "xmlrpc.php",
+                    "url": "https://cimidaxil.com/xmlrpc.php",
+                    "status": "not connected",
+                    "children": {}
+                },
+                "shipping-policy": {
+                    "name": "shipping-policy",
+                    "url": "https://cimidaxil.com/shipping-policy",
+                    "status": 200,
+                    "children": {}
+                },
+                "contact-information": {
+                    "name": "contact-information",
+                    "url": "https://cimidaxil.com/contact-information",
+                    "status": 200,
+                    "children": {}
+                },
+                "t,document.head.appendChild(n)}}),function": {
+                    "name": "t,document.head.appendChild(n)}}),function",
+                    "url": "https://cimidaxil.com/t,document.head.appendChild(n)}}),function",
+                    "status": 404,
+                    "children": {}
+                },
+                "testimonials": {
+                    "name": "testimonials",
+                    "url": "https://cimidaxil.com/testimonials",
+                    "status": 200,
+                    "children": {}
+                },
+                "comments": {
+                    "name": "comments",
+                    "url": "https://cimidaxil.com/comments",
+                    "status": "Unknown",
+                    "children": {
+                        "feed": {
+                            "name": "feed",
+                            "url": "https://cimidaxil.com/comments/feed",
+                            "status": "not connected",
+                            "children": {}
+                        }
+                    }
+                },
+                "privacy-policy": {
+                    "name": "privacy-policy",
+                    "url": "https://cimidaxil.com/privacy-policy",
+                    "status": 200,
+                    "children": {}
+                },
+                "feed": {
+                    "name": "feed",
+                    "url": "https://cimidaxil.com/feed",
+                    "status": "not connected",
+                    "children": {}
+                },
+                "refund-policy": {
+                    "name": "refund-policy",
+                    "url": "https://cimidaxil.com/refund-policy",
+                    "status": 200,
+                    "children": {}
+                },
+                "my-account": {
+                    "name": "my-account",
+                    "url": "https://cimidaxil.com/my-account",
+                    "status": "not connected",
+                    "children": {}
+                }
+            }
+        }
+    },
+    "other_links": {
+        "www.googletagmanager.com": {
+            "name": "www.googletagmanager.com",
+            "url": "https://www.googletagmanager.com",
+            "status": "Unknown",
+            "children": {
+                "ns.html": {
+                    "name": "ns.html",
+                    "url": "https://www.googletagmanager.com/ns.html",
+                    "status": "Unknown",
+                    "children": {}
+                }
+            }
+        },
+        "wounds.in": {
+            "name": "wounds.in",
+            "url": "http://wounds.in",
+            "status": "Unknown",
+            "children": {}
+        },
+        "wa.me": {
+            "name": "wa.me",
+            "url": "https://wa.me",
+            "status": "Unknown",
+            "children": {
+                "917708549710": {
+                    "name": "917708549710",
+                    "url": "https://wa.me/917708549710",
+                    "status": "Unknown",
+                    "children": {}
+                }
+            }
+        },
+        "www.amazon.in": {
+            "name": "www.amazon.in",
+            "url": "https://www.amazon.in",
+            "status": "Unknown",
+            "children": {
+                "Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant": {
+                    "name": "Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant",
+                    "url": "https://www.amazon.in/Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant",
+                    "status": "Unknown",
+                    "children": {
+                        "dp": {
+                            "name": "dp",
+                            "url": "https://www.amazon.in/Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant/dp",
+                            "status": "Unknown",
+                            "children": {
+                                "B0F47ZNN7J": {
+                                    "name": "B0F47ZNN7J",
+                                    "url": "https://www.amazon.in/Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant/dp/B0F47ZNN7J",
+                                    "status": "Unknown",
+                                    "children": {
+                                        "ref=sr_1_1": {
+                                            "name": "ref=sr_1_1",
+                                            "url": "https://www.amazon.in/Cimidaxil-Multi-Action-Post-Operative-Fast-Absorbing-Non-Irritant/dp/B0F47ZNN7J/ref=sr_1_1",
+                                            "status": "Unknown",
+                                            "children": {}
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

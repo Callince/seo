@@ -1,0 +1,510 @@
+{% extends "base2.html" %}
+
+{% block title %}Header Analysis – Fix & Optimize H1, H2, H3 Tags for Better SEO{% endblock %}
+{% block meta %}<meta name="description" content="Use our header analysis tool to optimize your H1, H2, and H3 tags for clear structure, SEO, and better user experience.">{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-purple-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-heading text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">Header Analysis Tool</span> - Optimize Your H1, H2, H3 Tags for Better SEO
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Use our heading analysis to review and improve your headings for clear structure, SEO, and better reading flow. Our header analysis tool shows how your H1, H2, and H3 tags are placed, so you can fix gaps fast and strengthen your heading structure seo.
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('h_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start Header Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is Heading Structure Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is Heading Structure in SEO?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Heading analysis checks how your H1, H2, and H3 tags are arranged on a page. A clean structure helps search engines understand your topic and helps users read the content without confusion.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Strong seo heading structure keeps your sections in order, so the page flows naturally from one point to the next. Our heading structure checker helps you spot missing or weak areas and fix them quickly.
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Logical Flow</h4>
+                                <p class="text-gray-600 text-sm">Content flows naturally from H1 to H6</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Better Readability</h4>
+                                <p class="text-gray-600 text-sm">Users can scan and understand quickly</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Search Engine Understanding</h4>
+                                <p class="text-gray-600 text-sm">Helps crawlers identify key topics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Proper Heading Structure Is Important Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Why Proper Heading Structure Is Important for SEO and UX</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    A good heading layout helps both search engines and readers. Heading analysis shows you where structure supports your page and where it needs cleanup.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-compass text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Improved Navigation</h3>
+                            <p class="text-gray-600">
+                                Clear headings make it easy for users to scan and move through the page.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Audience Engagement</h3>
+                            <p class="text-gray-600">
+                                When headings are in the right order, people stay focused longer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">SEO Recognition</h3>
+                            <p class="text-gray-600">
+                                Search engines understand your main topics faster when the structure is clear.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-eye text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Better Visibility and Clarity</h3>
+                            <p class="text-gray-600">
+                                Good structure improves readability and supports better visibility in search.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Heading Structure Checker- How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our heading analysis runs in a simple four-step process.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Enter Your URL</h3>
+                    <p class="text-gray-600 text-sm">
+                        Add your page link to start the scan.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Check Heading Structure</h3>
+                    <p class="text-gray-600 text-sm">
+                        We map all heading tags and show their order so you can check the heading structure clearly.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Identify Issues</h3>
+                    <p class="text-gray-600 text-sm">
+                        We highlight missing, repeated, or misplaced tags.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Meet SEO Standards</h3>
+                    <p class="text-gray-600 text-sm">
+                        You get steps to align with modern structure rules.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-gradient-to-br from-purple-50 to-white p-8 rounded-2xl border border-purple-100">
+                <p class="text-lg text-gray-700 text-center">
+                    This makes it easy to review any page and improve your heading tag structure without technical effort.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Common Issues Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Common Heading Structure Issues You Should Avoid</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our heading analysis often catches these problems first.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-clone text-2xl text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Multiple H1 Tags</h3>
+                    <p class="text-gray-600">
+                        More than one H1 confuses search engines about your main topic.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-level-down-alt text-2xl text-yellow-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Skipped Levels</h3>
+                    <p class="text-gray-600">
+                        Jumping from H1 to H3 or H2 to H4 breaks reading flow.
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-paint-brush text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Styling Only Headings</h3>
+                    <p class="text-gray-600">
+                        Using headings just for looks weakens the structure and SEO meaning.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    Keep a clean layout with correct heading tag structure. Small fixes here improve clarity a lot.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEO Best Practices Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">SEO Best Practices for Heading Tag Structure</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    After the heading analysis, these are the simple rules we recommend.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Best Practices
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use only one H1 per page</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Keep H2 sections in a logical order</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use H3 only for true sub-sections</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Keep headings short and clear</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Header Analysis Tips
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Make sure headings match the content below them</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Improve headings for accessibility</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Check readability on mobile and desktop</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Keep structure consistent across pages</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl">
+                <p class="text-lg text-gray-700 text-center">
+                    This helps you maintain a strong heading structure seo over time.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Heading Structure Affects Rankings Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Ranking Benefits</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Search engines understand content quickly</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Improved relevance and context signals</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Better indexing of your pages</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Longer user engagement and lower bounce rates</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">How Heading Structure Affects Search Rankings</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Clean headings help search engines find and understand your content faster. Heading analysis supports better relevance, proper indexing, and clearer topic focus.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        When pages are easy to scan, users stay longer and interact more, which improves ranking signals naturally. Good structure supports SEO and the reading experience together.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-purple-50 p-4 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-primary mb-1">78%</div>
+                            <p class="text-gray-600 text-sm">Top pages have proper H1 tags</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-primary mb-1">36%</div>
+                            <p class="text-gray-600 text-sm">Higher engagement with good structure</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about Header Analysis</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How many H1 tags should a page have?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Only one. A single H1 helps search engines identify your main topic clearly and keeps your <strong>website heading structure</strong> clean.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How do I fix the poor heading structure on my website?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Start by scanning your page with a <strong>heading structure checker</strong>, then rearrange your H1, H2, and H3 tags to follow a clear order that matches your content.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">What's the difference between H1, H2, and H3 tags?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            H1 introduces the main topic, H2 covers major sections, and H3 adds supporting details. This simple <strong>heading tag structure</strong> helps keep content easy to follow.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Does heading structure help with accessibility?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. A well-planned <strong>heading structure for accessibility</strong> allows screen readers and assistive tools to understand your content easily and navigate your page smoothly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your Headings?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start your <strong>header analysis</strong> today and improve your content structure, SEO rankings, and user experience with our powerful <strong>heading structure checker</strong>
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('h_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start Header Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

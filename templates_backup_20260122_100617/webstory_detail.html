@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{{ webstory.meta_title }} - SEODADA Web Story</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
+    <meta name="description" content="{{ webstory.meta_description }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:title" content="{{ webstory.meta_title }}">
+    <meta property="og:description" content="{{ webstory.meta_description }}">
+    {% if webstory.cover_image %}
+    <meta property="og:image" content="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}">
+    {% elif webstory.slides and webstory.slides[0].image %}
+    <meta property="og:image" content="{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}">
+    {% endif %}
+    <meta property="og:image:width" content="1080">
+    <meta property="og:image:height" content="1920">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ request.url }}">
+    <meta name="twitter:title" content="{{ webstory.meta_title }}">
+    <meta name="twitter:description" content="{{ webstory.meta_description }}">
+    {% if webstory.cover_image %}
+    <meta name="twitter:image" content="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}">
+    {% elif webstory.slides and webstory.slides[0].image %}
+    <meta name="twitter:image" content="{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}">
+    {% endif %}
+
+    <!-- Schema.org Article Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "{{ webstory.meta_title }}",
+        "description": "{{ webstory.meta_description }}",
+        {% if webstory.cover_image %}
+        "image": {
+            "@type": "ImageObject",
+            "url": "{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image, _external=True) }}",
+            "width": 1080,
+            "height": 1920,
+            "caption": "{{ webstory.meta_title }}"
+        },
+        {% elif webstory.slides and webstory.slides[0].image %}
+        "image": {
+            "@type": "ImageObject",
+            "url": "{{ webstory.slides[0].image if webstory.slides[0].image.startswith('http') else url_for('static', filename=webstory.slides[0].image.replace('/static/', ''), _external=True) }}",
+            "width": 1080,
+            "height": 1920,
+            "caption": "{{ webstory.meta_title }}"
+        },
+        {% endif %}
+        "datePublished": "{{ webstory.publish_date.isoformat() if webstory.publish_date else webstory.created_at.isoformat() }}",
+        "dateModified": "{{ webstory.updated_at.isoformat() if webstory.updated_at else webstory.created_at.isoformat() }}",
+        "author": {
+            "@type": "Organization",
+            "name": "SEODADA",
+            "url": "{{ url_for('landing', _external=True) }}"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "SEODADA",
+            "url": "{{ url_for('landing', _external=True) }}"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "{{ request.url }}"
+        },
+        "url": "{{ request.url }}"
+    }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Roboto:wght@400;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --story-primary: #273879;
+            --story-primary-light: #0f74b2;
+            --story-gradient: linear-gradient(135deg, #273879, #0f74b2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--story-primary-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Story Viewer */
+        .story-viewer {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-container {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            background: #111;
+        }
+
+        @media (min-width: 768px) {
+            .story-container {
+                height: 90vh;
+                max-height: 900px;
+                border-radius: 1rem;
+                box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        /* Story Slides */
+        .story-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .story-slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: transform 8s ease-out;
+        }
+
+        .story-slide.active .slide-bg {
+            transform: scale(1.05);
+        }
+
+        .slide-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                to top,
+                rgba(0, 0, 0, 0.85) 0%,
+                rgba(0, 0, 0, 0.3) 35%,
+                rgba(0, 0, 0, 0.1) 60%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+        }
+
+        /* Story Header */
+        .story-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1rem 0.75rem;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 100%);
+        }
+
+        /* Progress Bars */
+        .story-progress {
+            display: flex;
+            gap: 4px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            border-radius: 3px;
+            will-change: width;
+        }
+
+        .progress-bar.completed .progress-fill {
+            width: 100% !important;
+            animation: none !important;
+            transition: none !important;
+        }
+
+        .progress-bar.active .progress-fill {
+            animation: progress 5s linear forwards;
+        }
+
+        @keyframes progress {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Close Button */
+        .story-close {
+            position: absolute;
+            top: 2.75rem;
+            right: 1rem;
+            width: 38px;
+            height: 38px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .story-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+
+        /* Story Content */
+        .story-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: 0;
+            padding: 2rem 1.5rem;
+            padding-bottom: max(2rem, env(safe-area-inset-bottom, 2rem));
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            pointer-events: none;
+        }
+
+        .story-content > * {
+            pointer-events: auto;
+        }
+
+        .story-heading {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.6s ease;
+        }
+
+        /* When heading has custom bottom position, use absolute positioning */
+        .story-heading[data-custom-position="true"] {
+            position: absolute;
+            left: 1.5rem;
+            right: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        .story-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.92);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease 0.1s backwards;
+        }
+
+        /* When text has custom bottom position, use absolute positioning */
+        .story-text[data-custom-position="true"] {
+            position: absolute;
+            left: 1.5rem;
+            right: 1.5rem;
+            margin-bottom: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(25px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Learn More Link */
+        .story-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            background: white;
+            color: var(--story-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease 0.2s backwards;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .story-link:hover {
+            background: var(--story-gradient);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Navigation Areas - Hidden but clickable */
+        .story-navigation {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 25%;
+            z-index: 6;
+            cursor: pointer;
+        }
+
+        .nav-prev { left: 0; }
+        .nav-next { right: 0; }
+
+        /* Pause Indicator */
+        .pause-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 20;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .pause-indicator.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .pause-indicator i {
+            color: white;
+            font-size: 1.75rem;
+        }
+
+        /* Sound toggle (if needed) */
+        .sound-toggle {
+            position: absolute;
+            top: 2.75rem;
+            right: 4rem;
+            width: 38px;
+            height: 38px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Slide counter */
+        .slide-counter {
+            position: absolute;
+            top: 2.85rem;
+            left: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            z-index: 10;
+        }
+
+        /* Safe area insets for notched devices */
+        @supports (padding: max(0px)) {
+            .story-header {
+                padding-top: max(1rem, env(safe-area-inset-top));
+            }
+            .story-content {
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading Story...</div>
+    </div>
+
+    <!-- Story Viewer -->
+    <div class="story-viewer">
+        <div class="story-container">
+            <!-- Pause Indicator -->
+            <div class="pause-indicator" id="pauseIndicator">
+                <i class="fas fa-pause"></i>
+            </div>
+
+            {% if webstory.slides %}
+            {% set active_slides = webstory.slides|selectattr('status')|list %}
+
+            <!-- Global Story Header (outside slides) -->
+            <div class="story-header">
+                <div class="story-progress" id="storyProgress">
+                    {% for s in active_slides %}
+                    <div class="progress-bar" data-index="{{ loop.index0 }}">
+                        <div class="progress-fill"></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Slide counter -->
+            <div class="slide-counter" id="slideCounter">1 / {{ active_slides|length }}</div>
+
+            <!-- Close button -->
+            <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'" aria-label="Close story">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <!-- Slides -->
+            {% for slide in active_slides %}
+            <div class="story-slide {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}">
+                <!-- Background image with zoom/pan -->
+                <div class="slide-bg" style="background-image: url('{{ slide.image }}');{% if slide.zoom and slide.zoom != 100 %} background-size: {{ slide.zoom }}%;{% endif %} background-position: {{ slide.pan_x or 50 }}% {{ slide.pan_y or 50 }}%;"></div>
+
+                <div class="story-content">
+                    {% if slide.heading %}
+                    <div class="story-heading"
+                         {% if slide.heading_bottom %}data-custom-position="true"{% endif %}
+                         style="{% if slide.heading_bottom %}bottom: {{ slide.heading_bottom }};{% endif %}{% if slide.heading_font and slide.heading_font != 'inherit' %} font-family: {{ slide.heading_font }};{% endif %}{% if slide.heading_size %} font-size: {{ slide.heading_size }}px;{% endif %}">{{ slide.heading|safe }}</div>
+                    {% endif %}
+                    {% if slide.text %}
+                    <div class="story-text"
+                         {% if slide.text_bottom %}data-custom-position="true"{% endif %}
+                         style="{% if slide.text_bottom %}bottom: {{ slide.text_bottom }};{% endif %}{% if slide.text_font and slide.text_font != 'inherit' %} font-family: {{ slide.text_font }};{% endif %}{% if slide.text_size %} font-size: {{ slide.text_size }}px;{% endif %}">{{ slide.text|safe }}</div>
+                    {% endif %}
+                    {% if slide.learn_more_url %}
+                    <a href="{{ slide.learn_more_url }}" class="story-link" target="_blank" rel="noopener">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Navigation Areas -->
+            <div class="story-navigation nav-prev" onclick="previousSlide()"></div>
+            <div class="story-navigation nav-next" onclick="nextSlide()"></div>
+            {% else %}
+            <div class="story-slide active" style="background: var(--story-gradient);">
+                <div class="story-header">
+                    <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="story-content">
+                    <div class="story-heading">{{ webstory.meta_title }}</div>
+                    <div class="story-text">{{ webstory.meta_description }}</div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.story-slide');
+        const progressBars = document.querySelectorAll('#storyProgress .progress-bar');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const slideCounter = document.getElementById('slideCounter');
+        let autoPlayTimer;
+        let isPaused = false;
+        let progressStartTime = 0;
+        let progressElapsed = 0;
+        const SLIDE_DURATION = 5000; // 5 seconds per slide
+        const totalSlides = slides.length;
+
+        // Hide loading screen after page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                // Start the first slide after loading
+                if (slides.length > 0) {
+                    showSlide(0);
+                }
+            }, 500);
+        });
+
+        function updateSlideCounter() {
+            if (slideCounter && totalSlides > 0) {
+                slideCounter.textContent = (currentSlide + 1) + ' / ' + totalSlides;
+            }
+        }
+
+        function resetAllProgressBars() {
+            progressBars.forEach((bar, i) => {
+                const fill = bar.querySelector('.progress-fill');
+                if (fill) {
+                    fill.style.animation = 'none';
+                    fill.style.transition = 'none';
+                    fill.style.width = '0%';
+                }
+                bar.classList.remove('active', 'completed');
+            });
+        }
+
+        function showSlide(index, resumeProgress = false) {
+            if (index < 0 || index >= slides.length) return;
+
+            // Hide all slides
+            slides.forEach(slide => slide.classList.remove('active'));
+
+            // Update current slide
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            updateSlideCounter();
+
+            // Update progress bars
+            progressBars.forEach((bar, i) => {
+                const fill = bar.querySelector('.progress-fill');
+                bar.classList.remove('active');
+
+                if (i < currentSlide) {
+                    // Completed slides - full progress
+                    bar.classList.add('completed');
+                    if (fill) {
+                        fill.style.animation = 'none';
+                        fill.style.transition = 'none';
+                        fill.style.width = '100%';
+                    }
+                } else if (i === currentSlide) {
+                    // Current slide - animate
+                    bar.classList.remove('completed');
+                    bar.classList.add('active');
+                } else {
+                    // Future slides - empty
+                    bar.classList.remove('completed');
+                    if (fill) {
+                        fill.style.animation = 'none';
+                        fill.style.transition = 'none';
+                        fill.style.width = '0%';
+                    }
+                }
+            });
+
+            // Handle current progress bar animation
+            const currentProgressFill = progressBars[currentSlide]?.querySelector('.progress-fill');
+            if (!currentProgressFill) return;
+
+            if (resumeProgress && progressElapsed > 0) {
+                // Resume from where we left off
+                const remainingTime = SLIDE_DURATION - progressElapsed;
+                const progressPercent = (progressElapsed / SLIDE_DURATION) * 100;
+
+                currentProgressFill.style.animation = 'none';
+                currentProgressFill.style.transition = 'none';
+                currentProgressFill.style.width = progressPercent + '%';
+                currentProgressFill.offsetHeight; // Force reflow
+
+                setTimeout(() => {
+                    currentProgressFill.style.transition = `width ${remainingTime}ms linear`;
+                    currentProgressFill.style.width = '100%';
+                }, 20);
+
+                // Set timer for remaining time
+                clearTimeout(autoPlayTimer);
+                if (!isPaused) {
+                    progressStartTime = Date.now() - progressElapsed;
+                    autoPlayTimer = setTimeout(() => {
+                        progressElapsed = 0;
+                        if (currentSlide < slides.length - 1) {
+                            nextSlide();
+                        } else {
+                            setTimeout(() => {
+                                window.location.href = '{{ url_for("public_webstories") }}';
+                            }, 800);
+                        }
+                    }, remainingTime);
+                }
+            } else {
+                // Fresh start for this slide
+                progressElapsed = 0;
+                currentProgressFill.style.animation = 'none';
+                currentProgressFill.style.transition = 'none';
+                currentProgressFill.style.width = '0%';
+                currentProgressFill.offsetHeight; // Force reflow
+
+                setTimeout(() => {
+                    currentProgressFill.style.animation = `progress ${SLIDE_DURATION}ms linear forwards`;
+                }, 20);
+
+                // Auto advance after duration
+                clearTimeout(autoPlayTimer);
+                if (!isPaused) {
+                    progressStartTime = Date.now();
+                    autoPlayTimer = setTimeout(() => {
+                        progressElapsed = 0;
+                        if (currentSlide < slides.length - 1) {
+                            nextSlide();
+                        } else {
+                            setTimeout(() => {
+                                window.location.href = '{{ url_for("public_webstories") }}';
+                            }, 800);
+                        }
+                    }, SLIDE_DURATION);
+                }
+            }
+        }
+
+        function pauseStory() {
+            if (!isPaused && progressBars[currentSlide]) {
+                isPaused = true;
+                clearTimeout(autoPlayTimer);
+
+                // Calculate elapsed time
+                if (progressStartTime > 0) {
+                    progressElapsed = Date.now() - progressStartTime;
+                }
+
+                // Pause the progress bar animation
+                const progressFill = progressBars[currentSlide].querySelector('.progress-fill');
+                if (progressFill) {
+                    const computedStyle = window.getComputedStyle(progressFill);
+                    const currentWidth = computedStyle.width;
+                    progressFill.style.animation = 'none';
+                    progressFill.style.transition = 'none';
+                    progressFill.style.width = currentWidth;
+                }
+
+                // Show pause indicator
+                document.getElementById('pauseIndicator').classList.add('show');
+            }
+        }
+
+        function resumeStory() {
+            if (isPaused) {
+                isPaused = false;
+
+                // Hide pause indicator
+                document.getElementById('pauseIndicator').classList.remove('show');
+                showSlide(currentSlide, true); // Resume with existing progress
+            }
+        }
+
+        function nextSlide() {
+            progressElapsed = 0;
+            if (currentSlide < slides.length - 1) {
+                showSlide(currentSlide + 1);
+            } else {
+                window.location.href = '{{ url_for("public_webstories") }}';
+            }
+        }
+
+        function previousSlide() {
+            progressElapsed = 0;
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            } else {
+                // Restart current slide from beginning
+                showSlide(0);
+            }
+        }
+
+        // Click navigation on the story container
+        const storyContainer = document.querySelector('.story-container');
+        let clickStartTime = 0;
+        let isHolding = false;
+
+        storyContainer.addEventListener('click', (e) => {
+            // Don't trigger if clicking on close button or learn more link
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+
+            // If it was a hold (long press), don't navigate
+            if (isHolding) {
+                isHolding = false;
+                return;
+            }
+
+            const rect = storyContainer.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const containerWidth = rect.width;
+
+            // Instagram-style navigation:
+            // Left 25% = previous slide
+            // Center 50% = pause/resume
+            // Right 25% = next slide
+            if (clickX < containerWidth * 0.25) {
+                if (isPaused) isPaused = false;
+                previousSlide();
+            } else if (clickX > containerWidth * 0.75) {
+                if (isPaused) isPaused = false;
+                nextSlide();
+            } else {
+                // Center - toggle pause/resume
+                if (isPaused) {
+                    resumeStory();
+                } else {
+                    pauseStory();
+                }
+            }
+        });
+
+        // Pause on hold (desktop)
+        storyContainer.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+            clickStartTime = Date.now();
+        });
+
+        storyContainer.addEventListener('mouseup', (e) => {
+            if (Date.now() - clickStartTime > 200) {
+                isHolding = true;
+                if (isPaused) {
+                    resumeStory();
+                }
+            }
+        });
+
+        // Pause on hold (mobile)
+        let touchStartTime = 0;
+        storyContainer.addEventListener('touchstart', (e) => {
+            if (e.target.closest('.story-close') || e.target.closest('.story-link')) {
+                return;
+            }
+            touchStartTime = Date.now();
+
+            // Pause after short delay (for hold gesture)
+            setTimeout(() => {
+                if (Date.now() - touchStartTime >= 150) {
+                    pauseStory();
+                }
+            }, 150);
+        }, { passive: true });
+
+        storyContainer.addEventListener('touchend', (e) => {
+            const touchDuration = Date.now() - touchStartTime;
+
+            if (touchDuration > 200) {
+                isHolding = true;
+                if (isPaused) {
+                    resumeStory();
+                }
+            }
+        }, { passive: true });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                previousSlide();
+            } else if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'Escape') {
+                window.location.href = '{{ url_for("public_webstories") }}';
+            } else if (e.key === 'p' || e.key === 'P') {
+                if (isPaused) {
+                    resumeStory();
+                } else {
+                    pauseStory();
+                }
+            }
+        });
+
+        // Touch swipe support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        storyContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        storyContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeDistanceX = touchEndX - touchStartX;
+            const swipeDistanceY = touchEndY - touchStartY;
+
+            // Only register swipe if horizontal movement is greater than vertical
+            if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY) && Math.abs(swipeDistanceX) > 50) {
+                if (swipeDistanceX < -50) {
+                    nextSlide();
+                } else if (swipeDistanceX > 50) {
+                    previousSlide();
+                }
+            }
+        }
+
+        // Prevent zoom on double tap
+        let lastTap = 0;
+        storyContainer.addEventListener('touchend', (e) => {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 300 && tapLength > 0) {
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+
+        // Initialize slide counter immediately (before loading screen hides)
+        updateSlideCounter();
+    </script>
+</body>
+</html>

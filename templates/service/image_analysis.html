@@ -1,0 +1,670 @@
+{% extends "base2.html" %}
+
+{% block title %}Image Analysis Tool – Optimize Images for Faster Speed & Better SEO{% endblock %}
+{% block meta %}<meta name="description" content="Use our Image Analysis tool to optimize images, check alt text, compress photos, and improve SEO instantly.">{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .gradient-text {
+        background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    .main-content {
+        padding-top: 4.375rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+<div class="min-h-screen bg-gradient-to-br from-background via-white to-orange-50">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <div class="inline-block p-3 bg-primary bg-opacity-10 rounded-2xl mb-4">
+                    <i class="fas fa-image text-4xl text-primary"></i>
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+                    <span class="gradient-text">Image Analysis Tool</span> – Improve SEO & Speed by Optimizing Images Online
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Use our image analysis tool to analyze images, check alt text, compress photos, and improve SEO instantly. This works as an easy image analyzer online and gives you clear image analysis online results for better website performance.
+
+                </p>
+                <div class="mt-8">
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('image_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Start Image Analysis
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                            Get Started Free
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What Is Image Optimization Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">What Is Image Optimization in SEO?</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Image analysis helps improve how search engines read and load your visuals. If you are wondering what image analysis in SEO means, it simply includes checking file size, alt text, and file names so your visuals stay clean and readable.
+</p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Many websites use image analysis methods to improve clarity, speed, and accessibility. A strong approach ensures your pages load faster and are easy for both users and search engines.
+</p>
+                    <p class="text-lg text-gray-600">
+                        Our <strong>image analysis tool</strong> gives you a complete check so you can improve rankings and speed without guessing.
+
+                    </p>
+                </div>
+                <div class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Reduce File Size</h4>
+                                <p class="text-gray-600 text-sm">Compress images without losing quality</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Add Proper Alt Text</h4>
+                                <p class="text-gray-600 text-sm">Improve accessibility and SEO signals</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Clean File Names</h4>
+                                <p class="text-gray-600 text-sm">Use descriptive, SEO-friendly names</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How Image Optimization Improves Speed Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">How Image Optimization Improves Website Speed & Rankings</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Better image performance helps your pages load quickly, which improves user engagement. Our image analysis online shows what is slowing your pages down and what to fix first.
+ </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-tachometer-alt text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Faster Page Loading</h3>
+                            <p class="text-gray-600">
+                                With the right <strong>image analysis</strong>, search engines can read your visuals correctly and understand your content better.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-chart-line text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Lower Bounce Rates</h3>
+                            <p class="text-gray-600">
+                                Clean images support lower bounce rates, stronger visibility, and improved mobile performance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-eye text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Stronger Visibility</h3>
+                            <p class="text-gray-600">
+                                Good <strong>optimization image</strong> practices found through image analysis build long term SEO value by keeping pages light.
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-compass text-2xl text-primary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">Easy Navigation</h3>
+                            <p class="text-gray-600">
+                                Well analyzed and cleaned pages are easy to navigate, improving user experience and engagement.
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Image Analysis Tool- How It Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our system runs a full <strong>image analysis</strong> to detect heavy files, missing alt text, and slow loading visuals.
+
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">1</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Submit Your URL</h3>
+                    <p class="text-gray-600 text-sm">
+                        Enter your website or page URL to start scanning
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">2</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Deep Image Scan</h3>
+                    <p class="text-gray-600 text-sm">
+                        Our tool checks every visual using our image analyzer to find improvement areas.
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">3</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Get Real-Time Insights</h3>
+                    <p class="text-gray-600 text-sm">
+                         See what to fix for speed and SEO.
+
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-primary">4</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">Improve Visibility</h3>
+                    <p class="text-gray-600 text-sm">
+                        Make your content easier to crawl and rank higher
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-gradient-to-br from-orange-50 to-white p-8 rounded-2xl border border-orange-100">
+                <p class="text-lg text-gray-700 text-center">
+                    It works like a complete engine for quick improvements, helping your website load faster and rank better.
+</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Image Optimization Checker Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Image Analysis  Checker (Analyze Alt Text & SEO Tags)</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        The checker reviews your images during <strong>image Analysis </strong> to confirm file names, alt text, and descriptions follow SEO standards.
+
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6">
+                        It works like a detailed checker that highlights missing tags and unclear names. These fixes support stronger<strong> seo image optimization</strong> and better indexing across your pages.
+
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <span class="text-gray-700">Missing alt text detection</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-file-alt text-yellow-600"></i>
+                            </div>
+                            <span class="text-gray-700">File name analysis</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-tags text-blue-600"></i>
+                            </div>
+                            <span class="text-gray-700">SEO tag verification</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-double text-green-600"></i>
+                            </div>
+                            <span class="text-gray-700">Description compliance check</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Why Alt Text Matters</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Helps search engines understand images</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Improves accessibility for all users</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Supports better Google Image rankings</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Provides context when images fail to load</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optimize Images for Web Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Analyze Images for Web (JPEG, PNG, WebP Compression)</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our system helps you analyze and reduce heavy JPEG, PNG, and WebP files while keeping quality intact. This is part of every serious image analysis.
+
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-file-image text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">JPEG Compression</h3>
+                    <p class="text-gray-600">
+                        Reduce JPEG size with settings made for photos.
+
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-palette text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">PNG Optimization</h3>
+                    <p class="text-gray-600">
+                        Reduce PNG size while keeping transparency and sharpness.
+
+                    </p>
+                </div>
+
+                <div class="card-hover bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-star text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">WebP Format</h3>
+                    <p class="text-gray-600">
+                        Modern format delivering strong compression, usually smaller than older formats.
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    With the right fixes from <strong> image analysis</strong>, your pages load faster and stay clear on all devices.
+
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEO Best Practices Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">SEO Best Practices for Image Optimization</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    After your image analysis, following simple rules keeps your images healthy for SEO.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        Best Practices
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use clean alt text with descriptive names</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Structure visuals for better <strong> seo image optimization</strong></span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Run checks using an <strong>image analyzer online</strong>regularly</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Make visuals accessible and meaningful</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>Use lazy loading for images lower on the page</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        Pro Tips
+                    </h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Small updates support better crawling</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Better ranking signals come from analyzed and cleaned images</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Use responsive images with srcset</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Serve images from a CDN for faster delivery</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-star text-blue-500 mt-1 mr-2"></i>
+                            <span>Choose the right format for each image type</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mobile SEO Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="bg-gradient-to-br from-primary to-secondary p-8 rounded-2xl text-white">
+                    <h3 class="text-2xl font-bold mb-4">Mobile Benefits</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Lighter pages load faster on mobile networks</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Search engines reward fast and stable pages</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Graphics perform well on smaller screens</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fas fa-check-circle mt-1"></i>
+                            <span>Improved Core Web Vitals scores</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">Why Image Optimization Is Important for Mobile SEO</h2>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Mobile users rely on fast pages, so image analysis matters even more here. When you analyze and reduce heavy images, your pages become lighter and load better on mobile networks.
+
+                    </p>
+                    <p class="text-lg text-gray-600 mb-4">
+                        Search engines reward fast and stable pages, and good image analysis helps visuals perform well on smaller screens.
+
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-primary mb-1">53%</div>
+                            <p class="text-gray-600 text-sm">Mobile users leave slow sites</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-xl text-center">
+                            <div class="text-3xl font-bold text-primary mb-1">70%</div>
+                            <p class="text-gray-600 text-sm">Traffic from mobile devices</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Compare Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Compare Our Image Optimization Tool with Other Tools</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Most tools only compress images. Our image analysis goes deeper with alt text checks, naming issues, and full review so you know exactly what is affecting SEO.
+
+                </p>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <thead class="bg-gradient-to-r from-primary to-secondary text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left font-semibold">Feature</th>
+                            <th class="px-6 py-4 text-center font-semibold">Our Tool</th>
+                            <th class="px-6 py-4 text-center font-semibold">Other Tools</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">Image Compression</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">Alt Text Analysis</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">File Naming Issues</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">SEO Structure Checks</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-minus-circle text-yellow-500 text-xl"></i></td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-gray-700">Multi-Device Support</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-minus-circle text-yellow-500 text-xl"></i></td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="px-6 py-4 text-gray-700">Keyword Image Analysis</td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-check-circle text-green-500 text-xl"></i></td>
+                            <td class="px-6 py-4 text-center"><i class="fas fa-times-circle text-red-400 text-xl"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-lg text-gray-600">
+                    It combines the functions of a standard <strong>image optimization online</strong> tool with SEO structure checks, making it more effective than many single-purpose tools available today.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-600">Common questions about Image Optimization</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ 1 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Does Image Optimization Affect Google Rankings?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Proper optimization and optimized images support faster pages, lower bounce rates, and better indexing, which helps rankings. <strong>Image optimization SEO</strong> is a crucial ranking factor.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">What Image Format Is Best for SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            WebP is often recommended because it delivers high quality at smaller sizes. This format supports clean loading and stronger SEO performance across all devices.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">How Much Should I Compress an Image for SEO?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Compress images until they load quickly while still looking clear. Good tools help you <strong>compress images for web</strong> without losing important detail. Aim for under 100KB for most web images.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Do Optimized Images Help Google Image Search?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Proper file names, alt text, and strong <strong>image optimization SEO</strong> checks help your images appear in search results and drive additional traffic.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FAQ 5 -->
+                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
+                        <span class="font-semibold text-gray-900">Should Every Image on a Website Have Alt Text?</span>
+                        <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                    </button>
+                    <div class="faq-content hidden px-6 pb-4">
+                        <p class="text-gray-600">
+                            Yes. Alt text helps search engines understand your visuals and improves accessibility. It's a core part of <strong>image optimization in SEO</strong> best practices.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-secondary">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Optimize Your Images?</h2>
+            <p class="text-xl text-blue-100 mb-8">
+                Start your <strong>image analysis</strong> today and improve page speed, SEO rankings, and user experience with our powerful <strong>image optimization tool</strong>
+            </p>
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('image_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Start Image Analysis Now
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% else %}
+                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                    Get Started Free
+                    <i class="fas fa-arrow-right ml-2"></i>
+                </a>
+            {% endif %}
+        </div>
+    </section>
+</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // FAQ Accordion functionality
+    document.querySelectorAll('.faq-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+
+            // Toggle content visibility
+            content.classList.toggle('hidden');
+
+            // Rotate icon
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    });
+</script>
+{% endblock %}

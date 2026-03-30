@@ -1,0 +1,331 @@
+{% extends "base2.html" %}
+
+{% block title %}Pricing | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user-pages.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* Pricing page styles - Brand color overrides */
+    .pricing-content h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #273879 !important;
+        margin-bottom: 1rem !important;
+        margin-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 2px solid #273879 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .pricing-content h2 i {
+        color: #273879 !important;
+    }
+
+    .pricing-content h3 {
+        color: #273879 !important;
+    }
+
+    .pricing-content h4 {
+        color: #273879 !important;
+        -webkit-text-fill-color: #273879 !important;
+        background: none !important;
+    }
+
+    .pricing-content p {
+        color: #374151 !important;
+        line-height: 1.7 !important;
+    }
+
+    .pricing-content strong {
+        color: #273879 !important;
+    }
+
+    /* Plan Card Styles */
+    .pricing-content .plan-card {
+        background-color: #ffffff !important;
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.75rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .pricing-content .plan-card:hover {
+        box-shadow: 0 8px 24px rgba(39, 56, 121, 0.15) !important;
+        transform: translateY(-4px) !important;
+    }
+
+    .pricing-content .plan-card h4 {
+        color: #273879 !important;
+        font-weight: 700 !important;
+    }
+
+    .pricing-content .plan-card .price-gradient {
+        color: #273879 !important;
+        -webkit-text-fill-color: #273879 !important;
+        background: none !important;
+    }
+
+    .pricing-content .feature-icon {
+        color: #273879 !important;
+    }
+
+    .pricing-content .feature-item {
+        background-color: rgba(39, 56, 121, 0.05) !important;
+    }
+
+    /* Subscribe Button */
+    .pricing-content .subscribe-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        width: 100% !important;
+    }
+
+    .pricing-content .subscribe-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(39, 56, 121, 0.3) !important;
+    }
+
+    /* Popular Ribbon */
+    .pricing-content .popular-ribbon {
+        background-color: #273879 !important;
+        color: white !important;
+    }
+
+    /* Info Box */
+    .pricing-content .info-box {
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .pricing-content .info-box.blue {
+        background-color: #eff6ff !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .pricing-content .info-box.blue h3,
+    .pricing-content .info-box.blue i {
+        color: #273879 !important;
+    }
+
+    /* FAQ Section */
+    .pricing-content .faq-item {
+        border: 1px solid #e5e7eb !important;
+        border-radius: 0.5rem !important;
+        margin-bottom: 1rem !important;
+        overflow: hidden !important;
+    }
+
+    .pricing-content .faq-question {
+        background-color: #f8fafc !important;
+        padding: 1rem 1.5rem !important;
+        font-weight: 600 !important;
+        color: #273879 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    .pricing-content .faq-question:hover {
+        background-color: rgba(39, 56, 121, 0.05) !important;
+    }
+
+    .pricing-content .faq-answer {
+        padding: 1rem 1.5rem !important;
+        color: #374151 !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    /* Contact Box */
+    .pricing-content .contact-box {
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;
+        border-radius: 0.75rem !important;
+        padding: 2rem !important;
+        margin-top: 2rem !important;
+        text-align: center !important;
+    }
+
+    .pricing-content .contact-box h3 {
+        color: #273879 !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .pricing-content .contact-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .pricing-content .contact-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+    }
+
+    /* Empty State */
+    .pricing-content .empty-state h4 {
+        color: #273879 !important;
+        -webkit-text-fill-color: #273879 !important;
+    }
+
+    .pricing-content .empty-state i {
+        color: #273879 !important;
+        opacity: 0.3 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4" style="color: #ffffff !important;">
+                    <i class="fas fa-tags mr-3" style="color: #ffffff !important;"></i>Pricing Plans
+                </h1>
+                <p class="text-lg text-white/90">
+                    Choose the perfect plan for your SEO needs. All plans include access to our powerful SEO analysis tools.
+                </p>
+            </div>
+
+            <!-- Plans Content -->
+            <div class="p-6 sm:p-8 pricing-content">
+                {% if subscriptions %}
+                    <!-- Grid View - Responsive -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        {% for plan in subscriptions %}
+                            <div class="plan-card h-full relative overflow-hidden">
+                                {% if loop.index == 2 %}
+                                    <div class="popular-ribbon-container">
+                                        <span class="popular-ribbon">POPULAR</span>
+                                    </div>
+                                {% endif %}
+                                <div class="text-center p-4 sm:p-5 border-b border-gray-200" style="background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;">
+                                    <h4 class="font-bold text-lg sm:text-xl">{{ plan.plan }}</h4>
+                                </div>
+                                <div class="p-5 sm:p-6">
+                                    <div class="text-center mb-5 sm:mb-6">
+                                        <h3 class="price-gradient text-2xl sm:text-3xl font-bold">₹{{ plan.price }}</h3>
+                                        <p class="text-gray-500 text-sm sm:text-base mt-1">for {{ plan.days }} days</p>
+                                    </div>
+
+                                    <ul class="space-y-3 mb-6 sm:mb-8">
+                                        {% if plan.usage_per_day and plan.usage_per_day > 0 %}
+                                            <li class="flex items-center px-3 sm:px-4 py-3 rounded-lg text-sm sm:text-base feature-item" style="background-color: rgba(39, 56, 121, 0.05) !important;">
+                                                <i class="fas fa-check-circle feature-icon mr-3"></i> {{ plan.usage_per_day }} operations daily
+                                            </li>
+                                        {% endif %}
+
+                                        {% if plan.features %}
+                                            {% set parsed_features = plan.features|parse_json_features %}
+                                            {% for feature_key, feature_value in parsed_features %}
+                                                <li class="flex items-center px-3 sm:px-4 py-3 rounded-lg text-sm sm:text-base feature-item" style="background-color: rgba(39, 56, 121, 0.05) !important;">
+                                                    <i class="fas {{ feature_value|feature_icon }} feature-icon mr-3"></i>
+                                                    {{ feature_key|format_feature_name }}
+                                                </li>
+                                            {% endfor %}
+                                        {% else %}
+                                            <!-- Default features if not specified -->
+                                            <li class="flex items-center px-3 sm:px-4 py-3 rounded-lg text-sm sm:text-base feature-item" style="background-color: rgba(39, 56, 121, 0.05) !important;">
+                                                <i class="fas fa-check-circle feature-icon mr-3"></i> {{ plan.days // 30 }} month{% if plan.days // 30 > 1 %}s{% endif %} access
+                                            </li>
+                                            <li class="flex items-center px-3 sm:px-4 py-3 rounded-lg text-sm sm:text-base feature-item" style="background-color: rgba(39, 56, 121, 0.05) !important;">
+                                                <i class="fas fa-check-circle feature-icon mr-3"></i> All SEO tools access
+                                            </li>
+                                            <li class="flex items-center px-3 sm:px-4 py-3 rounded-lg text-sm sm:text-base feature-item" style="background-color: rgba(39, 56, 121, 0.05) !important;">
+                                                <i class="fas fa-check-circle feature-icon mr-3"></i> Export reports
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+
+                                    <div class="text-center mt-4">
+                                        <a href="{{ url_for('signup') }}" class="subscribe-btn">
+                                            <i class="fas fa-shopping-cart"></i> Subscribe
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Features Info Box -->
+                    <div class="info-box blue mt-8">
+                        <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-info-circle"></i>
+                            All Plans Include
+                        </h3>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2" style="list-style: none !important; padding-left: 0 !important; margin: 0 !important;">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Comprehensive SEO analysis tools</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Export reports in multiple formats</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Keyword density analysis</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Meta tag optimization</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Image audit tools</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-check" style="color: #273879 !important;"></i>
+                                <span>Email support</span>
+                            </li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center py-8 sm:py-12">
+                        <i class="fas fa-box-open text-4xl sm:text-5xl mb-4"></i>
+                        <h4 class="text-lg sm:text-xl font-semibold mb-2">No Available Plans</h4>
+                        <p class="text-gray-500 text-sm sm:text-base">There are no plans available for subscription at this time.</p>
+                    </div>
+                {% endif %}
+
+                <!-- Contact Section -->
+                <div class="contact-box">
+                    <h3>Need a Custom Plan?</h3>
+                    <p style="margin-bottom: 1.5rem !important;">
+                        Contact us for enterprise solutions or custom requirements tailored to your business needs.
+                    </p>
+                    <a href="{{ url_for('contact') }}" class="contact-btn">
+                        <i class="fas fa-envelope"></i>
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Token Purchase Details{% endblock %}
+
+{% block page_title %}
+    <i class="fas fa-coins mr-2"></i> Token Purchase Details
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Token Purchase Status Card -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-warning text-dark">
+            <h5><i class="fas fa-coins"></i> Token Purchase Status</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Purchase ID:</strong> {{ token_purchase.id }}</p>
+                    <p><strong>Invoice Number:</strong> {{ token_purchase.invoice_number or 'Not generated' }}</p>
+                    <p><strong>Order ID:</strong> {{ token_purchase.razorpay_order_id }}</p>
+                    <p><strong>Payment ID:</strong> {{ token_purchase.razorpay_payment_id or 'Not completed' }}</p>
+                    <p><strong>Token Count:</strong> {{ token_purchase.token_count }} tokens</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Base Amount:</strong> ₹{{ "%.2f"|format(token_purchase.base_amount) }}</p>
+                    <p><strong>GST Amount:</strong> ₹{{ "%.2f"|format(token_purchase.gst_amount) }}</p>
+                    <p><strong>Total Amount:</strong> ₹{{ "%.2f"|format(token_purchase.total_amount) }}</p>
+                    <p><strong>Created At:</strong> {{ token_purchase.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge {% if token_purchase.status == 'completed' %}bg-success
+                                          {% elif token_purchase.status == 'created' %}bg-warning text-dark
+                                          {% else %}bg-danger{% endif %}">
+                            {{ token_purchase.status|title }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            {% if token_purchase.status == 'created' %}
+            <form method="POST" action="{{ url_for('admin_update_token_payment', token_purchase_id=token_purchase.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <label for="status">Update Status:</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="created" {% if token_purchase.status == 'created' %}selected{% endif %}>Created</option>
+                            <option value="completed" {% if token_purchase.status == 'completed' %}selected{% endif %}>Completed</option>
+                            <option value="failed" {% if token_purchase.status == 'failed' %}selected{% endif %}>Failed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Update Status
+                        </button>
+                    </div>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Customer Information -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5><i class="fas fa-user"></i> Customer Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ user.name }}</p>
+                    <p><strong>Email:</strong> {{ user.company_email }}</p>
+                    <p><strong>User ID:</strong> {{ user.id }}</p>
+                    <p><strong>Account Created:</strong> {{ user.created_at.strftime('%Y-%m-%d') if user.created_at else 'N/A' }}</p>
+                    <p><strong>Email Verified:</strong> 
+                        <span class="badge {% if user.email_confirmed %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {{ 'Yes' if user.email_confirmed else 'No' }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subscription Information -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5><i class="fas fa-calendar-alt"></i> Related Subscription</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Subscription ID:</strong> {{ subscribed_user.id }}</p>
+                    <p><strong>Plan:</strong> {{ subscription.plan }}</p>
+                    <p><strong>Plan Price:</strong> ₹{{ subscription.price }}</p>
+                    <p><strong>Daily Limit:</strong> {{ subscription.usage_per_day }} operations</p>
+                    <p><strong>Subscription Period:</strong> 
+                        {{ subscribed_user.start_date.strftime('%Y-%m-%d') }} to 
+                        {{ subscribed_user.end_date.strftime('%Y-%m-%d') }}
+                    </p>
+                    <p><strong>Current Usage:</strong> {{ subscribed_user.current_usage }}/{{ subscription.usage_per_day }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Usage Information -->
+    {% if token_purchase.status == 'completed' %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-success text-white">
+            <h5><i class="fas fa-chart-bar"></i> Token Usage Information</h5>
+        </div>
+        <div class="card-body">
+            {% set user_tokens = token_purchase.user_tokens %}
+            {% if user_tokens %}
+                {% for user_token in user_tokens %}
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>Tokens Purchased:</strong> {{ user_token.tokens_purchased }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Tokens Used:</strong> {{ user_token.tokens_used }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Tokens Remaining:</strong> {{ user_token.tokens_remaining }}
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Expires At:</strong> {{ user_token.expires_at.strftime('%Y-%m-%d') }}
+                    </div>
+                </div>
+                
+                <!-- Token Usage Progress Bar -->
+                <div class="mt-3">
+                    <label>Token Usage Progress:</label>
+                    {% set usage_percent = (user_token.tokens_used / user_token.tokens_purchased * 100) if user_token.tokens_purchased > 0 else 0 %}
+                    <div class="progress">
+                        <div class="progress-bar {% if usage_percent < 50 %}bg-success{% elif usage_percent < 80 %}bg-warning{% else %}bg-danger{% endif %}" 
+                             role="progressbar" 
+                             style="width: {{ usage_percent }}%" 
+                             aria-valuenow="{{ usage_percent }}" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                            {{ "%.1f"|format(usage_percent) }}%
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ user_token.tokens_used }} of {{ user_token.tokens_purchased }} tokens used</small>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">No token usage records found.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Payment History for this User -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5><i class="fas fa-history"></i> Customer's Payment History</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Show recent payments -->
+                        {% for payment in user.payments[:5] %}
+                        <tr>
+                            <td>{{ payment.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td><span class="badge bg-primary">Subscription</span></td>
+                            <td>Subscription Payment</td>
+                            <td>₹{{ "%.2f"|format(payment.total_amount) }}</td>
+                            <td>
+                                <span class="badge {% if payment.status == 'completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ payment.status|title }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        
+                        <!-- Show recent token purchases -->
+                        {% for token_purchase_item in user.token_purchases[:5] %}
+                        <tr {% if token_purchase_item.id == token_purchase.id %}class="table-warning"{% endif %}>
+                            <td>{{ token_purchase_item.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td><span class="badge bg-warning text-dark">Tokens</span></td>
+                            <td>{{ token_purchase_item.token_count }} Additional Tokens</td>
+                            <td>₹{{ "%.2f"|format(token_purchase_item.total_amount) }}</td>
+                            <td>
+                                <span class="badge {% if token_purchase_item.status == 'completed' %}bg-success{% else %}bg-warning{% endif %}">
+                                    {{ token_purchase_item.status|title }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('admin_payments') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Payments
+        </a>
+        <div>
+            {% if token_purchase.invoice_number and token_purchase.status == 'completed' %}
+            <a href="{{ url_for('download_token_invoice', token_purchase_id=token_purchase.id) }}" 
+               target="_blank" class="btn btn-success">
+                <i class="fas fa-file-pdf"></i> Download Invoice
+            </a>
+            {% endif %}
+            <a href="{{ url_for('admin_users', user_id=user.id) }}" class="btn btn-info">
+                <i class="fas fa-user"></i> View Customer
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

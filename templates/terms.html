@@ -1,0 +1,420 @@
+{% extends "base2.html" %}
+
+{% block title %}Terms of Service | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* Override Bootstrap styles for Terms page */
+    .terms-content h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #273879 !important;
+        margin-bottom: 1rem !important;
+        margin-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 2px solid #273879 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .terms-content h2:first-of-type {
+        margin-top: 0 !important;
+    }
+
+    .terms-content h2 i {
+        color: #273879 !important;
+    }
+
+    .terms-content h3 {
+        color: #273879 !important;
+    }
+
+    .terms-content p {
+        color: #374151 !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .terms-content ul,
+    .terms-content ol {
+        color: #374151 !important;
+        margin-bottom: 1.5rem !important;
+        padding-left: 1.5rem !important;
+    }
+
+    .terms-content li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .terms-content strong {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box {
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .terms-content .info-box.blue {
+        background-color: #eff6ff !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .terms-content .info-box.blue h2,
+    .terms-content .info-box.blue h3,
+    .terms-content .info-box.blue i {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box.red {
+        background-color: #fef2f2 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .terms-content .info-box.red h3 {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box.green {
+        background-color: #f0fdf4 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .terms-content .info-box.green h3,
+    .terms-content .info-box.green i {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box.amber {
+        background-color: #fffbeb !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .terms-content .info-box.amber h3 {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box.amber i {
+        color: #273879 !important;
+    }
+
+    .terms-content .info-box h2,
+    .terms-content .info-box h3 {
+        border-bottom: none !important;
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .terms-content .contact-box {
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;
+        border-radius: 0.75rem !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .terms-content .contact-box h3 {
+        color: #273879 !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .terms-content .contact-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .terms-content .contact-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+    }
+
+    .terms-content .last-updated {
+        text-align: center !important;
+        padding-top: 2rem !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    .terms-content .last-updated p {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Definition list icons */
+    .terms-content .definition-icon {
+        color: #273879 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="pt-32 pb-24">
+  <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+    <!-- Header Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+      <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+        <h1 class="text-3xl sm:text-4xl font-bold mb-4">Terms of Service</h1>
+        <p class="text-lg text-white/90">
+          This Terms and Conditions of Use ("Agreement") is entered into between you (either as an individual user or as an authorized representative of an organization) and Fourth Dimension SEO Dada ("Company", "we", "us", or "our"), and governs your access to and use of our services.
+        </p>
+      </div>
+
+      <!-- Content -->
+      <div class="p-8 sm:p-12 terms-content">
+        <!-- Agreement Notice -->
+        <div class="info-box blue">
+          <h2 style="border-bottom: none !important; margin-top: 0 !important; padding-bottom: 0 !important; color: #273879 !important;">
+            <i class="fas fa-handshake"></i>
+            Agreement to Terms
+          </h2>
+          <p>
+            By accessing or using Fourth Dimension SEO Dada, you acknowledge that you have read, understood, and agree to be bound by the terms of this Agreement. If you do not agree, you should not use the Service.
+          </p>
+        </div>
+
+        <h2>
+          <i class="fas fa-server"></i>
+          Description of Service
+        </h2>
+        <p>
+          Fourth Dimension SEO Dada is a real-time SEO clarity tool that allows users to analyze publicly accessible webpages. It provides insights into keyword usage, heading hierarchy, metadata presence, image alt attributes, link structure, and sitemap connections. The Service is designed to support users in planning, auditing, and optimizing content strategy and technical structure.
+        </p>
+
+        <!-- Key Definitions -->
+        <h2>
+          <i class="fas fa-book"></i>
+          Key Definitions
+        </h2>
+        <ul style="list-style: none !important; padding-left: 0 !important;">
+          <li style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <i class="fas fa-check-circle" style="color: #273879; margin-top: 0.25rem;"></i>
+            <span><strong>Account:</strong> Your registered access to Fourth Dimension SEO Dada Services</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <i class="fas fa-check-circle" style="color: #273879; margin-top: 0.25rem;"></i>
+            <span><strong>User:</strong> Any individual or entity accessing or using the Service</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <i class="fas fa-check-circle" style="color: #273879; margin-top: 0.25rem;"></i>
+            <span><strong>Audit:</strong> Any scan or analysis initiated using Fourth Dimension SEO Dada</span>
+          </li>
+          <li style="display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <i class="fas fa-check-circle" style="color: #273879; margin-top: 0.25rem;"></i>
+            <span><strong>Content:</strong> Data input, scanned, or otherwise processed using Fourth Dimension SEO Dada</span>
+          </li>
+        </ul>
+
+        <h2>
+          <i class="fas fa-user-check"></i>
+          Eligibility
+        </h2>
+        <p>
+          To use the Service, you must be:
+        </p>
+        <ol>
+          <li>At least 18 years of age or the legal age of majority in your jurisdiction</li>
+          <li>Legally capable of entering into a binding agreement</li>
+          <li>Providing accurate, truthful account information</li>
+        </ol>
+        <p>
+          If you are using the Service on behalf of an organization, you represent and warrant that you have the authority to bind that entity to this Agreement.
+        </p>
+
+        <h2>
+          <i class="fas fa-user-lock"></i>
+          Account Registration and Security
+        </h2>
+        <p>
+          You must register for an account to use Fourth Dimension SEO Dada. You agree to:
+        </p>
+        <ol>
+          <li>Provide accurate and complete information during sign-up</li>
+          <li>Maintain the security of your login credentials</li>
+          <li>Accept full responsibility for all activities under your account</li>
+        </ol>
+        <p>
+          You must not share your login credentials or allow others to access your account unless authorized through a team or agency plan.
+        </p>
+
+        <h2>
+          <i class="fas fa-ban"></i>
+          Acceptable Use
+        </h2>
+        <div class="info-box red">
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem;">By using Fourth Dimension SEO Dada, you agree NOT to:</h3>
+          <ul>
+            <li>Scan or attempt to scan websites you do not have the right to access</li>
+            <li>Use the Service to bypass robots.txt or similar restrictions</li>
+            <li>Reproduce, resell, or commercially redistribute audit outputs unless permitted</li>
+            <li>Reverse-engineer, duplicate, or clone the Fourth Dimension SEO Dada platform</li>
+            <li>Introduce malware, interfere with systems, or disrupt the Service</li>
+            <li>Misrepresent your identity or relationship to scanned websites</li>
+          </ul>
+        </div>
+
+        <h2>
+          <i class="fas fa-credit-card"></i>
+          Subscriptions and Payment
+        </h2>
+        <p>
+          Fourth Dimension SEO Dada offers multiple subscription plans. By subscribing to a paid plan, you agree to:
+        </p>
+        <ol>
+          <li>Pay all fees associated with your selected plan</li>
+          <li>Allow automatic billing at the start of each billing cycle unless canceled in advance</li>
+          <li>Pay applicable taxes</li>
+        </ol>
+        <p>
+          You are responsible for updating your billing information.
+        </p>
+
+        <h2>
+          <i class="fas fa-shield-alt"></i>
+          Data Privacy
+        </h2>
+        <p>
+          Your use of the Service is also governed by our Privacy Policy. Key points:
+        </p>
+        <ul>
+          <li>We do not store full-page content beyond the scope of each audit</li>
+          <li>We do not sell or share your data with third-party advertisers</li>
+          <li>You retain ownership of your scanned URLs and audit reports</li>
+        </ul>
+
+        <div class="info-box green">
+          <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-check-circle"></i>
+            Your Data Rights
+          </h3>
+          <p>
+            You may request deletion of your account and associated data at any time by contacting our support team.
+          </p>
+        </div>
+
+        <h2>
+          <i class="fas fa-copyright"></i>
+          Intellectual Property
+        </h2>
+        <p>
+          All rights, title, and interest in Fourth Dimension SEO Dada, including software, interface, visual elements, logic, and brand assets, are the exclusive property of Fourth Dimension SEO Dada. You may not:
+        </p>
+        <ul>
+          <li>Copy, reproduce, or adapt any part of the platform</li>
+          <li>Claim ownership over generated reports</li>
+          <li>Use Fourth Dimension SEO Dada's name, logo, or branding without written permission</li>
+        </ul>
+
+        <h2>
+          <i class="fas fa-user-slash"></i>
+          Termination
+        </h2>
+        <p>
+          You may terminate your account at any time through the dashboard or by contacting support. We may terminate or suspend your account if:
+        </p>
+        <ul>
+          <li>You breach any provision of this Agreement</li>
+          <li>Your use creates risk to other users or the system</li>
+          <li>As required by law</li>
+        </ul>
+        <p>
+          Upon termination, your access will be revoked and stored data may be deleted.
+        </p>
+
+        <h2>
+          <i class="fas fa-exclamation-circle"></i>
+          Disclaimers
+        </h2>
+        <p>
+          Fourth Dimension SEO Dada is provided on an "as is" and "as available" basis. We make no guarantees regarding:
+        </p>
+        <ul>
+          <li>SEO rankings, traffic, or visibility outcomes</li>
+          <li>Platform compatibility with all CMS or web systems</li>
+          <li>Uptime or error-free operation</li>
+        </ul>
+        <p>
+          You acknowledge that insights provided are based on live data and public structures, and may change as websites are updated.
+        </p>
+
+        <h2>
+          <i class="fas fa-balance-scale"></i>
+          Limitation of Liability
+        </h2>
+        <p>
+          To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages, including:
+        </p>
+        <ul>
+          <li>Loss of revenue or business opportunities</li>
+          <li>Damaged reputation or client relations</li>
+          <li>Data loss or inaccurate insights</li>
+        </ul>
+        <p>
+          In all cases, our total liability shall not exceed the amount you have paid to Fourth Dimension SEO Dada in the previous twelve (12) months.
+        </p>
+
+        <h2>
+          <i class="fas fa-gavel"></i>
+          Governing Law
+        </h2>
+        <p>
+          This Agreement shall be governed by applicable laws. Any disputes shall be subject to the appropriate jurisdiction of competent courts.
+        </p>
+
+        <h2>
+          <i class="fas fa-edit"></i>
+          Changes to Terms
+        </h2>
+        <p>
+          We may update this Agreement to reflect changes in law, platform features, or internal policies. You will be notified of material changes by email or via the platform. Continued use of the Service after such changes constitutes acceptance.
+        </p>
+
+        <div class="info-box amber">
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 1.25rem; margin-top: 0.25rem;"></i>
+            <div>
+              <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Important Note</h3>
+              <p>By using our services, you acknowledge that you have read and understood these Terms of Service and agree to be bound by them. We reserve the right to suspend or terminate accounts that engage in prohibited activity.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact section -->
+        <div class="contact-box">
+          <h3>Contact Information</h3>
+          <p>For questions regarding these Terms, please contact our support team.</p>
+          <div style="margin-bottom: 1.5rem;">
+            <p style="font-weight: 600; margin-bottom: 0.5rem;">Fourth Dimension SEO Dada</p>
+            <p>📍 Address: Shyamala Towers, 3rd floor, No. 136, Arcot Rd, Saligramam, Chennai, Tamil Nadu 600092</p>
+          </div>
+          <a href="mailto:support@seodada.com" class="contact-btn">
+            <i class="fas fa-envelope"></i>
+            support@seodada.com
+          </a>
+        </div>
+
+        <!-- Last updated -->
+        <div class="last-updated">
+          <p>Last Updated: June 12, 2025</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Page-specific JavaScript (if needed in the future) -->
+{% endblock %}

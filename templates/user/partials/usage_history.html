@@ -1,0 +1,115 @@
+<!-- user/partials/usage_history.html -->
+{% if usage_history.items %}
+<div class="overflow-x-auto mb-8">
+    <table class="min-w-full bg-white rounded-xl shadow-default">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Date & Time</th>
+                <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Operation Type</th>
+                <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Details</th>
+                <th class="py-3 px-4 text-left text-xs font-medium text-textSecondary uppercase tracking-wider">Status</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+            {% for usage in usage_history.items %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-3 px-4 whitespace-nowrap text-sm">
+                    {{ usage.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+                </td>
+                <td class="py-3 px-4 whitespace-nowrap text-sm font-medium">
+                    {{ usage.operation_type or 'General Usage' }}
+                </td>
+                <td class="py-3 px-4 text-sm">
+                    {{ usage.details or 'N/A' }}
+                </td>
+                <td class="py-3 px-4 whitespace-nowrap">
+                    {% if usage.status == 'completed' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Completed</span>
+                    {% elif usage.status == 'failed' %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Failed</span>
+                    {% else %}
+                        <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ usage.status or 'Completed' }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+{% if usage_history.pages > 1 %}
+<div class="flex justify-center items-center space-x-2 mb-8">
+    <nav aria-label="Page navigation" class="flex items-center space-x-1">
+
+        <!-- Previous Page -->
+        {% if usage_history.has_prev %}
+            <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=usage_history.prev_num) }}" 
+               class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        {% else %}
+            <span class="px-3 py-2 text-sm font-medium text-gray-400 rounded-md cursor-not-allowed">
+                <i class="fas fa-chevron-left"></i>
+            </span>
+        {% endif %}
+
+        <!-- Page Numbers -->
+        {% for page_num in usage_history.iter_pages() %}
+            {% if page_num %}
+                {% if page_num != usage_history.page %}
+                    <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=page_num) }}" 
+                       class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
+                        {{ page_num }}
+                    </a>
+                {% else %}
+                    <span class="pagination-link active px-3 py-2 text-sm font-medium rounded-md" aria-current="page">
+                        {{ page_num }}
+                    </span>
+                {% endif %}
+            {% else %}
+                <span class="px-3 py-2 text-sm font-medium text-gray-400">…</span>
+            {% endif %}
+        {% endfor %}
+
+        <!-- Next Page -->
+        {% if usage_history.has_next %}
+            <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=usage_history.next_num) }}" 
+               class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        {% else %}
+            <span class="px-3 py-2 text-sm font-medium text-gray-400 rounded-md cursor-not-allowed">
+                <i class="fas fa-chevron-right"></i>
+            </span>
+        {% endif %}
+
+    </nav>
+</div>
+
+<!-- Page Info -->
+<div class="flex justify-center text-sm text-gray-600 mb-4">
+    <span>
+        Showing {{ usage_history.per_page * (usage_history.page - 1) + 1 }} to 
+        {{ usage_history.per_page * (usage_history.page - 1) + usage_history.items|length }} of 
+        {{ usage_history.total }} entries
+    </span>
+</div>
+{% endif %}
+
+{% else %}
+<!-- No Usage History -->
+<div class="bg-primary-light-bg p-6 rounded-lg mb-8 border border-primary-light">
+    <div class="flex items-center">
+        <div class="flex-shrink-0">
+            <i class="fas fa-info-circle text-primary text-xl"></i>
+        </div>
+        <div class="ml-3">
+            <h3 class="text-lg font-medium text-primary-dark">No Usage History</h3>
+            <p class="text-sm text-primary-dark mt-1">
+                No usage records found for this subscription. Start using the service to see your activity here.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}

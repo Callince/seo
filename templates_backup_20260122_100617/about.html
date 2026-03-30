@@ -1,0 +1,161 @@
+{% extends "base2.html" %}
+
+{% block title %}About Us | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">About SEO Dada</h1>
+                <p class="text-lg text-white/90">
+                    SEO Dada was built to empower developers, marketers, and analysts with fast, insightful tools for website analysis. From heading structure to image audits and keyword density checks, our tools help optimize your web presence effortlessly.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12">
+                <!-- About Overview -->
+                <div class="bg-blue-50 border-l-4 border-primary rounded-lg p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-primary mb-4 flex items-center gap-3">
+                        <i class="fas fa-lightbulb"></i>
+                        Our Vision
+                    </h2>
+                    <p class="text-gray-700">
+                        We believe that website performance and optimization should be accessible to everyone. Our platform provides comprehensive SEO analysis tools that help you understand, optimize, and improve your website's search engine visibility and user experience.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-bullseye text-primary"></i>
+                    What We Do
+                </h2>
+                <p class="mb-6 text-gray-700">
+                    SEO Dada offers a complete suite of website analysis tools designed to help you optimize every aspect of your online presence. Whether you're a developer, marketer, or SEO professional, our platform provides the insights you need to succeed.
+                </p>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-star text-primary"></i>
+                    Our Features
+                </h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-bolt text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">Fast Analysis</h3>
+                        </div>
+                        <p class="text-gray-700">
+                            Get comprehensive results in seconds with our highly optimized tools. No more waiting hours for analysis reports.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-chart-line text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">Detailed Insights</h3>
+                        </div>
+                        <p class="text-gray-700">
+                            Uncover hidden opportunities with our in-depth analytical reports. Understand exactly what needs improvement.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-tools text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">Powerful Toolset</h3>
+                        </div>
+                        <p class="text-gray-700">
+                            Access specialized tools for headings, keywords, images, meta tags, and more. Everything you need in one place.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-user-shield text-white text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">Privacy Focused</h3>
+                        </div>
+                        <p class="text-gray-700">
+                            Your data is always secure and we never share it with third parties. Your privacy is our priority.
+                        </p>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3 border-b-2 border-primary pb-2">
+                    <i class="fas fa-rocket text-primary"></i>
+                    Our Mission
+                </h2>
+                <p class="mb-6 text-gray-700">
+                    We believe that website performance and optimization should be accessible to everyone. Our mission is to provide tools that simplify complex web analysis tasks and empower users to make data-driven decisions. We're committed to delivering accurate, actionable insights that help businesses of all sizes improve their online presence.
+                </p>
+
+                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-6 mb-8">
+                    <h3 class="text-lg font-bold text-green-800 mb-3 flex items-center gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Why Choose SEO Dada?
+                    </h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Comprehensive analysis tools covering all aspects of SEO</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Token-based system that's flexible and cost-effective</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Easy-to-understand reports with actionable recommendations</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Export data in multiple formats for further analysis</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Dedicated support team ready to help you succeed</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact section -->
+                <div class="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Get Started Today</h3>
+                    <p class="text-gray-700 mb-6">
+                        Ready to optimize your website? Try our tools and see the difference professional SEO analysis can make.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="/signup" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                            <i class="fas fa-search"></i>
+                            Try Our Tools
+                        </a>
+                        <a href="/contact" class="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors">
+                            <i class="fas fa-envelope"></i>
+                            Contact Us
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Last updated -->
+                <div class="text-center pt-8 border-t border-gray-200">
+                    <p class="text-gray-500 text-sm">Fourth Dimension SEO Dada - Empowering Your SEO Journey</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,309 @@
+{% extends "base2.html" %}
+
+{% block title %}Cookie Policy | SEO Dada{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/content-pages.css') }}">
+<style>
+    /* Cookie Policy page styles - Brand color overrides */
+    .cookie-content h2 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #273879 !important;
+        margin-bottom: 1rem !important;
+        margin-top: 2rem !important;
+        padding-bottom: 0.5rem !important;
+        border-bottom: 2px solid #273879 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+
+    .cookie-content h2:first-of-type {
+        margin-top: 0 !important;
+    }
+
+    .cookie-content h2 i {
+        color: #273879 !important;
+    }
+
+    .cookie-content h3 {
+        color: #273879 !important;
+    }
+
+    .cookie-content p {
+        color: #374151 !important;
+        margin-bottom: 1rem !important;
+        line-height: 1.7 !important;
+    }
+
+    .cookie-content ul,
+    .cookie-content ol {
+        color: #374151 !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .cookie-content li {
+        margin-bottom: 0.5rem !important;
+        line-height: 1.6 !important;
+    }
+
+    .cookie-content strong {
+        color: #273879 !important;
+    }
+
+    .cookie-content .info-box {
+        border-radius: 0.5rem !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    .cookie-content .info-box.blue {
+        background-color: #eff6ff !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .cookie-content .info-box.blue h2,
+    .cookie-content .info-box.blue h3,
+    .cookie-content .info-box.blue i {
+        color: #273879 !important;
+    }
+
+    .cookie-content .info-box.green {
+        background-color: #f0fdf4 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .cookie-content .info-box.green h3,
+    .cookie-content .info-box.green i {
+        color: #273879 !important;
+    }
+
+    .cookie-content .info-box.yellow {
+        background-color: #fefce8 !important;
+        border-left: 4px solid #273879 !important;
+    }
+
+    .cookie-content .info-box.yellow h3,
+    .cookie-content .info-box.yellow i {
+        color: #273879 !important;
+    }
+
+    .cookie-content .info-box h2,
+    .cookie-content .info-box h3 {
+        border-bottom: none !important;
+        margin-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .cookie-content .contact-box {
+        background: linear-gradient(135deg, rgba(39, 56, 121, 0.08), rgba(15, 116, 178, 0.05)) !important;
+        border-radius: 0.75rem !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+
+    .cookie-content .contact-box h3 {
+        color: #273879 !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 1rem !important;
+    }
+
+    .cookie-content .contact-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.75rem 1.5rem !important;
+        background-color: #273879 !important;
+        color: white !important;
+        border-radius: 0.5rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        transition: background-color 0.3s ease !important;
+    }
+
+    .cookie-content .contact-btn:hover {
+        background-color: #1f2d5f !important;
+        color: white !important;
+    }
+
+    .cookie-content .last-updated {
+        text-align: center !important;
+        padding-top: 2rem !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    .cookie-content .last-updated p {
+        color: #6b7280 !important;
+        font-size: 0.875rem !important;
+    }
+
+    .cookie-content .code-badge {
+        background-color: #f3f4f6 !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 0.25rem !important;
+        font-family: monospace !important;
+        font-size: 0.875rem !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="pt-32 pb-24">
+    <div class="container mx-auto px-4 sm:px-6 max-w-5xl">
+        <!-- Header Card -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+            <div class="bg-gradient-to-r from-primary to-secondary text-white p-8 sm:p-12">
+                <h1 class="text-3xl sm:text-4xl font-bold mb-4">Cookie Policy</h1>
+                <p class="text-lg text-white/90">
+                    This Cookie Policy explains how Fourth Dimension SEO Dada uses cookies and similar technologies to recognize you when you visit our website or use our platform. It outlines what these technologies are, why we use them, and how you can control them.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 sm:p-12 cookie-content">
+                <!-- What are cookies -->
+                <div class="info-box blue">
+                    <h2 style="border-bottom: none !important; margin-top: 0 !important; padding-bottom: 0 !important;">
+                        <i class="fas fa-cookie-bite"></i>
+                        What Are Cookies?
+                    </h2>
+                    <p>
+                        Cookies are small text files that are stored on your device when you visit a website. They allow a site to recognize your device, remember your preferences, and help improve your user experience. Cookies may be set by us (first-party cookies) or by third-party services we integrate with (third-party cookies).
+                    </p>
+                </div>
+
+                <h2>
+                    <i class="fas fa-cogs"></i>
+                    Why We Use Cookies
+                </h2>
+                <p>
+                    Fourth Dimension SEO Dada uses cookies for the following purposes:
+                </p>
+
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Essential Access:</strong> To allow you to log in and securely use the dashboard and account areas</li>
+                    <li><strong>Session Management:</strong> To manage your current session and track basic user interactions like scan history and navigation</li>
+                    <li><strong>Performance & Analytics:</strong> To understand how the platform is used and improve product performance</li>
+                    <li><strong>User Preferences:</strong> To remember UI configurations like theme settings for a smoother experience</li>
+                </ul>
+
+                <div class="info-box green">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-check-circle"></i>
+                        Privacy First
+                    </h3>
+                    <p>
+                        We do <strong>not</strong> use cookies for advertising or behavioral tracking. Our cookie usage is focused on functionality and product improvement.
+                    </p>
+                </div>
+
+                <h2>
+                    <i class="fas fa-list"></i>
+                    Types of Cookies We Use
+                </h2>
+
+                <h3 class="text-xl font-semibold mb-3 mt-6">Strictly Necessary</h3>
+                <p>Required for core platform functions such as login and secure browsing</p>
+                <p><span class="code-badge">session_id, csrf_token</span></p>
+
+                <h3 class="text-xl font-semibold mb-3">Functional</h3>
+                <p>Help remember your preferences across sessions</p>
+                <p><span class="code-badge">user_theme, locale_pref</span></p>
+
+                <h3 class="text-xl font-semibold mb-3">Analytics</h3>
+                <p>Help us understand how users interact with features and flows</p>
+                <p><span class="code-badge">_ga, _gid (Google Analytics)</span></p>
+
+                <h2>
+                    <i class="fas fa-external-link-alt"></i>
+                    Third-Party Cookies
+                </h2>
+                <p>
+                    We may use third-party services to help us monitor system performance or gather anonymized usage insights. These third-party services may set their own cookies in your browser. For example:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li><strong>Google Analytics</strong> may store a cookie to differentiate new and returning users</li>
+                    <li><strong>Cloudflare or CDN providers</strong> may use cookies to optimize security or traffic routing</li>
+                </ul>
+                <p>
+                    Fourth Dimension SEO Dada does not allow third-party advertisers or social media trackers to place cookies on our platform.
+                </p>
+
+                <h2>
+                    <i class="fas fa-tasks"></i>
+                    How You Can Control Cookies
+                </h2>
+                <p>
+                    You can manage or delete cookies through your browser settings at any time. Most modern browsers provide settings to:
+                </p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Block all cookies</li>
+                    <li>Clear existing cookies</li>
+                    <li>Set exceptions for trusted websites</li>
+                </ul>
+
+                <div class="info-box yellow">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Important Note
+                    </h3>
+                    <p>
+                        Blocking essential cookies may affect your ability to use some features of the Fourth Dimension SEO Dada platform, such as logging in or saving settings.
+                    </p>
+                </div>
+
+                <h2>
+                    <i class="fas fa-handshake"></i>
+                    Consent and Updates
+                </h2>
+                <p>
+                    By continuing to use Fourth Dimension SEO Dada, you consent to the use of cookies as described in this policy. You may withdraw consent at any time by adjusting your browser settings or clearing cookies.
+                </p>
+                <p>
+                    We may update this Cookie Policy from time to time to reflect changes in legal requirements, third-party services, or platform features. When we do, the "Last Updated" date will be revised.
+                </p>
+
+                <div class="info-box blue">
+                    <h3 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-info-circle"></i>
+                        Changes to This Cookie Policy
+                    </h3>
+                    <p>
+                        We will notify you of any material changes by posting the new Cookie Policy on this page and updating the effective date.
+                    </p>
+                </div>
+
+                <!-- Contact section -->
+                <div class="contact-box">
+                    <h3>Contact Information</h3>
+                    <p>If you have any questions about our use of cookies or this policy, please contact:</p>
+                    <div style="margin-bottom: 1.5rem;">
+                        <p style="font-weight: 600; margin-bottom: 0.5rem;">Fourth Dimension SEO Dada</p>
+                        <p>📧 Email: support@seodada.com</p>
+                        <p>📍 Address: Shyamala Towers, 3rd floor, No. 136, Arcot Rd, Saligramam, Chennai, Tamil Nadu 600092</p>
+                    </div>
+                    <a href="mailto:support@seodada.com" class="contact-btn">
+                        <i class="fas fa-envelope"></i>
+                        support@seodada.com
+                    </a>
+                </div>
+
+                <!-- Last updated -->
+                <div class="last-updated">
+                    <p>Effective Date: June 12, 2025 | Last Updated: June 12, 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Cookie Policy specific scripts -->
+<script>
+    // Add any page-specific JavaScript here if needed
+    console.log('Cookie Policy page loaded');
+</script>
+{% endblock %}

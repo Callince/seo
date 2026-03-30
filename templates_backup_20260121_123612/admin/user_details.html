@@ -1,0 +1,427 @@
+{% extends "admin/base.html" %}
+
+{% block title %}User Details - {{ user.name }}{% endblock %}
+
+{% block page_title %}
+<div class="d-flex justify-content-between align-items-center">
+    <h1 class="h3 mb-0">
+        <i class="fas fa-user me-2"></i> User Details: {{ user.name }}
+    </h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <a href="{{ url_for('admin_users') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Users
+    </a>
+</div>
+
+<div class="container-fluid px-0">
+    <!-- First Row: User Info (Left) | Subscription & Payment History (Right) -->
+    <div class="row mb-4">
+        <!-- User Information - Left Side (Narrower) -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-circle me-2"></i>User Information
+                    </h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle bg-primary-subtle text-primary mx-auto mb-3" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                            {{ user.name[:1]|upper }}
+                        </div>
+                        <h4 class="mb-2">{{ user.name }}</h4>
+                        <p class="text-muted mb-3">{{ user.company_email }}</p>
+                        
+                        {% if user.email_confirmed %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle me-1"></i>Verified Account
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>Unverified Account
+                            </span>
+                        {% endif %}
+                        
+                        {% if user.is_admin %}
+                            <span class="badge bg-warning text-dark ms-2">
+                                <i class="fas fa-shield-alt me-1"></i>Administrator
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex-grow-1">
+                        <table class="table table-borderless mb-0">
+                            <tr>
+                                <td class="py-3"><strong>User ID:</strong></td>
+                                <td class="py-3">#{{ user.id }}</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3"><strong>Joined:</strong></td>
+                                <td class="py-3">
+                                    {% if user.created_at %}
+                                        {% set user_created_at = user.created_at.replace(tzinfo=timezone.utc) if user.created_at.tzinfo is none else user.created_at %}
+                                        {{ user_created_at.strftime('%d %b %Y at %I:%M %p') }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3"><strong>Account Status:</strong></td>
+                                <td class="py-3">
+                                    {% if user.email_confirmed %}
+                                        <span class="text-success">Active</span>
+                                    {% else %}
+                                        <span class="text-warning">Unconfirmed</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3"><strong>Role:</strong></td>
+                                <td class="py-3">
+                                    {% if user.is_admin %}
+                                        <span class="text-warning">Administrator</span>
+                                    {% else %}
+                                        <span class="text-muted">Regular User</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side: Subscription History (Top) and Payment History (Bottom) - Wider -->
+        <div class="col-lg-8 mb-4">
+            <div class="d-flex flex-column h-100" style="gap: 1rem;">
+                <!-- Subscription History - Top -->
+                <div class="card border-0 shadow-sm flex-fill">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-history me-2"></i>Subscription History
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if subscriptions %}
+                            <div class="scrollable-container">
+                                <table class="table table-hover mb-0">
+                                    <thead class="sticky-header">
+                                        <tr>
+                                            <th>Plan</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th>Status</th>
+                                            <th>Auto-Renew</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for sub_user, subscription in subscriptions %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ subscription.plan }}</strong>
+                                                <div class="small text-muted">{{ subscription.usage_per_day }} daily requests</div>
+                                            </td>
+                                            <td>
+                                                {% if sub_user.start_date %}
+                                                    {% set start_date_aware = sub_user.start_date.replace(tzinfo=timezone.utc) if sub_user.start_date.tzinfo is none else sub_user.start_date %}
+                                                    {{ start_date_aware.strftime('%d %b %Y') }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if sub_user.end_date %}
+                                                    {% set end_date_aware = sub_user.end_date.replace(tzinfo=timezone.utc) if sub_user.end_date.tzinfo is none else sub_user.end_date %}
+                                                    {{ end_date_aware.strftime('%d %b %Y') }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if sub_user.end_date %}
+                                                    {% set end_date_aware = sub_user.end_date.replace(tzinfo=timezone.utc) if sub_user.end_date.tzinfo is none else sub_user.end_date %}
+                                                    {% if sub_user._is_active and end_date_aware > now %}
+                                                        <span class="badge bg-success">Active</span>
+                                                    {% elif not sub_user._is_active and end_date_aware > now %}
+                                                        <span class="badge bg-warning">Cancelled</span>
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Expired</span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Unknown</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if sub_user.is_auto_renew %}
+                                                    <span class="badge bg-info">Enabled</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Disabled</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                <h5>No Subscription History</h5>
+                                <p class="text-muted mb-0">This user has never subscribed to any plan.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Payment History - Bottom -->
+                <div class="card border-0 shadow-sm flex-fill">
+                    <div class="card-header bg-transparent border-0">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-credit-card me-2"></i>Payment History
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if payments %}
+                            <div class="scrollable-container">
+                                <table class="table table-sm mb-0">
+                                    <thead class="sticky-header">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Plan</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for payment, subscription in payments %}
+                                        <tr>
+                                            <td>
+                                                {% if payment.created_at %}
+                                                    {% set payment_created_at = payment.created_at.replace(tzinfo=timezone.utc) if payment.created_at.tzinfo is none else payment.created_at %}
+                                                    {{ payment_created_at.strftime('%d %b %Y') }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ subscription.plan }}</td>
+                                            <td>₹{{ "{:,.2f}".format(payment.total_amount) }}</td>
+                                            <td>
+                                                {% if payment.status == 'completed' %}
+                                                    <span class="badge bg-success">Completed</span>
+                                                {% elif payment.status == 'failed' %}
+                                                    <span class="badge bg-danger">Failed</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning">{{ payment.status|title }}</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
+                                <h5>No Payment History</h5>
+                                <p class="text-muted mb-0">This user has no payment records.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Second Row: Recent Activity - Full Width -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Recent Activity
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if search_history %}
+                        <div class="scrollable-container-large">
+                            <table class="table table-hover mb-0">
+                                <thead class="sticky-header">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Tool</th>
+                                        <th>Query</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for search in search_history %}
+                                    <tr>
+                                        <td>
+                                            {% if search.created_at %}
+                                                {% set search_created_at = search.created_at.replace(tzinfo=timezone.utc) if search.created_at.tzinfo is none else search.created_at %}
+                                                {{ search_created_at.strftime('%d %b %Y') }}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">{{ search.usage_tool }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 400px;" title="{{ search.search_history }}">
+                                                {{ search.search_history }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ search.search_count }}</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                            <h5>No Recent Activity</h5>
+                            <p class="text-muted mb-0">This user has no search history.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add animation to cards
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 + (index * 100));
+    });
+});
+</script>
+
+<style>
+.avatar-circle {
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #6c757d;
+    font-size: 0.875rem;
+}
+
+.table-borderless td {
+    border: none;
+}
+
+.text-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Scrollable containers with fixed height */
+.scrollable-container {
+    max-height: 250px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.scrollable-container-large {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+/* Sticky header for tables */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-header th {
+    background-color: #fff;
+    padding: 12px 8px;
+}
+
+/* Custom scrollbar styling */
+.scrollable-container::-webkit-scrollbar,
+.scrollable-container-large::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.scrollable-container::-webkit-scrollbar-track,
+.scrollable-container-large::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb,
+.scrollable-container-large::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover,
+.scrollable-container-large::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Ensure tables don't break layout */
+.scrollable-container table,
+.scrollable-container-large table {
+    min-width: 100%;
+}
+
+/* User Information card specific styles */
+.table-borderless td {
+    padding: 0.75rem;
+}
+
+.card-body .table {
+    margin-bottom: 0 !important;
+}
+
+/* Increase spacing in user info table */
+.table-borderless tr td {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,21 @@
+● postgresql.service - PostgreSQL database server
+     Loaded: loaded (/usr/lib/systemd/system/postgresql.service; enabled; preset: disabled)
+     Active: active (running) since Thu 2025-08-28 14:42:13 UTC; 11s ago
+    Process: 31139 ExecStartPre=/usr/libexec/postgresql-check-db-dir postgresql (code=exited, status=0/SUCCESS)
+   Main PID: 31141 (postgres)
+      Tasks: 7 (limit: 9488)
+     Memory: 17.0M
+        CPU: 39ms
+     CGroup: /system.slice/postgresql.service
+             ├─31141 /usr/bin/postgres -D /var/lib/pgsql/data
+             ├─31142 "postgres: logger "
+             ├─31143 "postgres: checkpointer "
+             ├─31144 "postgres: background writer "
+             ├─31146 "postgres: walwriter "
+             ├─31147 "postgres: autovacuum launcher "
+             └─31148 "postgres: logical replication launcher "
+
+Aug 28 14:42:13 ip-172-31-2-132.ap-south-1.compute.internal systemd[1]: Starting postgresql.service - PostgreSQL database server...
+Aug 28 14:42:13 ip-172-31-2-132.ap-south-1.compute.internal postgres[31141]: 2025-08-28 14:42:13.924 UTC [31141] LOG:  redirecting log output to logging collector process
+Aug 28 14:42:13 ip-172-31-2-132.ap-south-1.compute.internal postgres[31141]: 2025-08-28 14:42:13.924 UTC [31141] HINT:  Future log output will appear in directory "log".
+Aug 28 14:42:13 ip-172-31-2-132.ap-south-1.compute.internal systemd[1]: Started postgresql.service - PostgreSQL database server.

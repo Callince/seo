@@ -1,0 +1,716 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout: {{ subscription.plan }} Plan{% endblock %}
+
+{% block content %}
+<!-- Set fallback values for undefined variables -->
+{% set safe_base_amount = base_amount if base_amount is defined and base_amount is not none else subscription.price %}
+{% set safe_gst_rate = gst_rate if gst_rate is defined and gst_rate is not none else 0.18 %}
+{% set safe_gst_amount = gst_amount if gst_amount is defined and gst_amount is not none else (safe_base_amount * safe_gst_rate) %}
+{% set safe_total_amount = total_amount if total_amount is defined and total_amount is not none else (safe_base_amount + safe_gst_amount) %}
+
+<!-- Set safe user values with better fallbacks -->
+{% set safe_user_name = user.name if user and user.name and user.name.strip() else '' %}
+{% set safe_user_email = user.company_email if user and user.company_email else '' %}
+
+<div class="container mx-auto p-6 animate-fade-in">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold">Checkout: {{ subscription.plan }} Plan</h1>
+        <p class="text-gray-600">Complete your purchase to activate your subscription</p>
+        <div class="mt-2 text-sm text-gray-500">
+            <i class="fas fa-info-circle mr-1"></i>
+            Fields marked with <span class="text-red-500 font-bold">*</span> are required
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} mb-4 p-4 rounded-lg {% if category == 'success' %}bg-green-100 border-green-400 text-green-700{% elif category == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-blue-100 border-blue-400 text-blue-700{% endif %} border-l-4 flex items-center">
+                    <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} mr-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Order Summary Column -->
+        <div class="md:col-span-2">
+            <div class="bg-white shadow-md rounded-lg p-6 mb-6 transition-all duration-300 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-shopping-cart mr-3 text-primary text-xl"></i>
+                    <h2 class="text-xl font-semibold">Order Summary</h2>
+                </div>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span class="font-medium">Plan</span>
+                        <span class="font-semibold text-primary">{{ subscription.plan }}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2">
+                        <span>Base Amount</span>
+                        <span>₹{{ "%.2f"|format(safe_base_amount) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                        <span>GST ({{ (safe_gst_rate * 100)|round }}%)</span>
+                        <span>₹{{ "%.2f"|format(safe_gst_amount) }}</span>
+                    </div>
+                    <hr class="my-3 border-t border-gray-200">
+                    <div class="flex justify-between items-center p-3 bg-gray-100 rounded-lg">
+                        <span class="font-bold">Total Amount</span>
+                        <span class="font-bold text-lg text-primary">₹{{ "%.2f"|format(safe_total_amount) }}</span>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-blue-500 mt-1 mr-2"></i>
+                        <div>
+                            <p class="text-sm text-gray-700">By completing this purchase, you agree to our <a href="{{ url_for('terms') }}" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="{{ url_for('privacy') }}" class="text-blue-600 hover:underline">Privacy Policy</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg p-6 transition-all duration-300 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-credit-card mr-3 text-primary text-xl"></i>
+                    <h2 class="text-xl font-semibold">Payment Details</h2>
+                </div>
+                
+                <form method="post" action="{{ url_for('checkout', order_id=payment.razorpay_order_id) }}" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
+                        <!-- Clean, minimalist form design -->
+                        
+                        <!-- Personal Information Section -->
+                        <div class="mb-8">
+                            <h3 class="text-gray-800 text-xl font-medium mb-6">Personal Information</h3>
+                            
+                            <div class="grid gap-6">
+                                <div class="relative">
+                                    <label for="full_name" class="text-sm text-gray-600 block mb-1.5">Full Name <span class="text-red-500">*</span></label>
+                                    <input type="text" name="full_name" id="full_name"
+                                           value="{{ safe_user_name }}" required
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="Enter your full name">
+                                </div>
+                                
+                                <div class="relative">
+                                    <label for="email" class="text-sm text-gray-600 block mb-1.5">Email Address <span class="text-red-500">*</span></label>
+                                    <input type="email" name="email" id="email"
+                                           value="{{ safe_user_email }}" required
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="example@domain.com">
+                                </div>
+                                
+                                <div class="relative">
+                                    <label for="phone_number" class="text-sm text-gray-600 block mb-1.5">Phone Number <span class="text-red-500">*</span></label>
+                                    <input type="tel" name="phone_number" id="phone_number" required
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="+1 234 567 8900 (Include country code)">
+                                    <!-- <p class="mt-1 text-xs text-gray-500">Please include your country code (e.g., +1 for USA, +91 for India, +44 for UK)</p> -->
+                                </div>
+                                
+                                <div>
+                                    <label for="company_name" class="text-sm text-gray-600 block mb-1.5">Company Name</label>
+                                    <input type="text" name="company_name" id="company_name" 
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="Company Name (Optional)">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Billing Address Section -->
+                        <div class="mb-8">
+                            <h3 class="text-gray-800 text-xl font-medium mb-6">Billing Address</h3>
+                            
+                            <div class="grid gap-6">
+                                <div class="relative">
+                                    <label for="street_address" class="text-sm text-gray-600 block mb-1.5">Street Address <span class="text-red-500">*</span></label>
+                                    <input type="text" name="street_address" id="street_address" required
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="123 Main Street, Apartment/Suite">
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="relative">
+                                        <label for="city" class="text-sm text-gray-600 block mb-1.5">City <span class="text-red-500">*</span></label>
+                                        <input type="text" name="city" id="city" required
+                                               class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                               placeholder="Chennai">
+                                    </div>
+
+                                    <div class="relative">
+                                        <label for="state" class="text-sm text-gray-600 block mb-1.5">State <span class="text-red-500">*</span></label>
+                                        <input type="text" name="state" id="state" required
+                                               class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                               placeholder="Tamil Nadu">
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="relative">
+                                        <label for="postal_code" class="text-sm text-gray-600 block mb-1.5">Postal Code <span class="text-red-500">*</span></label>
+                                        <input type="text" name="postal_code" id="postal_code" required
+                                               class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                               placeholder="600001">
+                                    </div>
+
+                                    <div>
+                                        <label for="country" class="text-sm text-gray-600 block mb-1.5">Country <span class="text-red-500">*</span></label>
+                                        <input type="text" name="country" id="country"
+                                               value="India" required
+                                               class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base bg-gray-50 focus:border-blue-500 focus:outline-none transition cursor-not-allowed"
+                                               readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tax Information Section -->
+                        <div class="mb-8">
+                            <h3 class="text-gray-800 text-xl font-medium mb-6">Tax Information (Optional)</h3>
+                            
+                            <div class="grid gap-6">
+                                <div>
+                                    <label for="gst_number" class="text-sm text-gray-600 block mb-1.5">GST Number</label>
+                                    <input type="text" name="gst_number" id="gst_number" 
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="22AAAAA0000A1Z5" maxlength="15">
+                                    <p class="mt-1 text-xs text-gray-500">Format: 2-digit state code + 10-digit PAN + 1Z + 2 digits</p>
+                                </div>
+                                
+                                <div>
+                                    <label for="pan_number" class="text-sm text-gray-600 block mb-1.5">PAN Number</label>
+                                    <input type="text" name="pan_number" id="pan_number" 
+                                           class="w-full h-11 px-3 border border-gray-200 rounded text-gray-800 text-base focus:border-blue-500 focus:outline-none transition"
+                                           placeholder="ABCDE1234F" maxlength="10">
+                                    <p class="mt-1 text-xs text-gray-500">Format: 5 letters + 4 numbers + 1 letter</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="mt-8">
+                            <button type="submit" 
+                                class="w-full text-white font-medium py-3 px-4 rounded transition focus:outline-none focus:ring-2 focus:ring-opacity-50" 
+                                style="background-color: #273879; hover:background-color: #085a89;">
+                                Proceed to Payment
+                            </button>
+
+                            <div class="flex items-center justify-center mt-4">
+                                <svg class="w-4 h-4 text-gray-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                </svg>
+                                <p class="text-xs text-gray-500">Your information is secured with 256-bit encryption</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="md:col-span-1">
+            <div class="bg-white shadow-md rounded-lg p-6 text-center sticky top-24 transition-all duration-300 hover:shadow-lg">
+
+                
+                <div class="border-t border-b border-gray-100 py-4 mb-4">
+                    <div class="flex justify-between items-center mb-2 text-sm">
+                        <span class="text-gray-600">Plan:</span>
+                        <span class="font-medium">{{ subscription.plan }}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2 text-sm">
+                        <span class="text-gray-600">Base Amount:</span>
+                        <span>₹{{ "%.2f"|format(safe_base_amount) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2 text-sm">
+                        <span class="text-gray-600">GST ({{ (safe_gst_rate * 100)|round }}%):</span>
+                        <span>₹{{ "%.2f"|format(safe_gst_amount) }}</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2 text-lg font-medium border-t border-gray-100">
+                        <span>Total:</span>
+                        <span class="text-blue-600">₹{{ "%.2f"|format(safe_total_amount) }}</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3 text-left">
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-sm text-gray-600">Secure payment processing</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-sm text-gray-600">Instant account activation</span>
+                    </div>
+                    <div class="flex items-start">
+                        <svg class="w-4 h-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span class="text-sm text-gray-600">24/7 customer support</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6 text-xs text-gray-500">
+                    Have questions? <a href="#" class="text-blue-600 hover:underline">Contact our support team</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Auto-focus on the first empty required field when page loads
+    const requiredFields = ['full_name', 'email', 'phone_number', 'street_address', 'city', 'state', 'postal_code'];
+    let firstEmptyField = null;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field && !field.value.trim() && !firstEmptyField) {
+            firstEmptyField = field;
+        }
+    });
+    
+    if (firstEmptyField) {
+        setTimeout(() => {
+            firstEmptyField.focus();
+            firstEmptyField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+    }
+    
+    // Add subtle animation to form elements when they come into view
+    const formElements = document.querySelectorAll('input, button');
+    formElements.forEach((element, index) => {
+        setTimeout(() => {
+            element.classList.add('animate-fade-in');
+        }, 100 * index);
+    });
+    
+    // Form validation enhancement
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Always prevent default first
+
+        // Clear all previous error states
+        clearAllErrors();
+
+        let isValid = true;
+        let firstInvalidField = null;
+
+        // Validate all required fields with specific error messages
+        const validationRules = [
+            {
+                field: 'full_name',
+                fieldName: 'Full Name'
+            },
+            {
+                field: 'email',
+                fieldName: 'Email Address',
+                invalidMessage: 'Please enter a valid email address',
+                customValidation: function(value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(value);
+                }
+            },
+            {
+                field: 'phone_number',
+                fieldName: 'Phone Number'
+            },
+            {
+                field: 'street_address',
+                fieldName: 'Street Address'
+            },
+            {
+                field: 'city',
+                fieldName: 'City'
+            },
+            {
+                field: 'state',
+                fieldName: 'State'
+            },
+            {
+                field: 'postal_code',
+                fieldName: 'Postal Code'
+            }
+        ];
+
+        // Check all fields and show inline errors
+        for (let rule of validationRules) {
+            const field = document.getElementById(rule.field);
+            const errorElement = document.getElementById(rule.field + '_error');
+
+            if (field) {
+                const value = field.value.trim();
+
+                // Check if field is empty
+                if (!value) {
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                    // Mark field as invalid
+                    field.classList.add('border-red-500');
+                    field.classList.remove('border-gray-200');
+
+                    // Show inline error message
+                    if (errorElement) {
+                        errorElement.classList.remove('hidden');
+                    }
+
+                    // Add shake animation
+                    field.classList.add('animate-shake');
+                    setTimeout(() => {
+                        field.classList.remove('animate-shake');
+                    }, 500);
+
+                    isValid = false;
+                }
+                // Check custom validation if provided
+                else if (rule.customValidation && !rule.customValidation(value)) {
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                    // Mark field as invalid
+                    field.classList.add('border-red-500');
+                    field.classList.remove('border-gray-200');
+
+                    // Update and show error message for invalid format
+                    if (errorElement) {
+                        errorElement.innerHTML = '<i class="fas fa-exclamation-circle mr-1"></i>' + rule.invalidMessage;
+                        errorElement.classList.remove('hidden');
+                    }
+
+                    // Add shake animation
+                    field.classList.add('animate-shake');
+                    setTimeout(() => {
+                        field.classList.remove('animate-shake');
+                    }, 500);
+
+                    isValid = false;
+                } else {
+                    // Clear error state if field is valid
+                    field.classList.remove('border-red-500');
+                    field.classList.add('border-gray-200');
+                    if (errorElement) {
+                        errorElement.classList.add('hidden');
+                    }
+                }
+            }
+        }
+
+        // Scroll to first invalid field
+        if (!isValid && firstInvalidField) {
+            setTimeout(() => {
+                firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalidField.focus();
+            }, 100);
+        }
+
+        if (isValid) {
+            // All validation passed, submit the form
+            form.submit();
+        }
+    });
+    
+    // Function to clear all error states
+    function clearAllErrors() {
+        const fields = document.querySelectorAll('input[required]');
+        fields.forEach(field => {
+            field.classList.remove('border-red-500');
+            field.classList.add('border-gray-200');
+
+            const errorElement = document.getElementById(field.id + '_error');
+            if (errorElement) {
+                errorElement.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Auto-fill name from email if name is empty
+    const emailField = document.getElementById('email');
+    const nameField = document.getElementById('full_name');
+    
+    if (emailField && nameField) {
+        emailField.addEventListener('blur', function() {
+            const nameValue = nameField.value.trim();
+            const emailValue = emailField.value.trim();
+            
+            // If name is empty but email has value, try to extract name from email
+            if (!nameValue && emailValue && emailValue.includes('@')) {
+                const localPart = emailValue.split('@')[0];
+                // Convert email local part to a readable name (basic conversion)
+                const suggestedName = localPart
+                    .replace(/[._-]/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase());
+                
+                if (suggestedName.length > 2) {
+                    nameField.value = suggestedName;
+                    nameField.classList.remove('border-red-500');
+                    nameField.classList.add('border-gray-200');
+                    
+                    const errorElement = document.getElementById('full_name_error');
+                    if (errorElement) {
+                        errorElement.classList.add('hidden');
+                    }
+                }
+            }
+        });
+    }
+    
+    // Real-time validation on input blur
+    const validationFields = [
+        {
+            field: 'full_name',
+            fieldName: 'Full Name'
+        },
+        {
+            field: 'email',
+            fieldName: 'Email Address',
+            invalidMessage: 'Please enter a valid email address',
+            customValidation: function(value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(value);
+            }
+        },
+        {
+            field: 'phone_number',
+            fieldName: 'Phone Number'
+        },
+        {
+            field: 'street_address',
+            fieldName: 'Street Address'
+        },
+        {
+            field: 'city',
+            fieldName: 'City'
+        },
+        {
+            field: 'state',
+            fieldName: 'State'
+        },
+        {
+            field: 'postal_code',
+            fieldName: 'Postal Code'
+        }
+    ];
+
+    validationFields.forEach(rule => {
+        const field = document.getElementById(rule.field);
+
+        if (field) {
+            // Store original placeholder
+            const originalPlaceholder = field.placeholder;
+
+            // Show error on hover if field is blank
+            field.addEventListener('mouseenter', function() {
+                const value = this.value.trim();
+                let errorMessage = 'Please fill: ' + rule.fieldName;
+
+                if (!value) {
+                    // Show error inside the field as placeholder
+                    this.placeholder = errorMessage;
+                    this.classList.add('error-placeholder');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                } else if (rule.customValidation && !rule.customValidation(value)) {
+                    errorMessage = rule.invalidMessage;
+                    this.placeholder = errorMessage;
+                    this.classList.add('error-placeholder');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                }
+            });
+
+            // Show error on focus if field is blank
+            field.addEventListener('focus', function() {
+                const value = this.value.trim();
+                let errorMessage = 'Please fill: ' + rule.fieldName;
+
+                if (!value) {
+                    // Show error inside the field as placeholder
+                    this.placeholder = errorMessage;
+                    this.classList.add('error-placeholder');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                } else if (rule.customValidation && !rule.customValidation(value)) {
+                    errorMessage = rule.invalidMessage;
+                    this.placeholder = errorMessage;
+                    this.classList.add('error-placeholder');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                }
+            });
+
+            // Hide error only after user types something (on input)
+            field.addEventListener('input', function() {
+                const value = this.value.trim();
+
+                if (value) {
+                    // Check custom validation if provided
+                    if (rule.customValidation && !rule.customValidation(value)) {
+                        let errorMessage = rule.invalidMessage;
+                        this.placeholder = errorMessage;
+                        this.classList.add('error-placeholder');
+                        this.classList.add('border-red-500');
+                        this.classList.remove('border-gray-200');
+                    } else {
+                        // Valid input, restore original placeholder
+                        this.placeholder = originalPlaceholder;
+                        this.classList.remove('error-placeholder');
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-gray-200');
+                    }
+                }
+            });
+
+            // Restore placeholder on mouse leave if field has value
+            field.addEventListener('mouseleave', function() {
+                const value = this.value.trim();
+                if (value && !(rule.customValidation && !rule.customValidation(value))) {
+                    this.placeholder = originalPlaceholder;
+                    this.classList.remove('error-placeholder');
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-gray-200');
+                }
+            });
+
+            // Validate on blur as well
+            field.addEventListener('blur', function() {
+                const value = this.value.trim();
+                let fieldValid = true;
+                let errorMessage = 'Please fill: ' + rule.fieldName;
+
+                if (!value) {
+                    fieldValid = false;
+                } else if (rule.customValidation && !rule.customValidation(value)) {
+                    fieldValid = false;
+                    errorMessage = rule.invalidMessage;
+                }
+
+                if (!fieldValid) {
+                    this.placeholder = errorMessage;
+                    this.classList.add('error-placeholder');
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-200');
+                } else {
+                    this.placeholder = originalPlaceholder;
+                    this.classList.remove('error-placeholder');
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-gray-200');
+                }
+            });
+        }
+    });
+    
+    // Phone number input - allow any country code
+    const phoneInput = document.getElementById('phone_number');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function (e) {
+            let value = e.target.value;
+
+            // Allow numbers, +, spaces, and hyphens only
+            value = value.replace(/[^\d\+\s\-()]/g, '');
+
+            // Ensure + only appears at the beginning
+            if (value.indexOf('+') > 0) {
+                value = '+' + value.replace(/\+/g, '');
+            }
+
+            // Limit to reasonable phone number length (max 20 characters including formatting)
+            if (value.length > 20) {
+                value = value.substring(0, 20);
+            }
+
+            e.target.value = value;
+        });
+    }
+
+    
+    // GST Number formatting and validation
+    const gstInput = document.getElementById('gst_number');
+    if (gstInput) {
+        gstInput.addEventListener('input', function(e) {
+            // Convert to uppercase
+            let value = e.target.value.toUpperCase();
+            // Ensure GST format: 2 digits + 10 characters + 1Z + 2 digits
+            if (value.length > 15) {
+                value = value.substring(0, 15);
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // PAN Number formatting and validation
+    const panInput = document.getElementById('pan_number');
+    if (panInput) {
+        panInput.addEventListener('input', function(e) {
+            // Convert to uppercase
+            let value = e.target.value.toUpperCase();
+            // Restrict to 10 characters
+            if (value.length > 10) {
+                value = value.substring(0, 10);
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // Postal code validation - only allow numbers
+    const postalInput = document.getElementById('postal_code');
+    if (postalInput) {
+        postalInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 6) {
+                value = value.substring(0, 6);
+            }
+            e.target.value = value;
+        });
+    }
+});
+
+// Add animation for shake effect and error placeholder styling
+document.head.insertAdjacentHTML('beforeend', `
+<style>
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+.animate-shake {
+  animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+}
+.error-placeholder::placeholder {
+  color: #dc3545 !important;
+  font-weight: 500;
+  font-size: 0.75rem !important;
+  opacity: 1 !important;
+}
+.error-placeholder::-webkit-input-placeholder {
+  color: #dc3545 !important;
+  font-weight: 500;
+  font-size: 0.75rem !important;
+  opacity: 1 !important;
+}
+.error-placeholder::-moz-placeholder {
+  color: #dc3545 !important;
+  font-weight: 500;
+  font-size: 0.75rem !important;
+  opacity: 1 !important;
+}
+.error-placeholder:-ms-input-placeholder {
+  color: #dc3545 !important;
+  font-weight: 500;
+  font-size: 0.75rem !important;
+  opacity: 1 !important;
+}
+</style>
+`);
+</script>
+{% endblock %}

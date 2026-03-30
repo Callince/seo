@@ -1,0 +1,675 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Contact Submission #{{ submission.id }}{% endblock %}
+
+{% block page_title %}Contact Submission Details{% endblock %}
+
+
+{% block content %}
+
+
+<div class="row">
+    
+    <!-- Submission Details -->
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 py-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-envelope me-2 text-primary"></i>Message Details
+                </h5>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-dark">#{{ submission.id }}</span>
+                    {% if submission.status == 'new' %}
+                        <span class="badge bg-danger">New</span>
+                    {% elif submission.status == 'read' %}
+                        <span class="badge bg-warning">Read</span>
+                    {% elif submission.status == 'responded' %}
+                        <span class="badge bg-success">Responded</span>
+                    {% elif submission.status == 'spam' %}
+                        <span class="badge bg-secondary">Spam</span>
+                    {% else %}
+                        <span class="badge bg-light text-dark">{{ submission.status|title }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Contact Information -->
+                <div class="row mb-4">
+                    <div class="col-12 col-md-6 mb-3">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar-circle bg-primary text-white me-3" style="width: 50px; height: 50px; font-size: 1.5rem;">
+                                {{ submission.name[:1]|upper }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1">{{ submission.name }}</h5>
+                                <a href="mailto:{{ submission.email }}" class="text-decoration-none text-muted">
+                                    <i class="fas fa-envelope me-1"></i>{{ submission.email }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                        <div class="text-md-end">
+                            <div class="text-muted mb-1">
+                                <i class="fas fa-calendar me-1"></i>
+                                {{ submission.created_at.strftime('%d %B, %Y at %I:%M %p') if submission.created_at else 'N/A' }}
+                            </div>
+                            {% if submission.ip_address %}
+                            <div class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                IP: {{ submission.ip_address }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message Content -->
+                <div class="message-content">
+                    <h6 class="text-muted mb-3">Message:</h6>
+                    <div class="bg-light p-4 rounded border-start border-4 border-primary">
+                        <p class="mb-0" style="white-space: pre-wrap; line-height: 1.6;">{{ submission.message }}</p>
+                    </div>
+                </div>
+                
+                <!-- Admin Notes -->
+                {% if submission.admin_notes %}
+                <div class="mt-4">
+                    <h6 class="text-muted mb-3">Admin Notes:</h6>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded border-start border-4 border-warning">
+                        <p class="mb-0" style="white-space: pre-wrap;">{{ submission.admin_notes }}</p>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Quick Reply Form -->
+        <div class="card border-0 shadow-sm mt-4">
+            <div class="card-header bg-transparent border-0">
+                <h5 class="mb-0">
+                    <i class="fas fa-reply me-2 text-success"></i>Quick Reply
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="quickReplyForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <div class="mb-3">
+                        <label for="replySubject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="replySubject" name="subject" 
+                               value="Re: Your Contact Form Submission" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="replyMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="replyMessage" name="message" rows="5" required 
+                                  placeholder="Type your reply here...">Hello {{ submission.name }},
+
+Thank you for contacting us. 
+
+Best regards,
+Fourth Dimension Team</textarea>
+                    </div>
+                    <div class="d-flex flex-column flex-sm-row gap-2">
+                        <button type="submit" class="btn btn-success flex-sm-fill">
+                            <i class="fas fa-paper-plane me-2"></i>Send Reply
+                        </button>
+                        <!-- <button type="button" class="btn btn-outline-primary flex-sm-fill" 
+                                onclick="openEmailClient()">
+                            <i class="fas fa-external-link-alt me-2"></i>Open in Email Client
+                        </button> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar Actions -->
+    <div class="col-lg-4 mb-4">
+        
+        <!-- Status Management -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0">
+                <h6 class="mb-0">
+                    <i class="fas fa-cog me-2 text-primary"></i>Manage Status
+                </h6>
+            </div>
+            <div class="card-body">
+                <form id="statusUpdateForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status" onchange="updateStatusFromDropdown()">
+                            <option value="new" {% if submission.status == 'new' %}selected{% endif %}>New</option>
+                            <option value="read" {% if submission.status == 'read' %}selected{% endif %}>Read</option>
+                            <option value="responded" {% if submission.status == 'responded' %}selected{% endif %}>Responded</option>
+                            <option value="spam" {% if submission.status == 'spam' %}selected{% endif %}>Spam</option>
+                        </select>
+                    </div>
+                </form>
+                
+                {% if submission.status == 'responded' and submission.responded_at %}
+                <div class="text-muted">
+                    <small>
+                        <i class="fas fa-check-circle me-1"></i>
+                        Responded on {{ submission.responded_at.strftime('%d %b, %Y at %I:%M %p') if submission.responded_at else 'N/A' }}
+                    </small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Admin Notes -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0">
+                <h6 class="mb-0">
+                    <i class="fas fa-sticky-note me-2 text-warning"></i>Admin Notes
+                </h6>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('update_contact_submission', submission_id=submission.id) }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+                    <input type="hidden" name="status" value="{{ submission.status }}">
+                    <div class="mb-3">
+                        <textarea class="form-control" name="admin_notes" rows="4" 
+                                  placeholder="Add internal notes about this submission...">{{ submission.admin_notes or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="fas fa-save me-2"></i>Save Notes
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Technical Information -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-transparent border-0">
+                <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-2 text-info"></i>Technical Details
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr>
+                            <td class="text-muted">Submission ID:</td>
+                            <td><code>#{{ submission.id }}</code></td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">IP Address:</td>
+                            <td>{{ submission.ip_address or 'Not recorded' }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">User Agent:</td>
+                            <td>
+                                {% if submission.user_agent %}
+                                <small class="text-truncate d-block" style="max-width: 150px;" title="{{ submission.user_agent }}">
+                                    {{ submission.user_agent }}
+                                </small>
+                                {% else %}
+                                Not recorded
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">Submitted:</td>
+                            <td>{{ submission.created_at.strftime('%d/%m/%Y %I:%M %p') if submission.created_at else 'N/A' }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-0">
+                <h6 class="mb-0">
+                    <i class="fas fa-bolt me-2 text-danger"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <!-- <button type="button" class="btn btn-outline-primary btn-sm" onclick="quickSendEmail()">
+                        <i class="fas fa-envelope me-2"></i>Send Email
+                    </button> -->
+                    
+                    {% if submission.status != 'spam' %}
+                    <button type="button" class="btn btn-outline-warning btn-sm" 
+                            onclick="markAsSpam({{ submission.id }})">
+                        <i class="fas fa-ban me-2"></i>Mark as Spam
+                    </button>
+                    {% endif %}
+                    
+                    <button type="button" class="btn btn-outline-danger btn-sm" 
+                            onclick="deleteSubmission({{ submission.id }})">
+                        <i class="fas fa-trash me-2"></i>Delete Submission
+                    </button>
+                    
+                    <a href="{{ url_for('admin_contact_submissions') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Open email client with current form data
+function openEmailClient() {
+    const subject = document.getElementById('replySubject').value;
+    const message = document.getElementById('replyMessage').value;
+    const recipientEmail = '{{ submission.email }}';
+    const adminEmail = '{{ admin_email }}';
+
+    // Create mailto link with admin email as sender (from parameter)
+    // Format: mailto:recipient?subject=...&body=...&from=sender
+    // Note: 'from' parameter is not standard but some email clients support it
+    // Better approach: Use Outlook-specific protocol if available
+    let mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+
+    // Try to detect Outlook and use outlook: protocol if available
+    if (navigator.userAgent.indexOf('Windows') !== -1) {
+        // For Windows users, try Outlook protocol first
+        const outlookLink = `outlook:?to=${recipientEmail}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+
+        // Try Outlook first
+        const outlookWindow = window.open(outlookLink, '_blank');
+
+        // If Outlook didn't open (after brief delay), fallback to mailto
+        setTimeout(() => {
+            if (!outlookWindow || outlookWindow.closed || typeof outlookWindow.closed === 'undefined') {
+                window.location.href = mailtoLink;
+            }
+        }, 100);
+    } else {
+        // For non-Windows, use standard mailto
+        window.location.href = mailtoLink;
+    }
+
+    // Mark as responded after opening email client
+    setTimeout(() => {
+        fetch(`{{ url_for('update_contact_submission', submission_id=submission.id) }}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'status': 'responded',
+                'csrf_token': '{{ csrf_token }}'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('Email client opened. Submission marked as responded.', 'success');
+                setTimeout(() => location.reload(), 1500);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }, 500);
+}
+
+// Quick reply form handler - Send email via backend
+document.getElementById('quickReplyForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    // Disable button and show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fas fa-spin me-2"></i>Sending...';
+
+    // Send email via backend
+    fetch(`{{ url_for('send_reply', id=submission.id) }}`, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+
+        if (data.success) {
+            showAlert('Reply email sent successfully!', 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showAlert('Failed to send reply: ' + (data.message || 'Unknown error'), 'danger');
+        }
+    })
+    .catch(error => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+        console.error('Error:', error);
+        showAlert('An error occurred when sending email.', 'danger');
+    });
+});
+
+// Quick send email function for Quick Actions button
+function quickSendEmail() {
+    const recipientEmail = '{{ submission.email }}';
+    const name = '{{ submission.name }}';
+    const subject = encodeURIComponent('Re: Your Contact Form Submission');
+    const body = encodeURIComponent(`Hello ${name},\n\nThank you for contacting us.\n\nBest regards,\nFourth Dimension Team`);
+
+    // Create mailto link
+    let mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+
+    // Try to detect Outlook and use outlook: protocol if available
+    if (navigator.userAgent.indexOf('Windows') !== -1) {
+        // For Windows users, try Outlook protocol first
+        const outlookLink = `outlook:?to=${recipientEmail}&subject=${subject}&body=${body}`;
+
+        // Try Outlook first
+        const outlookWindow = window.open(outlookLink, '_blank');
+
+        // If Outlook didn't open (after brief delay), fallback to mailto
+        setTimeout(() => {
+            if (!outlookWindow || outlookWindow.closed || typeof outlookWindow.closed === 'undefined') {
+                window.location.href = mailtoLink;
+            }
+        }, 100);
+    } else {
+        // For non-Windows, use standard mailto
+        window.location.href = mailtoLink;
+    }
+}
+
+// Update status from dropdown
+function updateStatusFromDropdown() {
+    const status = document.getElementById('status').value;
+    const currentStatus = '{{ submission.status }}';
+
+    // Don't submit if status hasn't changed
+    if (status === currentStatus) {
+        return;
+    }
+
+    updateStatus({{ submission.id }}, status);
+}
+
+function markAsSpam(submissionId) {
+    showCustomConfirm(
+        'Are you sure you want to mark this submission as spam?',
+        function() {
+            updateStatus(submissionId, 'spam');
+        }
+    );
+}
+
+function deleteSubmission(submissionId) {
+    showCustomConfirm(
+        'Are you sure you want to delete this submission? This action cannot be undone.',
+        function() {
+            fetch(`/admin/contact_submissions/${submissionId}/delete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('Submission deleted successfully.', 'success');
+                    setTimeout(() => {
+                        window.location.href = '{{ url_for("admin_contact_submissions") }}';
+                    }, 1500);
+                } else {
+                    showAlert('Error deleting submission: ' + (data.message || 'Unknown error'), 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while deleting the submission.', 'danger');
+            });
+        }
+    );
+}
+
+function updateStatus(submissionId, status) {
+    fetch(`{{ url_for('update_contact_submission', submission_id=submission.id) }}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: new URLSearchParams({
+            'status': status,
+            'csrf_token': '{{ csrf_token }}'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert(`Status updated to ${status}.`, 'success');
+            setTimeout(() => location.reload(), 1500);
+        } else {
+            showAlert('Error updating status: ' + (data.message || 'Unknown error'), 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('An error occurred while updating the status.', 'danger');
+    });
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.style.minWidth = '300px';
+    alertDiv.style.maxWidth = '500px';
+    alertDiv.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : type === 'warning' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+            <div class="flex-grow-1">${message}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        alertDiv.classList.remove('show');
+        setTimeout(() => alertDiv.remove(), 150);
+    }, 5000);
+}
+
+// Show custom confirmation dialog
+function showCustomConfirm(message, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.innerHTML = `
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>Confirm Action
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">${message}</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    const bsModal = new bootstrap.Modal(modal);
+    bsModal.show();
+    
+    document.getElementById('confirmBtn').addEventListener('click', function() {
+        bsModal.hide();
+        onConfirm();
+    });
+    
+    modal.addEventListener('hidden.bs.modal', function() {
+        modal.remove();
+    });
+}
+
+// Add animation to cards
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 + (index * 100));
+    });
+
+    // Mobile scroll improvements
+    if (window.innerWidth <= 768) {
+        const textarea = document.getElementById('replyMessage');
+        if (textarea) {
+            textarea.addEventListener('focus', function() {
+                setTimeout(() => {
+                    this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
+        }
+    }
+});
+</script>
+
+<style>
+.avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.message-content {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+.table-borderless td {
+    border: none;
+    padding: 0.25rem 0.5rem;
+}
+
+code {
+    color: #e83e8c;
+    background-color: #f8f9fa;
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .btn {
+        min-height: 44px;
+    }
+    
+    .form-control,
+    .form-select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+    
+    textarea.form-control {
+        min-height: 120px;
+    }
+    
+    .d-grid .btn {
+        padding: 0.75rem 1rem;
+    }
+    
+    .avatar-circle {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.2rem !important;
+    }
+    
+    .message-content .bg-light {
+        padding: 1rem !important;
+    }
+    
+    .row.mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    .mt-4 {
+        margin-top: 1.5rem !important;
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .table-borderless td {
+        padding: 0.375rem;
+        word-break: break-word;
+    }
+}
+
+@media (max-width: 576px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .d-flex.flex-column.flex-sm-row {
+        gap: 0.75rem;
+    }
+    
+    .card-header h6,
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .badge {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .text-truncate {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: initial !important;
+    }
+}
+
+/* Focus improvements for touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+        background-color: #fff;
+    }
+    
+    .btn:focus {
+        box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+    }
+}
+</style>
+{% endblock %}

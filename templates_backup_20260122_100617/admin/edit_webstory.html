@@ -1,0 +1,1490 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Edit Web Story - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Live Preview Section (Left Side) -->
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="card shadow-sm border-0 sticky-preview">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h6 class="mb-0 text-primary">
+                        <i class="fas fa-eye me-2"></i>Live Preview
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Story Viewer Preview -->
+                    <div class="preview-container">
+                        <div class="story-preview-viewer">
+                            <div class="story-preview-container">
+                                <!-- Preview Slide Container -->
+                                <div id="previewSlidesContainer">
+                                    <!-- Default empty state -->
+                                    <div class="preview-empty-state" id="previewEmptyState" {% if webstory.slides %}style="display: none;"{% endif %}>
+                                        <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">Add slides to see preview</p>
+                                    </div>
+                                </div>
+
+                                <!-- Preview Navigation -->
+                                <div class="preview-navigation" id="previewNavigation" style="display: {% if webstory.slides %}flex{% else %}none{% endif %};">
+                                    <button type="button" class="preview-nav-btn preview-prev" onclick="previewPrevSlide()">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <div class="preview-slide-indicator" id="previewIndicator">
+                                        <span id="currentPreviewSlide">1</span> / <span id="totalPreviewSlides">{{ webstory.slides|length if webstory.slides else 0 }}</span>
+                                    </div>
+                                    <button type="button" class="preview-nav-btn preview-next" onclick="previewNextSlide()">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Section (Right Side) -->
+        <div class="col-lg-8 col-md-7">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-edit me-2"></i>Edit Web Story
+                        </h5>
+                        <a href="{{ url_for('admin_webstories') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Web Stories
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('admin_edit_webstory', id=webstory.id) }}" enctype="multipart/form-data" id="webstoryForm">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="slide_count" id="slide_count" value="{{ webstory.slides|length if webstory.slides else 0 }}">
+
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs mb-4" id="webstoryTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                                    General
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="slides-tab" data-bs-toggle="tab" data-bs-target="#slides" type="button" role="tab">
+                                    Slide
+                                </button>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="webstoryTabContent">
+                            <!-- General Tab -->
+                            <div class="tab-pane fade show active" id="general" role="tabpanel">
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="meta_title" class="form-label fw-semibold">
+                                            Meta Title <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="meta_title" name="meta_title"
+                                               value="{{ webstory.meta_title }}" placeholder="Meta Title" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="meta_description" class="form-label fw-semibold">
+                                            Meta Description <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control" id="meta_description" name="meta_description"
+                                                  rows="3" placeholder="Meta Description" required>{{ webstory.meta_description }}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="cover_image" class="form-label fw-semibold">Cover Image</label>
+                                        {% if webstory.cover_image %}
+                                            <div class="mb-2">
+                                                <img src="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image) }}"
+                                                     class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            </div>
+                                        {% endif %}
+                                        <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*">
+                                        <small class="form-text text-muted">Recommended size: 1600x900px (16:9 aspect ratio)</small>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <label for="slug" class="form-label fw-semibold">
+                                            Slug <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="slug" name="slug"
+                                               value="{{ webstory.slug }}" placeholder="-slug" required>
+                                        <small class="form-text text-muted">URL-friendly version</small>
+                                        <div id="slugFeedback" class="mt-1"></div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="publish_date" class="form-label fw-semibold">
+                                            Publish Date <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="date" class="form-control" id="publish_date" name="publish_date"
+                                               value="{{ webstory.publish_date.strftime('%Y-%m-%d') if webstory.publish_date else '' }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                                        <div class="form-check form-switch mt-2">
+                                            <input class="form-check-input" type="checkbox" id="status" name="status" {% if webstory.status %}checked{% endif %}>
+                                            <label class="form-check-label" for="status">
+                                                Active
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Slides Tab -->
+                            <div class="tab-pane fade" id="slides" role="tabpanel">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="text-muted mb-0">Manage Slides</h6>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="addSlide()">
+                                        <i class="fas fa-plus me-1"></i>Add Slide
+                                    </button>
+                                </div>
+
+                                <div id="slidesContainer">
+                                    {% if webstory.slides %}
+                                        {% for slide in webstory.slides %}
+                                        <div class="slide-card" id="slide_{{ loop.index0 }}">
+                                            <div class="slide-header">
+                                                <h6 class="mb-0">
+                                                    <i class="fas fa-grip-vertical drag-handle me-2"></i>
+                                                    Slide #{{ loop.index }}
+                                                </h6>
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeSlide({{ loop.index0 }})">
+                                                    <i class="fas fa-trash"></i> Remove
+                                                </button>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-semibold">Image <span class="text-danger">*</span></label>
+                                                    {% if slide.image %}
+                                                        <div class="mb-2">
+                                                            <img src="{{ slide.image }}" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                                        </div>
+                                                    {% endif %}
+                                                    <input type="file" class="form-control slide-image-input" name="slide_image_{{ loop.index0 }}"
+                                                           accept="image/*" onchange="handleSlideImageUpload({{ loop.index0 }}, this)">
+                                                    <input type="hidden" name="slide_{{ loop.index0 }}_image" id="slide_{{ loop.index0 }}_image_url" value="{{ slide.image }}">
+                                                    <small class="form-text text-muted">Recommended: 900x1600px (9:16 portrait)</small>
+                                                    <div id="slide_{{ loop.index0 }}_preview" class="mt-2"></div>
+
+                                                    <!-- Image Zoom & Pan Controls -->
+                                                    <div class="image-controls" id="slide_{{ loop.index0 }}_image_controls" {% if slide.image %}style="display: block;"{% else %}style="display: none;"{% endif %}>
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <strong style="font-size: 0.85rem;"><i class="fas fa-search-plus me-1"></i> Image Adjustments</strong>
+                                                            <button type="button" class="btn btn-outline-secondary btn-reset" onclick="resetImageControls({{ loop.index0 }})">
+                                                                <i class="fas fa-undo"></i> Reset
+                                                            </button>
+                                                        </div>
+                                                        <div class="control-group">
+                                                            <label>Zoom <span id="slide_{{ loop.index0 }}_zoom_value">{{ slide.zoom or 100 }}%</span></label>
+                                                            <input type="range" id="slide_{{ loop.index0 }}_zoom" name="slide_{{ loop.index0 }}_zoom"
+                                                                   min="100" max="200" value="{{ slide.zoom or 100 }}" step="5"
+                                                                   oninput="updateImageZoomPan({{ loop.index0 }})">
+                                                        </div>
+                                                        <div class="control-group">
+                                                            <label>Pan Horizontal <span id="slide_{{ loop.index0 }}_pan_x_value">{{ slide.pan_x or 50 }}%</span></label>
+                                                            <input type="range" id="slide_{{ loop.index0 }}_pan_x" name="slide_{{ loop.index0 }}_pan_x"
+                                                                   min="0" max="100" value="{{ slide.pan_x or 50 }}" step="1"
+                                                                   oninput="updateImageZoomPan({{ loop.index0 }})">
+                                                        </div>
+                                                        <div class="control-group">
+                                                            <label>Pan Vertical <span id="slide_{{ loop.index0 }}_pan_y_value">{{ slide.pan_y or 50 }}%</span></label>
+                                                            <input type="range" id="slide_{{ loop.index0 }}_pan_y" name="slide_{{ loop.index0 }}_pan_y"
+                                                                   min="0" max="100" value="{{ slide.pan_y or 50 }}" step="1"
+                                                                   oninput="updateImageZoomPan({{ loop.index0 }})">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-semibold">Image Alt</label>
+                                                    <input type="text" class="form-control" name="slide_{{ loop.index0 }}_image_alt"
+                                                           value="{{ slide.image_alt }}" placeholder="Image Alt Text">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-semibold">Content Spacing Top (px)</label>
+                                                    <input type="number" class="form-control" name="slide_{{ loop.index0 }}_content_spacing_top"
+                                                           value="{{ slide.content_spacing_top }}" placeholder="75">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-semibold">Heading</label>
+                                                    <textarea class="form-control slide-heading-editor" name="slide_{{ loop.index0 }}_heading" id="slide_{{ loop.index0 }}_heading"
+                                                           placeholder="Slide Heading">{{ slide.heading }}</textarea>
+                                                    <div class="font-controls">
+                                                        <select class="form-select form-select-sm" name="slide_{{ loop.index0 }}_heading_font" id="slide_{{ loop.index0 }}_heading_font" style="width: auto;" onchange="updatePreviewSlide({{ loop.index0 }})">
+                                                            <option value="inherit" {% if (slide.heading_font or 'inherit') == 'inherit' %}selected{% endif %}>Default Font</option>
+                                                            <option value="Poppins, sans-serif" {% if slide.heading_font == 'Poppins, sans-serif' %}selected{% endif %}>Poppins</option>
+                                                            <option value="Arial, sans-serif" {% if slide.heading_font == 'Arial, sans-serif' %}selected{% endif %}>Arial</option>
+                                                            <option value="Georgia, serif" {% if slide.heading_font == 'Georgia, serif' %}selected{% endif %}>Georgia</option>
+                                                            <option value="Roboto, sans-serif" {% if slide.heading_font == 'Roboto, sans-serif' %}selected{% endif %}>Roboto</option>
+                                                            <option value="Open Sans, sans-serif" {% if slide.heading_font == 'Open Sans, sans-serif' %}selected{% endif %}>Open Sans</option>
+                                                        </select>
+                                                        <input type="number" class="form-control form-control-sm" name="slide_{{ loop.index0 }}_heading_size" id="slide_{{ loop.index0 }}_heading_size"
+                                                               placeholder="Size" value="{{ slide.heading_size or 18 }}" style="width: 70px;" onchange="updatePreviewSlide({{ loop.index0 }})">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-12">
+                                                    <label class="form-label fw-semibold">Text</label>
+                                                    <textarea class="form-control slide-text-editor" name="slide_{{ loop.index0 }}_text" id="slide_{{ loop.index0 }}_text" rows="3"
+                                                              placeholder="Slide Text Content">{{ slide.text }}</textarea>
+                                                    <div class="font-controls">
+                                                        <select class="form-select form-select-sm" name="slide_{{ loop.index0 }}_text_font" id="slide_{{ loop.index0 }}_text_font" style="width: auto;" onchange="updatePreviewSlide({{ loop.index0 }})">
+                                                            <option value="inherit" {% if (slide.text_font or 'inherit') == 'inherit' %}selected{% endif %}>Default Font</option>
+                                                            <option value="Poppins, sans-serif" {% if slide.text_font == 'Poppins, sans-serif' %}selected{% endif %}>Poppins</option>
+                                                            <option value="Arial, sans-serif" {% if slide.text_font == 'Arial, sans-serif' %}selected{% endif %}>Arial</option>
+                                                            <option value="Georgia, serif" {% if slide.text_font == 'Georgia, serif' %}selected{% endif %}>Georgia</option>
+                                                            <option value="Roboto, sans-serif" {% if slide.text_font == 'Roboto, sans-serif' %}selected{% endif %}>Roboto</option>
+                                                            <option value="Open Sans, sans-serif" {% if slide.text_font == 'Open Sans, sans-serif' %}selected{% endif %}>Open Sans</option>
+                                                        </select>
+                                                        <input type="number" class="form-control form-control-sm" name="slide_{{ loop.index0 }}_text_size" id="slide_{{ loop.index0 }}_text_size"
+                                                               placeholder="Size" value="{{ slide.text_size or 14 }}" style="width: 70px;" onchange="updatePreviewSlide({{ loop.index0 }})">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label fw-semibold">Learn More URL</label>
+                                                    <input type="url" class="form-control" name="slide_{{ loop.index0 }}_learn_more_url"
+                                                           value="{{ slide.learn_more_url }}" placeholder="https://example.com">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label fw-semibold">Sort Order</label>
+                                                    <input type="number" class="form-control" name="slide_{{ loop.index0 }}_sort_order"
+                                                           value="{{ slide.sort_order }}">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label fw-semibold">Status</label>
+                                                    <div class="form-check form-switch mt-2">
+                                                        <input class="form-check-input" type="checkbox" name="slide_{{ loop.index0 }}_status" {% if slide.status %}checked{% endif %}>
+                                                        <label class="form-check-label">Active</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Hidden position fields -->
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_heading_left" value="{{ slide.heading_left or '' }}">
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_heading_bottom" value="{{ slide.heading_bottom or '' }}">
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_text_left" value="{{ slide.text_left or '' }}">
+                                            <input type="hidden" name="slide_{{ loop.index0 }}_text_bottom" value="{{ slide.text_bottom or '' }}">
+                                        </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+
+                                {% if not webstory.slides or webstory.slides|length == 0 %}
+                                <div id="noSlidesMessage" class="text-center py-5">
+                                    <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No slides added yet. Click "Add Slide" to get started.</p>
+                                </div>
+                                {% else %}
+                                <div id="noSlidesMessage" class="text-center py-5" style="display: none;">
+                                    <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No slides added yet. Click "Add Slide" to get started.</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="fas fa-save me-2"></i>Update Web Story
+                                    </button>
+                                    <a href="{{ url_for('admin_webstories') }}" class="btn btn-outline-secondary px-4">
+                                        <i class="fas fa-times me-2"></i>Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Live Preview Styles */
+    .sticky-preview {
+        position: sticky;
+        top: 20px;
+        max-height: calc(100vh - 40px);
+        overflow: hidden;
+    }
+
+    .preview-container {
+        background: #000;
+        position: relative;
+        width: 100%;
+        padding-bottom: 177.78%; /* 9:16 aspect ratio */
+        overflow: hidden;
+    }
+
+    .story-preview-viewer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .story-preview-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000;
+    }
+
+    .preview-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .preview-slide.active {
+        display: block;
+    }
+
+    /* Preview Header Styles */
+    .preview-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 15;
+        padding: 0.75rem;
+        color: #fff;
+    }
+
+    .preview-progress {
+        flex: 1;
+        display: flex;
+        gap: 4px;
+    }
+
+    .preview-progress-bar {
+        flex: 1;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .preview-progress-bar.active .preview-progress-fill {
+        width: 100%;
+    }
+
+    .preview-progress-bar.completed .preview-progress-fill {
+        width: 100%;
+    }
+
+    .preview-progress-fill {
+        height: 100%;
+        background: #fff;
+        width: 0;
+        border-radius: 2px;
+    }
+
+    .preview-close-btn {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1rem;
+        cursor: default;
+        padding: 0.25rem;
+        opacity: 0.8;
+    }
+
+    .preview-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: transparent;
+        color: #fff;
+        pointer-events: none;
+    }
+
+    .preview-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .preview-heading {
+        position: absolute;
+        font-size: 18px;
+        font-weight: 900;
+        line-height: 1.3;
+        color: #fff;
+        text-align: center;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 8px;
+        cursor: ns-resize;
+        pointer-events: auto;
+        left: 50%;
+        bottom: 18%;
+        transform: translateX(-50%);
+        width: 85%;
+        max-width: 85%;
+        user-select: none;
+        border: 2px dashed transparent;
+        transition: border-color 0.2s;
+    }
+
+    .preview-heading:hover,
+    .preview-heading.dragging {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .preview-text {
+        position: absolute;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #fff;
+        text-align: center;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 8px;
+        cursor: ns-resize;
+        pointer-events: auto;
+        left: 50%;
+        bottom: 9%;
+        transform: translateX(-50%);
+        width: 85%;
+        max-width: 85%;
+        user-select: none;
+        border: 2px dashed transparent;
+        transition: border-color 0.2s;
+    }
+
+    .preview-text:hover,
+    .preview-text.dragging {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .preview-link-container {
+        position: absolute;
+        left: 50%;
+        bottom: 3%;
+        transform: translateX(-50%);
+        pointer-events: auto;
+    }
+
+    .preview-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.35rem;
+        background: #fff;
+        color: #273879;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+        margin: 0 auto;
+        width: fit-content;
+    }
+
+    .preview-empty-state {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #666;
+    }
+
+    .preview-navigation {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 2rem;
+        z-index: 20;
+    }
+
+    .preview-nav-btn {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        color: #273879;
+        flex-shrink: 0;
+    }
+
+    .preview-nav-btn:hover {
+        background: #fff;
+    }
+
+    .preview-slide-indicator {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 0.35rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #273879;
+        white-space: nowrap;
+    }
+
+    /* Font Style Controls */
+    .font-controls {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.5rem;
+    }
+
+    .font-controls select, .font-controls input {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Image Controls */
+    .image-controls {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+    }
+
+    .image-controls .control-group {
+        margin-bottom: 10px;
+    }
+
+    .image-controls .control-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .image-controls label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .image-controls label span {
+        font-weight: 400;
+        color: #6c757d;
+    }
+
+    .image-controls input[type="range"] {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: #dee2e6;
+        outline: none;
+        -webkit-appearance: none;
+    }
+
+    .image-controls input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #4895ef;
+        cursor: pointer;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .image-controls input[type="range"]::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #4895ef;
+        cursor: pointer;
+        border: 2px solid #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .image-controls .btn-reset {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+    }
+
+    /* Form Styles */
+    .form-label {
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #4895ef;
+        box-shadow: 0 0 0 0.2rem rgba(72, 149, 239, 0.25);
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .slide-card {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        background: #f8f9fa;
+    }
+
+    .slide-header {
+        display: flex;
+        justify-content: space-between;
+        align-items-center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+    .drag-handle {
+        cursor: move;
+        color: #6c757d;
+    }
+
+    .ck-editor__editable {
+        min-height: 100px;
+    }
+</style>
+
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js"></script>
+
+<script>
+    let slideCounter = {{ webstory.slides|length if webstory.slides else 0 }};
+    let currentPreviewSlide = 0;
+    let previewSlides = [];
+    let editorInstances = {}; // Store CKEditor instances
+
+    // Auto-generate slug from meta title
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.getElementById('meta_title');
+        const slugInput = document.getElementById('slug');
+        let manuallyEdited = true; // Set to true for edit mode
+
+        function generateSlug(text) {
+            return text
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+        }
+
+        titleInput.addEventListener('input', function() {
+            if (!manuallyEdited) {
+                slugInput.value = generateSlug(this.value);
+                checkSlugAvailability(slugInput.value);
+            }
+        });
+
+        slugInput.addEventListener('input', function() {
+            manuallyEdited = true;
+            checkSlugAvailability(this.value);
+        });
+
+        slugInput.addEventListener('blur', function() {
+            checkSlugAvailability(this.value);
+        });
+
+        // Initialize CKEditor for existing slides and setup preview
+        {% if webstory.slides %}
+        {% for slide in webstory.slides %}
+        // Add preview slide for existing slide {{ loop.index0 }}
+        addPreviewSlide({{ loop.index0 }}, '{{ slide.image }}', `{{ slide.heading|safe|replace('`', '\\`') }}`, `{{ slide.text|safe|replace('`', '\\`') }}`, '{{ slide.learn_more_url }}', '{{ slide.heading_left or '' }}', '{{ slide.heading_bottom or '' }}', '{{ slide.text_left or '' }}', '{{ slide.text_bottom or '' }}', {{ slide.zoom or 100 }}, {{ slide.pan_x or 50 }}, {{ slide.pan_y or 50 }}, '{{ slide.heading_font or "inherit" }}', {{ slide.heading_size or 18 }}, '{{ slide.text_font or "inherit" }}', {{ slide.text_size or 14 }});
+
+        // Initialize heading editor for slide {{ loop.index0 }}
+        ClassicEditor
+            .create(document.querySelector('#slide_{{ loop.index0 }}_heading'), {
+                toolbar: ['bold', 'italic', 'link', '|', 'undo', 'redo'],
+                placeholder: 'Enter slide heading...'
+            })
+            .then(editor => {
+                editorInstances['heading_{{ loop.index0 }}'] = editor;
+                // Listen for changes
+                editor.model.document.on('change:data', () => {
+                    updatePreviewSlide({{ loop.index0 }});
+                });
+            })
+            .catch(error => {
+                console.error('Error initializing heading editor for slide {{ loop.index0 }}:', error);
+            });
+
+        // Initialize text editor for slide {{ loop.index0 }}
+        ClassicEditor
+            .create(document.querySelector('#slide_{{ loop.index0 }}_text'), {
+                toolbar: [
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'undo', 'redo'
+                ],
+                placeholder: 'Enter slide text content...'
+            })
+            .then(editor => {
+                editorInstances['text_{{ loop.index0 }}'] = editor;
+                // Listen for changes
+                editor.model.document.on('change:data', () => {
+                    updatePreviewSlide({{ loop.index0 }});
+                });
+            })
+            .catch(error => {
+                console.error('Error initializing text editor for slide {{ loop.index0 }}:', error);
+            });
+
+        // Add event listeners for other fields
+        document.querySelector('input[name="slide_{{ loop.index0 }}_learn_more_url"]').addEventListener('input', () => {
+            updatePreviewSlide({{ loop.index0 }});
+        });
+        {% endfor %}
+        {% endif %}
+    });
+
+    // Debounce function to avoid too many API calls
+    let slugCheckTimeout;
+    function checkSlugAvailability(slug) {
+        clearTimeout(slugCheckTimeout);
+
+        const feedbackDiv = document.getElementById('slugFeedback');
+        const slugInput = document.getElementById('slug');
+
+        if (!slug || slug.trim() === '') {
+            feedbackDiv.innerHTML = '';
+            slugInput.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+
+        // Show loading state
+        feedbackDiv.innerHTML = '<small class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i>Checking availability...</small>';
+
+        slugCheckTimeout = setTimeout(function() {
+            fetch('{{ url_for("admin_webstory_check_slug") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    slug: slug,
+                    webstory_id: {{ webstory.id }}
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.available) {
+                    feedbackDiv.innerHTML = '<small class="text-success"><i class="fas fa-check-circle me-1"></i>' + data.message + '</small>';
+                    slugInput.classList.remove('is-invalid');
+                    slugInput.classList.add('is-valid');
+                } else {
+                    let message = '<small class="text-danger"><i class="fas fa-times-circle me-1"></i>' + data.message;
+                    if (data.suggestion) {
+                        message += '. <a href="#" onclick="useSuggestedSlug(\'' + data.suggestion + '\'); return false;">Use "' + data.suggestion + '"?</a>';
+                    }
+                    message += '</small>';
+                    feedbackDiv.innerHTML = message;
+                    slugInput.classList.remove('is-valid');
+                    slugInput.classList.add('is-invalid');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking slug:', error);
+                feedbackDiv.innerHTML = '<small class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Error checking slug availability</small>';
+            });
+        }, 500); // Wait 500ms after user stops typing
+    }
+
+    function useSuggestedSlug(slug) {
+        const slugInput = document.getElementById('slug');
+        slugInput.value = slug;
+        checkSlugAvailability(slug);
+    }
+
+    function addSlide() {
+        const container = document.getElementById('slidesContainer');
+        const noSlidesMsg = document.getElementById('noSlidesMessage');
+
+        if (noSlidesMsg) {
+            noSlidesMsg.style.display = 'none';
+        }
+
+        const slideDiv = document.createElement('div');
+        slideDiv.className = 'slide-card';
+        slideDiv.id = `slide_${slideCounter}`;
+        slideDiv.innerHTML = `
+            <div class="slide-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-grip-vertical drag-handle me-2"></i>
+                    Slide #${slideCounter + 1}
+                </h6>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeSlide(${slideCounter})">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Image <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control slide-image-input" name="slide_image_${slideCounter}"
+                           accept="image/*" onchange="handleSlideImageUpload(${slideCounter}, this)" required>
+                    <input type="hidden" name="slide_${slideCounter}_image" id="slide_${slideCounter}_image_url">
+                    <small class="form-text text-muted">Recommended: 900x1600px (9:16 portrait)</small>
+                    <div id="slide_${slideCounter}_preview" class="mt-2"></div>
+
+                    <!-- Image Zoom & Pan Controls -->
+                    <div class="image-controls" id="slide_${slideCounter}_image_controls" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong style="font-size: 0.85rem;"><i class="fas fa-search-plus me-1"></i> Image Adjustments</strong>
+                            <button type="button" class="btn btn-outline-secondary btn-reset" onclick="resetImageControls(${slideCounter})">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                        </div>
+                        <div class="control-group">
+                            <label>Zoom <span id="slide_${slideCounter}_zoom_value">100%</span></label>
+                            <input type="range" id="slide_${slideCounter}_zoom" name="slide_${slideCounter}_zoom"
+                                   min="100" max="200" value="100" step="5"
+                                   oninput="updateImageZoomPan(${slideCounter})">
+                        </div>
+                        <div class="control-group">
+                            <label>Pan Horizontal <span id="slide_${slideCounter}_pan_x_value">50%</span></label>
+                            <input type="range" id="slide_${slideCounter}_pan_x" name="slide_${slideCounter}_pan_x"
+                                   min="0" max="100" value="50" step="1"
+                                   oninput="updateImageZoomPan(${slideCounter})">
+                        </div>
+                        <div class="control-group">
+                            <label>Pan Vertical <span id="slide_${slideCounter}_pan_y_value">50%</span></label>
+                            <input type="range" id="slide_${slideCounter}_pan_y" name="slide_${slideCounter}_pan_y"
+                                   min="0" max="100" value="50" step="1"
+                                   oninput="updateImageZoomPan(${slideCounter})">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Image Alt</label>
+                    <input type="text" class="form-control" name="slide_${slideCounter}_image_alt"
+                           placeholder="Image Alt Text">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Content Spacing Top (px)</label>
+                    <input type="number" class="form-control" name="slide_${slideCounter}_content_spacing_top"
+                           value="75" placeholder="75">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Heading</label>
+                    <textarea class="form-control slide-heading-editor" name="slide_${slideCounter}_heading" id="slide_${slideCounter}_heading"
+                           placeholder="Slide Heading"></textarea>
+                    <div class="font-controls">
+                        <select class="form-select form-select-sm" name="slide_${slideCounter}_heading_font" id="slide_${slideCounter}_heading_font" style="width: auto;" onchange="updatePreviewSlide(${slideCounter})">
+                            <option value="inherit">Default Font</option>
+                            <option value="'Arial', sans-serif">Arial</option>
+                            <option value="'Georgia', serif">Georgia</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Verdana', sans-serif">Verdana</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                        </select>
+                        <input type="number" class="form-control form-control-sm" name="slide_${slideCounter}_heading_size" id="slide_${slideCounter}_heading_size"
+                               placeholder="Size" value="18" style="width: 70px;" onchange="updatePreviewSlide(${slideCounter})">
+                        <span class="input-group-text" style="font-size: 0.75rem;">px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <label class="form-label fw-semibold">Text</label>
+                    <textarea class="form-control slide-text-editor" name="slide_${slideCounter}_text" id="slide_${slideCounter}_text" rows="3"
+                              placeholder="Slide Text Content"></textarea>
+                    <div class="font-controls">
+                        <select class="form-select form-select-sm" name="slide_${slideCounter}_text_font" id="slide_${slideCounter}_text_font" style="width: auto;" onchange="updatePreviewSlide(${slideCounter})">
+                            <option value="inherit">Default Font</option>
+                            <option value="'Arial', sans-serif">Arial</option>
+                            <option value="'Georgia', serif">Georgia</option>
+                            <option value="'Times New Roman', serif">Times New Roman</option>
+                            <option value="'Verdana', sans-serif">Verdana</option>
+                            <option value="'Roboto', sans-serif">Roboto</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Montserrat', sans-serif">Montserrat</option>
+                        </select>
+                        <input type="number" class="form-control form-control-sm" name="slide_${slideCounter}_text_size" id="slide_${slideCounter}_text_size"
+                               placeholder="Size" value="14" style="width: 70px;" onchange="updatePreviewSlide(${slideCounter})">
+                        <span class="input-group-text" style="font-size: 0.75rem;">px</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Learn More URL</label>
+                    <input type="url" class="form-control" name="slide_${slideCounter}_learn_more_url"
+                           placeholder="https://example.com">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Sort Order</label>
+                    <input type="number" class="form-control" name="slide_${slideCounter}_sort_order"
+                           value="${slideCounter}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Status</label>
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" name="slide_${slideCounter}_status" checked>
+                        <label class="form-check-label">Active</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hidden position fields -->
+            <input type="hidden" name="slide_${slideCounter}_heading_left" value="">
+            <input type="hidden" name="slide_${slideCounter}_heading_bottom" value="">
+            <input type="hidden" name="slide_${slideCounter}_text_left" value="">
+            <input type="hidden" name="slide_${slideCounter}_text_bottom" value="">
+        `;
+
+        container.appendChild(slideDiv);
+
+        // Initialize CKEditor for the new slide's heading and text
+        const currentSlideIndex = slideCounter;
+
+        // Initialize heading editor
+        ClassicEditor
+            .create(document.querySelector(`#slide_${currentSlideIndex}_heading`), {
+                toolbar: ['bold', 'italic', 'link', '|', 'undo', 'redo'],
+                placeholder: 'Enter slide heading...'
+            })
+            .then(editor => {
+                editorInstances[`heading_${currentSlideIndex}`] = editor;
+                // Listen for changes
+                editor.model.document.on('change:data', () => {
+                    updatePreviewSlide(currentSlideIndex);
+                });
+            })
+            .catch(error => {
+                console.error('Error initializing heading editor:', error);
+            });
+
+        // Initialize text editor
+        ClassicEditor
+            .create(document.querySelector(`#slide_${currentSlideIndex}_text`), {
+                toolbar: [
+                    'bold', 'italic', 'link', '|',
+                    'bulletedList', 'numberedList', '|',
+                    'undo', 'redo'
+                ],
+                placeholder: 'Enter slide text content...'
+            })
+            .then(editor => {
+                editorInstances[`text_${currentSlideIndex}`] = editor;
+                // Listen for changes
+                editor.model.document.on('change:data', () => {
+                    updatePreviewSlide(currentSlideIndex);
+                });
+            })
+            .catch(error => {
+                console.error('Error initializing text editor:', error);
+            });
+
+        // Add event listeners for other fields
+        document.querySelector(`input[name="slide_${currentSlideIndex}_learn_more_url"]`).addEventListener('input', () => {
+            updatePreviewSlide(currentSlideIndex);
+        });
+
+        // Add preview slide
+        addPreviewSlide(currentSlideIndex);
+
+        slideCounter++;
+        document.getElementById('slide_count').value = slideCounter;
+    }
+
+    function removeSlide(index) {
+        const slideDiv = document.getElementById(`slide_${index}`);
+        if (slideDiv) {
+            slideDiv.remove();
+        }
+
+        // Remove from preview
+        removePreviewSlide(index);
+
+        // Check if no slides remain
+        const container = document.getElementById('slidesContainer');
+        if (container.children.length === 0) {
+            document.getElementById('noSlidesMessage').style.display = 'block';
+        }
+    }
+
+    function handleSlideImageUpload(slideIndex, input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const maxSize = 3 * 1024 * 1024; // 3MB in bytes
+
+            // Client-side file size validation
+            if (file.size > maxSize) {
+                alert('File size exceeds 3MB limit. Please compress or resize the image.');
+                input.value = ''; // Clear the input
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('upload', file);
+
+            fetch('{{ url_for("admin_webstory_upload_image") }}', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                // Check if response is JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error('Server returned an unexpected response. Please try again.');
+                }
+                return response.json();
+            })
+            .then(result => {
+                if (result.uploaded) {
+                    document.getElementById(`slide_${slideIndex}_image_url`).value = result.url;
+
+                    // Show preview
+                    const preview = document.getElementById(`slide_${slideIndex}_preview`);
+                    preview.innerHTML = `<img src="${result.url}" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">`;
+
+                    // Show image controls
+                    const imageControls = document.getElementById(`slide_${slideIndex}_image_controls`);
+                    if (imageControls) {
+                        imageControls.style.display = 'block';
+                    }
+
+                    // Update live preview
+                    updatePreviewSlide(slideIndex);
+                } else {
+                    alert('Image upload failed: ' + (result.error ? result.error.message : 'Unknown error'));
+                    input.value = ''; // Clear the input on failure
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('Image upload failed: ' + error.message + '\nPlease refresh the page and try again.');
+                input.value = ''; // Clear the input on error
+            });
+        }
+    }
+
+    // Live Preview Functions
+    function addPreviewSlide(slideIndex, imageUrl = '', headingContent = '', textContent = '', learnMoreUrl = '', headingLeft = '', headingBottom = '', textLeft = '', textBottom = '', zoom = 100, panX = 50, panY = 50, headingFont = 'inherit', headingSize = 18, textFont = 'inherit', textSize = 14) {
+        const container = document.getElementById('previewSlidesContainer');
+        const emptyState = document.getElementById('previewEmptyState');
+
+        if (emptyState) {
+            emptyState.style.display = 'none';
+        }
+
+        const previewSlide = document.createElement('div');
+        previewSlide.className = 'preview-slide';
+        previewSlide.id = `preview_slide_${slideIndex}`;
+        if (imageUrl) {
+            previewSlide.style.backgroundImage = `url('${imageUrl}')`;
+            previewSlide.style.backgroundSize = `${zoom}%`;
+            previewSlide.style.backgroundPosition = `${panX}% ${panY}%`;
+        }
+
+        // Build heading style with saved positions and font settings
+        let headingStyle = `display: ${headingContent ? 'block' : 'none'};`;
+        if (headingBottom) {
+            headingStyle += ` bottom: ${headingBottom};`;
+        }
+        if (headingFont && headingFont !== 'inherit') {
+            headingStyle += ` font-family: ${headingFont};`;
+        }
+        if (headingSize) {
+            headingStyle += ` font-size: ${headingSize}px;`;
+        }
+
+        // Build text style with saved positions and font settings
+        let textStyle = `display: ${textContent ? 'block' : 'none'};`;
+        if (textBottom) {
+            textStyle += ` bottom: ${textBottom};`;
+        }
+        if (textFont && textFont !== 'inherit') {
+            textStyle += ` font-family: ${textFont};`;
+        }
+        if (textSize) {
+            textStyle += ` font-size: ${textSize}px;`;
+        }
+
+        previewSlide.innerHTML = `
+            <div class="preview-header">
+                <div class="preview-progress" id="preview_progress_${slideIndex}">
+                </div>
+                <button type="button" class="preview-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-overlay">
+                <div class="preview-content">
+                    <div class="preview-heading" id="preview_heading_${slideIndex}"
+                         data-slide="${slideIndex}"
+                         style="${headingStyle}">${headingContent}</div>
+                    <div class="preview-text" id="preview_text_${slideIndex}"
+                         data-slide="${slideIndex}"
+                         style="${textStyle}">${textContent}</div>
+                    <div class="preview-link-container" id="preview_link_container_${slideIndex}">
+                        <div id="preview_link_${slideIndex}">${learnMoreUrl ? `<a href="${learnMoreUrl}" class="preview-link" target="_blank">Learn More <i class="fas fa-arrow-right"></i></a>` : ''}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(previewSlide);
+        previewSlides.push(slideIndex);
+
+        // Update progress bars for all slides
+        updateAllProgressBars();
+
+        // Make heading and text draggable
+        makeDraggable(document.getElementById(`preview_heading_${slideIndex}`), slideIndex);
+        makeDraggable(document.getElementById(`preview_text_${slideIndex}`), slideIndex);
+
+        // Show navigation if more than 1 slide
+        updatePreviewNavigation();
+
+        // Show first slide
+        if (previewSlides.length === 1) {
+            showPreviewSlide(0);
+        }
+    }
+
+    // Make elements draggable (vertical only - keeps content centered)
+    function makeDraggable(element, slideIndex) {
+        if (!element) return;
+
+        let isDragging = false;
+        let startY, startBottom;
+
+        element.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            element.classList.add('dragging');
+
+            startY = e.clientY;
+
+            const rect = element.getBoundingClientRect();
+            const parentRect = element.parentElement.getBoundingClientRect();
+
+            startBottom = parentRect.bottom - rect.bottom;
+
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+
+            const deltaY = e.clientY - startY;
+
+            const parentRect = element.parentElement.getBoundingClientRect();
+            const newBottom = startBottom - deltaY;
+
+            // Keep within bounds (vertical only)
+            const maxBottom = parentRect.height - element.offsetHeight;
+            const boundedBottom = Math.max(0, Math.min(newBottom, maxBottom));
+
+            // Only update bottom position - keep left at 50% and transform for centering
+            element.style.bottom = boundedBottom + 'px';
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                element.classList.remove('dragging');
+
+                // Save position
+                saveElementPosition(element, slideIndex);
+            }
+        });
+    }
+
+    // Save element position as percentage (vertical only - keeps content centered horizontally)
+    function saveElementPosition(element, slideIndex) {
+        const positionType = element.classList.contains('preview-heading') ? 'heading' : 'text';
+
+        // Get container height and convert to percentage
+        const container = element.closest('.preview-slide');
+        if (!container) return;
+
+        const containerHeight = container.offsetHeight;
+        const bottomPx = parseFloat(element.style.bottom) || 0;
+        const bottomPercent = (bottomPx / containerHeight) * 100;
+
+        // Store in hidden input field as percentage
+        const bottomInput = document.querySelector(`input[name="slide_${slideIndex}_${positionType}_bottom"]`);
+
+        if (bottomInput) bottomInput.value = bottomPercent.toFixed(2) + '%';
+    }
+
+    function updatePreviewSlide(slideIndex) {
+        const previewSlide = document.getElementById(`preview_slide_${slideIndex}`);
+        if (!previewSlide) return;
+
+        // Update image with zoom and pan
+        const imageUrl = document.getElementById(`slide_${slideIndex}_image_url`)?.value;
+        if (imageUrl) {
+            previewSlide.style.backgroundImage = `url('${imageUrl}')`;
+
+            // Apply zoom and pan
+            const zoom = document.getElementById(`slide_${slideIndex}_zoom`)?.value || 100;
+            const panX = document.getElementById(`slide_${slideIndex}_pan_x`)?.value || 50;
+            const panY = document.getElementById(`slide_${slideIndex}_pan_y`)?.value || 50;
+
+            previewSlide.style.backgroundSize = `${zoom}%`;
+            previewSlide.style.backgroundPosition = `${panX}% ${panY}%`;
+        }
+
+        // Get font settings
+        const headingFont = document.getElementById(`slide_${slideIndex}_heading_font`)?.value || 'inherit';
+        const headingSize = document.getElementById(`slide_${slideIndex}_heading_size`)?.value || '18';
+        const textFont = document.getElementById(`slide_${slideIndex}_text_font`)?.value || 'inherit';
+        const textSize = document.getElementById(`slide_${slideIndex}_text_size`)?.value || '14';
+
+        // Update heading
+        const headingEditor = editorInstances[`heading_${slideIndex}`];
+        const headingElement = document.getElementById(`preview_heading_${slideIndex}`);
+        if (headingEditor && headingElement) {
+            const headingContent = headingEditor.getData();
+            if (headingContent) {
+                headingElement.innerHTML = headingContent;
+                headingElement.style.display = 'block';
+                headingElement.style.fontFamily = headingFont;
+                headingElement.style.fontSize = headingSize + 'px';
+            } else {
+                headingElement.style.display = 'none';
+            }
+        }
+
+        // Update text
+        const textEditor = editorInstances[`text_${slideIndex}`];
+        const textElement = document.getElementById(`preview_text_${slideIndex}`);
+        if (textEditor && textElement) {
+            const textContent = textEditor.getData();
+            if (textContent) {
+                textElement.innerHTML = textContent;
+                textElement.style.display = 'block';
+                textElement.style.fontFamily = textFont;
+                textElement.style.fontSize = textSize + 'px';
+            } else {
+                textElement.style.display = 'none';
+            }
+        }
+
+        // Update learn more link
+        const learnMoreUrl = document.querySelector(`input[name="slide_${slideIndex}_learn_more_url"]`)?.value;
+        const linkElement = document.getElementById(`preview_link_${slideIndex}`);
+        if (linkElement) {
+            if (learnMoreUrl) {
+                linkElement.innerHTML = `<a href="${learnMoreUrl}" class="preview-link" target="_blank">Learn More <i class="fas fa-arrow-right"></i></a>`;
+            } else {
+                linkElement.innerHTML = '';
+            }
+        }
+    }
+
+    function showPreviewSlide(index) {
+        if (previewSlides.length === 0) return;
+
+        // Hide all slides
+        document.querySelectorAll('.preview-slide').forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        // Show current slide
+        const slideIndex = previewSlides[index];
+        const slide = document.getElementById(`preview_slide_${slideIndex}`);
+        if (slide) {
+            slide.classList.add('active');
+            currentPreviewSlide = index;
+            document.getElementById('currentPreviewSlide').textContent = index + 1;
+
+            // Update progress bars
+            updateAllProgressBars();
+        }
+    }
+
+    function updatePreviewNavigation() {
+        const navigation = document.getElementById('previewNavigation');
+        const totalSlides = document.getElementById('totalPreviewSlides');
+
+        totalSlides.textContent = previewSlides.length;
+
+        if (previewSlides.length > 0) {
+            navigation.style.display = 'flex';
+        } else {
+            navigation.style.display = 'none';
+        }
+    }
+
+    function previewNextSlide() {
+        if (currentPreviewSlide < previewSlides.length - 1) {
+            showPreviewSlide(currentPreviewSlide + 1);
+        } else {
+            showPreviewSlide(0); // Loop back to first
+        }
+    }
+
+    function previewPrevSlide() {
+        if (currentPreviewSlide > 0) {
+            showPreviewSlide(currentPreviewSlide - 1);
+        } else {
+            showPreviewSlide(previewSlides.length - 1); // Loop to last
+        }
+    }
+
+    function removePreviewSlide(slideIndex) {
+        const previewSlide = document.getElementById(`preview_slide_${slideIndex}`);
+        if (previewSlide) {
+            previewSlide.remove();
+        }
+
+        // Remove from array
+        const arrayIndex = previewSlides.indexOf(slideIndex);
+        if (arrayIndex > -1) {
+            previewSlides.splice(arrayIndex, 1);
+        }
+
+        // Update navigation
+        updatePreviewNavigation();
+
+        // Update progress bars for remaining slides
+        updateAllProgressBars();
+
+        // Show empty state if no slides
+        if (previewSlides.length === 0) {
+            document.getElementById('previewEmptyState').style.display = 'block';
+            currentPreviewSlide = 0;
+        } else {
+            // Show previous slide or first
+            const newIndex = Math.min(currentPreviewSlide, previewSlides.length - 1);
+            showPreviewSlide(newIndex);
+        }
+    }
+
+    // Update progress bars for all preview slides
+    function updateAllProgressBars() {
+        previewSlides.forEach(slideIndex => {
+            const progressContainer = document.getElementById(`preview_progress_${slideIndex}`);
+            if (progressContainer) {
+                // Generate progress bars based on total slides
+                let progressBarsHTML = '';
+                previewSlides.forEach((s, i) => {
+                    const isCompleted = i < currentPreviewSlide ? 'completed' : '';
+                    const isActive = i === currentPreviewSlide ? 'active' : '';
+                    progressBarsHTML += `<div class="preview-progress-bar ${isCompleted} ${isActive}"><div class="preview-progress-fill"></div></div>`;
+                });
+                progressContainer.innerHTML = progressBarsHTML;
+            }
+        });
+    }
+
+    // Image Zoom and Pan Functions
+    function updateImageZoomPan(slideIndex) {
+        const zoom = document.getElementById(`slide_${slideIndex}_zoom`);
+        const panX = document.getElementById(`slide_${slideIndex}_pan_x`);
+        const panY = document.getElementById(`slide_${slideIndex}_pan_y`);
+
+        // Update display values
+        document.getElementById(`slide_${slideIndex}_zoom_value`).textContent = zoom.value + '%';
+        document.getElementById(`slide_${slideIndex}_pan_x_value`).textContent = panX.value + '%';
+        document.getElementById(`slide_${slideIndex}_pan_y_value`).textContent = panY.value + '%';
+
+        // Update preview
+        updatePreviewSlide(slideIndex);
+    }
+
+    function resetImageControls(slideIndex) {
+        const zoom = document.getElementById(`slide_${slideIndex}_zoom`);
+        const panX = document.getElementById(`slide_${slideIndex}_pan_x`);
+        const panY = document.getElementById(`slide_${slideIndex}_pan_y`);
+
+        // Reset to default values
+        zoom.value = 100;
+        panX.value = 50;
+        panY.value = 50;
+
+        // Update display values
+        document.getElementById(`slide_${slideIndex}_zoom_value`).textContent = '100%';
+        document.getElementById(`slide_${slideIndex}_pan_x_value`).textContent = '50%';
+        document.getElementById(`slide_${slideIndex}_pan_y_value`).textContent = '50%';
+
+        // Update preview
+        updatePreviewSlide(slideIndex);
+    }
+
+</script>
+{% endblock %}

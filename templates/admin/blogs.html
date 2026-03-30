@@ -1,0 +1,191 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Manage Blogs - Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fas fa-blog me-2"></i>Blogs List
+                        </h5>
+                        <a href="{{ url_for('admin_add_blog') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Add New Blog
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <form method="GET" action="{{ url_for('admin_blogs') }}" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Filter by Category</label>
+                                    <select name="category" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Categories</option>
+                                        {% for category in categories %}
+                                        <option value="{{ category.id }}"
+                                                {% if request.args.get('category') == category.id|string %}selected{% endif %}>
+                                            {{ category.name }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Filter by Status</label>
+                                    <select name="status" class="form-select" onchange="this.form.submit()">
+                                        <option value="">All Status</option>
+                                        <option value="active" {% if request.args.get('status') == 'active' %}selected{% endif %}>Active</option>
+                                        <option value="inactive" {% if request.args.get('status') == 'inactive' %}selected{% endif %}>Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-redo me-1"></i>Reset
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive table-scroll-container">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th style="width: 10%">Image</th>
+                                    <th style="width: 25%">Title</th>
+                                    <th style="width: 12%">Category</th>
+                                    <th style="width: 8%">Status</th>
+                                    <th style="width: 12%">Publish Date</th>
+                                    <th style="width: 12%">Created</th>
+                                    <th style="width: 16%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if blogs %}
+                                    {% for blog in blogs %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            {% if blog.image %}
+                                                <img src="{{ url_for('static', filename='uploads/blogs/' + blog.image) }}"
+                                                     alt="{{ blog.title }}"
+                                                     class="img-thumbnail"
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="bg-light d-flex align-items-center justify-content-center"
+                                                     style="width: 60px; height: 60px; border-radius: 4px;">
+                                                    <i class="fas fa-image text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">{{ blog.title }}</div>
+                                            {% if blog.meta_title %}
+                                                <small class="text-muted">{{ blog.meta_title[:50] }}...</small>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if blog.category %}
+                                                <span class="badge bg-info">{{ blog.category.name }}</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Uncategorized</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if blog.status %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ blog.publish_date.strftime('%Y-%m-%d') if blog.publish_date else 'N/A' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                {{ blog.created_at.strftime('%Y-%m-%d') if blog.created_at else 'N/A' }}
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a href="{{ url_for('blog_detail', slug=blog.slug) }}"
+                                                   class="btn btn-outline-success"
+                                                   title="View"
+                                                   target="_blank">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ url_for('admin_edit_blog', id=blog.id) }}"
+                                                   class="btn btn-outline-primary"
+                                                   title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button"
+                                                        class="btn btn-outline-danger"
+                                                        onclick="deleteBlog({{ blog.id }}, '{{ blog.title }}')"
+                                                        title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center py-5">
+                                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                            <p class="text-muted">No blogs found</p>
+                                            <a href="{{ url_for('admin_add_blog') }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-plus me-1"></i>Add Your First Blog
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the blog "<strong id="blogTitle"></strong>"?</p>
+                <p class="text-danger mb-0">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteBlog(blogId, blogTitle) {
+        document.getElementById('blogTitle').textContent = blogTitle;
+        document.getElementById('deleteForm').action = "{{ url_for('admin_delete_blog', id=0) }}".replace('0', blogId);
+
+        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+</script>
+{% endblock %}

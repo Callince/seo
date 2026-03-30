@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+{% block title %}Meta Search{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4 text-dark">Meta Tags Analysis Tool</h1>
+    
+    <div class="card mb-4 compact-card">
+        <div class="card-header py-2 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 text-dark">Search for Meta Tags</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('meta_search') }}" id="metaSearchForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+              <!-- Mobile search section (hidden on desktop) -->
+                <div class="mobile-search-container d-none">
+                    <div class="mb-2">
+                        <label for="mobile-url" class="text-dark mb-1">Enter URL to analyze:</label>
+                    </div>
+                    <div class="d-flex w-100">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control search-input" id="mobile-url" name="mobile-url" 
+                                   placeholder="Enter a website URL" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Desktop search section (hidden on mobile) -->
+                <div class="desktop-search-container">
+                    <div class="form-group mb-3 d-flex align-items-center">
+                        <label for="url" class="me-2 mb-0 text-dark" style="white-space: nowrap;">Enter URL to analyze:</label>
+                        <div class="search-bar input-group">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                            <input type="text" class="form-control search-input" id="url" name="url" 
+                                   placeholder="Enter a website URL (http:// or https:// will be added automatically)" value="{{ url_input }}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input green-checkbox" type="checkbox" id="respect_robots" name="respect_robots" checked disabled>
+                    <label class="form-check-label text-dark" for="respect_robots">
+                        Respect robots.txt rules (mandatory)
+                    </label>
+                    <small class="form-text text-muted d-block">
+                        This will analyze the site's robots.txt file and filter out any disallowed URLs
+                    </small>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-primary compact-btn">
+                        <i class="fas fa-search"></i> Analyze URL
+                    </button>
+                    <button type="button" class="btn btn-success compact-btn" id="analyzeThisLinkBtn">
+                        <i class="fas fa-chart-bar"></i> Analyze this link
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Include robots.txt information -->
+    {% include '_robots_display.html' %}
+    
+    <!-- Results container -->
+    <div id="results-container">
+        {% if links_data %}
+            <div class="card mb-4 compact-card">
+                <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-dark">Home Links <span class="badge bg-primary custom-primary-badge">{{ links_data.home|length }}</span> links found</h5>
+                    <a href="{{ url_for('download_url', url=url_input, respect_robots='true' if request.form.get('respect_robots') == 'on' else 'false') }}" class="btn btn-primary compact-btn">
+                        <i class="fas fa-download"></i> Download Links CSV
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if links_data.home %}
+                        <div class="home-links-container compact">
+                            <div class="list-group" id="homeLinks">
+                                {% for link in links_data.home %}
+                                <div class="list-group-item link-item py-2">
+                                    <div class="link-text small" title="{{ link }}">{{ link|truncate(70) }}</div>
+                                    <div class="action-buttons">
+                                      <a href="{{ url_for('meta_detail', link=link) }}" class="badge bg-secondary action-badge text-decoration-none" title="Analyze Meta Tags">
+                                          <i class="fas fa-tags fa-sm"></i><p class="d-inline">&nbsp;Analyze</p>
+                                      </a>
+                                      <a href="{{ link }}" class="badge bg-secondary action-badge text-decoration-none" target="_blank" title="Open link in new tab">
+                                          <i class="fas fa-external-link-alt fa-sm"></i><p class="d-inline">&nbsp;Link</p>
+                                      </a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">No home links found.</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Back to Home Button - Mobile Only -->
+            <div class="text-center mt-4 mobile-only">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary compact-btn">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search-tools.css') }}">
+
+<!-- Replace the existing script block in meta_search.html with this improved version -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('metaSearchForm');
+    const urlInput = document.getElementById('url');
+    const mobileUrlInput = document.getElementById('mobile-url');
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const respectRobotsCheckbox = document.getElementById('respect_robots');
+    const submitButton = document.querySelector('button[type="submit"]');
+    
+    // Simple loading functions (same as working image_search)
+    function showLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
+        }
+    }
+    
+    function hideLoading() {
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if (submitButton) {
+                submitButton.disabled = false;
+            }
+        }
+    }
+    
+    // URL Input Modifier
+    function ensureHttpsPrefix(url) {
+        url = url.trim();
+        if (!url) return '';
+        
+        url = url.replace(/^(https?:\/\/)?(www\.)?/i, '');
+        
+        if (url.indexOf('.') === -1) {
+            return url;
+        }
+        
+        const preferHttp = url.includes('http:') || url.toLowerCase().includes('http://');
+        return preferHttp ? 'http://' + url : 'https://' + url;
+    }
+    
+    // Mobile/Desktop form display
+    function setFormDisplay() {
+        const isMobile = window.innerWidth <= 768;
+        const mobileContainer = document.querySelector('.mobile-search-container');
+        const desktopContainer = document.querySelector('.desktop-search-container');
+        
+        if (isMobile) {
+            mobileContainer.classList.remove('d-none');
+            desktopContainer.classList.add('d-none');
+        } else {
+            mobileContainer.classList.add('d-none');
+            desktopContainer.classList.remove('d-none');
+        }
+    }
+    
+    setFormDisplay();
+    window.addEventListener('resize', setFormDisplay);
+    
+    // Sync inputs
+    if (urlInput && mobileUrlInput) {
+        urlInput.addEventListener('input', function() {
+            mobileUrlInput.value = this.value;
+        });
+        
+        mobileUrlInput.addEventListener('input', function() {
+            urlInput.value = this.value;
+        });
+    }
+    
+    // URL formatting
+    function formatUrlInput(input, otherInput) {
+        if (!input) return;
+        
+        input.addEventListener('input', function() {
+            const cursorPos = this.selectionStart;
+            const originalLength = this.value.length;
+            
+            if (this.value.length > 3 && this.value.indexOf('.') !== -1) {
+                if (!this.value.startsWith('http://') && !this.value.startsWith('https://') && 
+                    !this.value.endsWith('http://') && !this.value.endsWith('https://')) {
+                    
+                    const isAtEnd = cursorPos === originalLength;
+                    const formattedValue = ensureHttpsPrefix(this.value);
+                    
+                    if (formattedValue !== this.value) {
+                        this.value = formattedValue;
+                        if (otherInput) otherInput.value = formattedValue;
+                        
+                        if (isAtEnd) {
+                            this.selectionStart = this.selectionEnd = this.value.length;
+                        } else {
+                            const diff = this.value.length - originalLength;
+                            this.selectionStart = this.selectionEnd = cursorPos + diff;
+                        }
+                    }
+                }
+            }
+        });
+        
+        input.addEventListener('blur', function() {
+            this.value = ensureHttpsPrefix(this.value);
+            if (otherInput) otherInput.value = this.value;
+        });
+    }
+    
+    formatUrlInput(urlInput, mobileUrlInput);
+    formatUrlInput(mobileUrlInput, urlInput);
+    
+    // Robots checkbox
+    if (respectRobotsCheckbox) {
+        respectRobotsCheckbox.addEventListener('change', function(e) {
+            e.preventDefault();
+            this.checked = true;
+        });
+    }
+    
+    // Meta detail links (same pattern as image_search)
+    document.addEventListener('click', function(e) {
+        const metaLink = e.target.closest('a[href*="meta_detail"]');
+        if (metaLink) {
+            const icon = metaLink.querySelector('i');
+            if (icon) {
+                icon.classList.add('spin-icon');
+            }
+            showLoading();
+        }
+    });
+
+    // Handle "Analyze this link" button click
+    const analyzeThisLinkBtn = document.getElementById('analyzeThisLinkBtn');
+    if (analyzeThisLinkBtn) {
+        analyzeThisLinkBtn.addEventListener('click', function() {
+            // Get the active input based on view
+            const activeInput = window.innerWidth <= 768 ? mobileUrlInput : urlInput;
+            const url = ensureHttpsPrefix(activeInput.value.trim());
+
+            if (!url) {
+                alert('Please enter a URL to analyze');
+                return;
+            }
+
+            // Show loading overlay
+            loadingOverlay.style.display = 'flex';
+
+            // Redirect to meta_detail page with the URL (use 'link' parameter)
+            window.location.href = "{{ url_for('meta_detail') }}?link=" + encodeURIComponent(url);
+        });
+    }
+
+    // Form submission (FIXED: Use same approach as working image_search)
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showLoading();
+            
+            setTimeout(() => {
+                const activeInput = window.innerWidth <= 768 ? mobileUrlInput : urlInput;
+                const url = ensureHttpsPrefix(activeInput.value);
+                activeInput.value = url;
+                
+                // Use native form submission instead of fetch (more reliable)
+                form.submit();
+            }, 100);
+            
+            return false;
+        });
+    }
+    
+    // Hide loading on page navigation
+    window.addEventListener('pageshow', function(event) {
+        hideLoading();
+    });
+    
+    // Failsafe timeout
+    setTimeout(function() {
+        hideLoading();
+    }, 30000);
+    
+    // Add missing spin-icon animation class
+    const style = document.createElement('style');
+    style.textContent = `
+        .spin-icon {
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
+{% endblock %}
