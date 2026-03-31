@@ -71,13 +71,13 @@
       "author": {
         "@type": "Organization",
         "name": "SEODADA",
-        "url": "{{ url_for('index', _external=True) }}"
+        "url": "{{ url_for('seo_tools.index', _external=True) }}"
       },
       {% endif %}
       "publisher": {
         "@type": "Organization",
         "name": "SEODADA",
-        "url": "{{ url_for('index', _external=True) }}",
+        "url": "{{ url_for('seo_tools.index', _external=True) }}",
         "logo": {
           "@type": "ImageObject",
           "url": "{{ url_for('static', filename='uploads/' + website_settings.website_logo_file, _external=True) if website_settings.website_logo_file else url_for('static', filename='images/logo.png', _external=True) }}"
@@ -107,13 +107,13 @@
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "{{ url_for('landing', _external=True) }}"
+          "item": "{{ url_for('public.landing', _external=True) }}"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Blog",
-          "item": "{{ url_for('public_blogs', _external=True) }}"
+          "item": "{{ url_for('public.public_blogs', _external=True) }}"
         },
         {
           "@type": "ListItem",
@@ -165,19 +165,19 @@
 <div class="main-container">
     <!-- Breadcrumbs -->
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <a href="{{ url_for('public.landing') }}"><i class="fas fa-home"></i> Home</a>
         <span class="separator"><i class="fas fa-chevron-right"></i></span>
-        <a href="{{ url_for('public_blogs') }}">Blog</a>
+        <a href="{{ url_for('public.public_blogs') }}">Blog</a>
         {% if blog.category %}
         <span class="separator"><i class="fas fa-chevron-right"></i></span>
-        <a href="{{ url_for('public_blogs', category=blog.category.id) }}">{{ blog.category.name }}</a>
+        <a href="{{ url_for('public.public_blogs', category=blog.category.id) }}">{{ blog.category.name }}</a>
         {% endif %}
         <span class="separator"><i class="fas fa-chevron-right"></i></span>
         <span class="current">{{ blog.title|truncate(40, True, '...') }}</span>
     </nav>
 
     <!-- Back Button -->
-    <a href="{{ url_for('public_blogs') }}" class="back-button">
+    <a href="{{ url_for('public.public_blogs') }}" class="back-button">
         <i class="fas fa-arrow-left"></i>Back to All Posts
     </a>
 
@@ -296,7 +296,7 @@
         <h3><i class="fas fa-newspaper me-2"></i>Related Articles</h3>
         <div class="related-grid">
             {% for related in related_blogs %}
-            <a href="{{ url_for('blog_detail', slug=related.slug) }}" class="related-card" style="text-decoration: none;">
+            <a href="{{ url_for('public.blog_detail', slug=related.slug) }}" class="related-card" style="text-decoration: none;">
                 {% if related.image %}
                 <img src="{{ url_for('static', filename='uploads/blogs/' + related.image) }}"
                      alt="{{ related.title }}"

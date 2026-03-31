@@ -48,7 +48,7 @@
         {% else %}
             <div class="p-4 text-center">
                 <p class="mb-3">Please login to access the admin panel</p>
-                <a href="{{ url_for('admin_login') }}" class="btn btn-primary w-100">
+                <a href="{{ url_for('admin.admin_login') }}" class="btn btn-primary w-100">
                     <i class="fas fa-sign-in-alt me-2"></i> Login
                 </a>
             </div>
@@ -67,7 +67,7 @@
             <div class="sidebar-heading">Main</div>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' else '' }}" href="{{ url_for('admin_dashboard') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_dashboard' else '' }}" href="{{ url_for('admin.admin_dashboard') }}">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
@@ -79,7 +79,7 @@
             <div class="sidebar-heading">Roles</div>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'manage_roles' else '' }}" href="{{ url_for('manage_roles') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'manage_roles' else '' }}" href="{{ url_for('admin.manage_roles') }}">
                         <i class="fas fa-user-shield"></i> Role Management
                     </a>
                 </li>
@@ -92,7 +92,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_website_settings' else '' }}"
-                       href="{{ url_for('admin_website_settings') }}">
+                       href="{{ url_for('admin.admin_website_settings') }}">
                         <i class="fas fa-cog"></i> Website Settings
                     </a>
                 </li>
@@ -105,14 +105,14 @@
             <ul class="nav flex-column">
                 {% if 'subscription_management' in admin_permissions %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscriptions' else '' }}" href="{{ url_for('admin_subscriptions') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscriptions' else '' }}" href="{{ url_for('admin.admin_subscriptions') }}">
                         <i class="fas fa-tag"></i> Subscription Plans
                     </a>
                 </li>
                 {% endif %}
                 {% if 'subscribed_users_view' in admin_permissions %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscribed_users' else '' }}" href="{{ url_for('admin_subscribed_users') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_subscribed_users' else '' }}" href="{{ url_for('admin.admin_subscribed_users') }}">
                         <i class="fas fa-users-cog"></i> Subscribed Users
                     </a>
                 </li>
@@ -126,14 +126,14 @@
             <ul class="nav flex-column">
                 {% if 'user_management' in admin_permissions %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_users' else '' }}" href="{{ url_for('admin_users') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_users' else '' }}" href="{{ url_for('admin.admin_users') }}">
                         <i class="fas fa-user"></i> User Management
                     </a>
                 </li>
                 {% endif %}
                 {% if 'search_history' in admin_permissions %}
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_search_history' else '' }}" href="{{ url_for('admin_search_history') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_search_history' else '' }}" href="{{ url_for('admin.admin_search_history') }}">
                         <i class="fas fa-history"></i> Search History
                     </a>
                 </li>
@@ -146,7 +146,7 @@
             <div class="sidebar-heading">Finance</div>
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_payments' else '' }}" href="{{ url_for('admin_payments') }}">
+                    <a class="nav-link {{ 'active' if request.endpoint == 'admin_payments' else '' }}" href="{{ url_for('admin.admin_payments') }}">
                         <i class="fas fa-credit-card"></i> Payments
                     </a>
                 </li>
@@ -159,7 +159,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint == 'admin_contact_submissions' else '' }}"
-                    href="{{ url_for('admin_contact_submissions') }}">
+                    href="{{ url_for('admin.admin_contact_submissions') }}">
                         <i class="fas fa-envelope"></i> Contact Submissions
                     </a>
                 </li>
@@ -173,7 +173,7 @@
                 {% if 'blog_categories' in admin_permissions %}
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint in ['admin_blog_categories', 'admin_add_blog_category', 'admin_edit_blog_category'] else '' }}"
-                       href="{{ url_for('admin_blog_categories') }}">
+                       href="{{ url_for('admin.admin_blog_categories') }}">
                         <i class="fas fa-folder"></i> Blog Categories
                     </a>
                 </li>
@@ -181,7 +181,7 @@
                 {% if 'blog_management' in admin_permissions %}
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint in ['admin_blogs', 'admin_add_blog', 'admin_edit_blog'] else '' }}"
-                       href="{{ url_for('admin_blogs') }}">
+                       href="{{ url_for('admin.admin_blogs') }}">
                         <i class="fas fa-blog"></i> Manage Blogs
                     </a>
                 </li>
@@ -189,7 +189,7 @@
                 {% if 'webstory_management' in admin_permissions %}
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint in ['admin_webstories', 'admin_add_webstory', 'admin_edit_webstory'] else '' }}"
-                       href="{{ url_for('admin_webstories') }}">
+                       href="{{ url_for('admin.admin_webstories') }}">
                         <i class="fas fa-book-open"></i> Web Stories
                     </a>
                 </li>
@@ -203,7 +203,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link {{ 'active' if request.endpoint in ['admin_email_logs', 'admin_email_log_detail'] else '' }}"
-                    href="{{ url_for('admin_email_logs') }}">
+                    href="{{ url_for('admin.admin_email_logs') }}">
                         <i class="fas fa-mail-bulk"></i> Email Logs
                     </a>
                 </li>
@@ -229,7 +229,7 @@
             </div>
 
             <div class="d-flex gap-2">
-                <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-danger btn-sm">
+                <a href="{{ url_for('admin.admin_logout') }}" class="btn btn-outline-danger btn-sm">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="d-none d-sm-inline ms-1">Logout</span>
                 </a>

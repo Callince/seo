@@ -12,7 +12,7 @@
   <!-- Main auth content -->
   <div class="auth-container auth-container--wide">
     <div class="auth-logo">
-      <a href="{{ url_for('landing') }}" class="auth-logo-link">
+      <a href="{{ url_for('public.landing') }}" class="auth-logo-link">
         {% if website_settings.website_logo_file %}
             <!-- Admin uploaded logo -->
             <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <form id="signupForm" class="auth-form" method="post" action="{{ url_for('signup') }}">
+      <form id="signupForm" class="auth-form" method="post" action="{{ url_for('auth.signup') }}">
         <!-- Add CSRF token -->
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
         
@@ -152,7 +152,7 @@
             <div class="form-check">
               <input type="checkbox" id="termsCheck" name="termsCheck" class="form-check-input" required style="width: auto; margin-right: 0.75rem;">
               <label for="termsCheck" class="form-check-label">
-                I agree to the <a href="{{ url_for('terms') }}" target="_blank">Terms of Service</a> and <a href="{{ url_for('privacy') }}" target="_blank">Privacy Policy</a>
+                I agree to the <a href="{{ url_for('public.terms') }}" target="_blank">Terms of Service</a> and <a href="{{ url_for('public.privacy') }}" target="_blank">Privacy Policy</a>
               </label>
             </div>
             <div id="termsCheckFeedback" class="feedback-text text-danger" style="display: none;"></div>
@@ -174,7 +174,7 @@
     </div>
 
     <div class="auth-footer">
-      <p>Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+      <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
     </div>
   </div>
 

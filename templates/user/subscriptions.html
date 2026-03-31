@@ -178,7 +178,7 @@
                                     </button>
                                     
                                     <!-- View Details Button -->
-                                    <a href="{{ url_for('subscription_details', subscription_id=sub.id) }}"
+                                    <a href="{{ url_for('payment.subscription_details', subscription_id=sub.id) }}"
                                     onclick="console.log('Navigating to subscription details:', {{ sub.id }})"
                                     class="border-2 text-primary hover:bg-primary hover:text-white px-4 py-2 rounded-lg font-medium transition-colors text-center"
                                     style="border-color: #273879; color: #273879; display: flex; align-items: center; justify-content: center; min-height: 44px; width: 100%;">
@@ -690,7 +690,7 @@
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         {% if token_purchase.status == 'completed' and token_purchase.invoice_number %}
-                                            <a href="{{ url_for('download_token_invoice', token_purchase_id=token_purchase.id) }}" 
+                                            <a href="{{ url_for('payment.download_token_invoice', token_purchase_id=token_purchase.id) }}" 
                                                class="inline-flex items-center px-3 py-1 border text-primary text-xs font-medium rounded hover:bg-primary hover:text-white transition-colors"
                                                style="border-color: #273879; color: #273879;"
                                                target="_blank">
@@ -861,13 +861,13 @@
                                     <td class="px-4 py-3 whitespace-nowrap">
                                         {% if payment.invoice_available %}
                                             {% if payment.type == 'subscription' %}
-                                                <a href="{{ url_for('download_invoice', payment_id=payment.payment_id) }}" 
+                                                <a href="{{ url_for('payment.download_invoice', payment_id=payment.payment_id) }}" 
                                                    class="inline-flex items-center px-3 py-1 border text-xs font-medium rounded hover:bg-primary hover:text-white transition-colors"
                                                    style="border-color: #273879; color: #273879;">
                                                     <i class="fas fa-file-invoice mr-1"></i> Invoice
                                                 </a>
                                             {% else %}
-                                                <a href="{{ url_for('download_token_invoice', token_purchase_id=payment.payment_id) }}" 
+                                                <a href="{{ url_for('payment.download_token_invoice', token_purchase_id=payment.payment_id) }}" 
                                                    class="inline-flex items-center px-3 py-1 border text-xs font-medium rounded hover:bg-primary hover:text-white transition-colors"
                                                    style="border-color: #273879; color: #273879;">
                                                     <i class="fas fa-file-invoice mr-1"></i> Invoice
@@ -1148,7 +1148,7 @@ function processCancelSubscription() {
     if (currentSubscriptionId) {
         const form = document.createElement('form');
         form.method = 'GET';
-        form.action = "{{ url_for('cancel_subscription', subscription_id=0) }}".replace("0", currentSubscriptionId);
+        form.action = "{{ url_for('payment.cancel_subscription', subscription_id=0) }}".replace("0", currentSubscriptionId);
         
         document.body.appendChild(form);
         form.submit();
@@ -1159,7 +1159,7 @@ function processCancelSubscription() {
 function toggleAutoRenewal(subscriptionId, newStatus) {
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = "{{ url_for('toggle_auto_renew', subscription_id=0, status=0) }}".replace("0/0", subscriptionId + "/" + newStatus);
+    form.action = "{{ url_for('payment.toggle_auto_renew', subscription_id=0, status=0) }}".replace("0/0", subscriptionId + "/" + newStatus);
     
     const csrfToken = document.createElement('input');
     csrfToken.type = 'hidden';
@@ -1194,7 +1194,7 @@ function processSubscription() {
         
         const form = document.createElement('form');
         form.method = 'post';
-        form.action = "{{ url_for('subscribe', plan_id=0) }}".replace("0", currentPlanId);
+        form.action = "{{ url_for('payment.subscribe', plan_id=0) }}".replace("0", currentPlanId);
         
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';

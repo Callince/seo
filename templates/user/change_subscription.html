@@ -179,14 +179,14 @@
       </div>
       
       <div class="flex items-center space-x-4">
-        <form action="{{ url_for('change_subscription', new_plan_id=new_plan.S_ID) }}" method="post">
+        <form action="{{ url_for('payment.change_subscription', new_plan_id=new_plan.S_ID) }}" method="post">
           <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
           <button type="submit" class="py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
             <i class="fas fa-check-circle mr-2"></i> Confirm Change
           </button>
         </form>
         
-        <a href="{{ url_for('user_subscriptions') }}" class="py-3 px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition duration-200 flex items-center">
+        <a href="{{ url_for('payment.user_subscriptions') }}" class="py-3 px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition duration-200 flex items-center">
           <i class="fas fa-times-circle mr-2"></i> Cancel
         </a>
       </div>

@@ -80,7 +80,7 @@
       <p>Enter your email to receive a password reset link</p>
     </div>
 
-    <form id="resetPasswordForm" class="auth-form" method="post" action="{{ url_for('reset_request') }}">
+    <form id="resetPasswordForm" class="auth-form" method="post" action="{{ url_for('auth.reset_request') }}">
       <!-- Add CSRF token -->
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
       <!-- Token input (hidden unless URL has token) -->
@@ -119,7 +119,7 @@
   </div>
 
   <div class="back-to-login">
-    <a href="{{ url_for('login') }}">
+    <a href="{{ url_for('auth.login') }}">
       <i class="fas fa-arrow-left"></i>
       Back to Login
     </a>

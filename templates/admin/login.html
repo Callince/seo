@@ -312,7 +312,7 @@
                     {% endif %}
                 {% endwith %}
                 
-                <form id="loginForm" method="POST" action="{{ url_for('admin_login') }}">
+                <form id="loginForm" method="POST" action="{{ url_for('admin.admin_login') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <div class="mb-4">
                         <label for="email" class="form-label">Email Address</label>

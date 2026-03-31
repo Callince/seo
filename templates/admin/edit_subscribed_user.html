@@ -14,7 +14,7 @@
     </div>
     
     <div class="action-buttons mb-4">
-        <a href="{{ url_for('admin_subscribed_users') }}" class="btn btn-outline-secondary">
+        <a href="{{ url_for('admin.admin_subscribed_users') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2"></i>Back to List
         </a>
     </div>
@@ -24,7 +24,7 @@
             <i class="fas fa-pen-to-square me-2"></i> Subscription Details
         </div>
         <div class="card-body">
-            <form action="{{ url_for('admin_edit_subscribed_user', id=subscribed_user.id) }}" method="POST">
+            <form action="{{ url_for('admin.admin_edit_subscribed_user', id=subscribed_user.id) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="row mb-4">
                     <div class="col-md-6">

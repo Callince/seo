@@ -10,7 +10,7 @@
             <h5 class="mb-0 text-dark">Search for Headings</h5>
         </div>
         <div class="card-body">
-            <form method="post" action="{{ url_for('h_search') }}" id="headingSearchForm">
+            <form method="post" action="{{ url_for('seo_tools.h_search') }}" id="headingSearchForm">
                <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
               <!-- Mobile search section (hidden on desktop) -->
                 <div class="mobile-search-container d-none">
@@ -69,7 +69,7 @@
             <div class="card mb-4 compact-card">
                 <div class="card-header py-2 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-dark">Home Links <span class="badge bg-primary custom-primary-badge">{{ links_data.home|length }}</span> links found</h5>
-                    <a href="{{ url_for('download_url', url=url_input, respect_robots='true' if request.form.get('respect_robots') == 'on' else 'false') }}" class="btn btn-primary compact-btn">
+                    <a href="{{ url_for('seo_tools.download_url', url=url_input, respect_robots='true' if request.form.get('respect_robots') == 'on' else 'false') }}" class="btn btn-primary compact-btn">
                         <i class="fas fa-download"></i> Download Links CSV
                     </a>
                 </div>
@@ -81,7 +81,7 @@
                                 <div class="list-group-item link-item py-2">
                                     <div class="link-text small" title="{{ link }}">{{ link|truncate(70) }}</div>
                                     <div class="action-buttons">
-                                      <a href="{{ url_for('h_detail', url=link) }}" class="badge bg-secondary action-badge text-decoration-none" title="Analyze Headings">
+                                      <a href="{{ url_for('seo_tools.h_detail', url=link) }}" class="badge bg-secondary action-badge text-decoration-none" title="Analyze Headings">
                                           <i class="fas fa-heading"></i><p class="d-inline">&nbsp;Analyze</p>
                                       </a>
                                       <a href="{{ link }}" class="badge bg-secondary action-badge text-decoration-none" target="_blank" title="Open link in new tab">
@@ -101,7 +101,7 @@
 
             <!-- Back to Home Button - Mobile Only -->
             <div class="text-center mt-4 mobile-only">
-                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary compact-btn">
+                <a href="{{ url_for('seo_tools.index') }}" class="btn btn-outline-secondary compact-btn">
                     <i class="fas fa-home"></i> Back to Home
                 </a>
             </div>
@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingOverlay.style.display = 'flex';
 
             // Redirect to h_detail page with the URL
-            window.location.href = "{{ url_for('h_detail') }}?url=" + encodeURIComponent(url);
+            window.location.href = "{{ url_for('seo_tools.h_detail') }}?url=" + encodeURIComponent(url);
         });
     }
 

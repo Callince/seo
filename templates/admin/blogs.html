@@ -12,7 +12,7 @@
                         <h5 class="mb-0 text-primary">
                             <i class="fas fa-blog me-2"></i>Blogs List
                         </h5>
-                        <a href="{{ url_for('admin_add_blog') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url_for('admin.admin_add_blog') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add New Blog
                         </a>
                     </div>
@@ -21,7 +21,7 @@
                     <!-- Filters -->
                     <div class="row mb-4">
                         <div class="col-md-12">
-                            <form method="GET" action="{{ url_for('admin_blogs') }}" class="row g-3">
+                            <form method="GET" action="{{ url_for('admin.admin_blogs') }}" class="row g-3">
                                 <div class="col-md-4">
                                     <label class="form-label fw-semibold">Filter by Category</label>
                                     <select name="category" class="form-select" onchange="this.form.submit()">
@@ -43,7 +43,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 d-flex align-items-end">
-                                    <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ url_for('admin.admin_blogs') }}" class="btn btn-outline-secondary">
                                         <i class="fas fa-redo me-1"></i>Reset
                                     </a>
                                 </div>
@@ -115,13 +115,13 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ url_for('blog_detail', slug=blog.slug) }}"
+                                                <a href="{{ url_for('public.blog_detail', slug=blog.slug) }}"
                                                    class="btn btn-outline-success"
                                                    title="View"
                                                    target="_blank">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="{{ url_for('admin_edit_blog', id=blog.id) }}"
+                                                <a href="{{ url_for('admin.admin_edit_blog', id=blog.id) }}"
                                                    class="btn btn-outline-primary"
                                                    title="Edit">
                                                     <i class="fas fa-edit"></i>
@@ -141,7 +141,7 @@
                                         <td colspan="8" class="text-center py-5">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">No blogs found</p>
-                                            <a href="{{ url_for('admin_add_blog') }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ url_for('admin.admin_add_blog') }}" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-plus me-1"></i>Add Your First Blog
                                             </a>
                                         </td>
@@ -182,7 +182,7 @@
 <script>
     function deleteBlog(blogId, blogTitle) {
         document.getElementById('blogTitle').textContent = blogTitle;
-        document.getElementById('deleteForm').action = "{{ url_for('admin_delete_blog', id=0) }}".replace('0', blogId);
+        document.getElementById('deleteForm').action = "{{ url_for('admin.admin_delete_blog', id=0) }}".replace('0', blogId);
 
         const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
         modal.show();

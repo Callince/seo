@@ -138,43 +138,43 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="mobileNavDropdown">
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}">
+          <a class="dropdown-item {% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('seo_tools.index') }}">
             <i class="fas fa-home" aria-hidden="true"></i>
             Dashboard
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'url_search' %}active{% endif %}" href="{{ url_for('url_search') }}">
+          <a class="dropdown-item {% if request.endpoint == 'url_search' %}active{% endif %}" href="{{ url_for('seo_tools.url_search') }}">
             <i class="fas fa-search" aria-hidden="true"></i>
             URL Analysis
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'h_search' %}active{% endif %}" href="{{ url_for('h_search') }}">
+          <a class="dropdown-item {% if request.endpoint == 'h_search' %}active{% endif %}" href="{{ url_for('seo_tools.h_search') }}">
             <i class="fas fa-heading" aria-hidden="true"></i>
             Heading Analysis
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'keyword_search' %}active{% endif %}" href="{{ url_for('keyword_search') }}">
+          <a class="dropdown-item {% if request.endpoint == 'keyword_search' %}active{% endif %}" href="{{ url_for('seo_tools.keyword_search') }}">
             <i class="fas fa-key" aria-hidden="true"></i>
             Keyword Analysis
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'image_search' %}active{% endif %}" href="{{ url_for('image_search') }}">
+          <a class="dropdown-item {% if request.endpoint == 'image_search' %}active{% endif %}" href="{{ url_for('seo_tools.image_search') }}">
             <i class="fas fa-images" aria-hidden="true"></i>
             Image Analysis
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'meta_search' %}active{% endif %}" href="{{ url_for('meta_search') }}">
+          <a class="dropdown-item {% if request.endpoint == 'meta_search' %}active{% endif %}" href="{{ url_for('seo_tools.meta_search') }}">
             <i class="fas fa-tags" aria-hidden="true"></i>
             Meta Analysis
           </a>
         </li>
         <li>
-          <a class="dropdown-item {% if request.endpoint == 'site_structure' %}active{% endif %}" href="{{ url_for('site_structure') }}">
+          <a class="dropdown-item {% if request.endpoint == 'site_structure' %}active{% endif %}" href="{{ url_for('seo_tools.site_structure') }}">
             <i class="fas fa-sitemap" aria-hidden="true"></i>
             Sitemap Analysis
           </a>
@@ -192,7 +192,7 @@
       <ul class="dropdown-menu" aria-labelledby="authDropdown" role="menu">
         {% if request.endpoint != 'dashboard' %}
         <li>
-          <a class="dropdown-item" href="{{ url_for('index') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item" href="{{ url_for('seo_tools.index') }}" role="menuitem" tabindex="0">
             <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Dashboard
           </a>
         </li>
@@ -200,7 +200,7 @@
         
         {% if request.endpoint != 'profile' %}
         <li>
-          <a class="dropdown-item" href="{{ url_for('profile') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item" href="{{ url_for('auth.profile') }}" role="menuitem" tabindex="0">
             <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
           </a>
         </li>
@@ -208,7 +208,7 @@
         
         {% if request.endpoint != 'user_subscriptions' %}
         <li>
-          <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item" href="{{ url_for('payment.user_subscriptions') }}" role="menuitem" tabindex="0">
             <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
           </a>
         </li>
@@ -216,7 +216,7 @@
         
         <li><hr class="dropdown-divider"></li>
         <li>
-          <a class="dropdown-item text-danger" href="{{ url_for('logout') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}" role="menuitem" tabindex="0">
             <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
           </a>
         </li>
@@ -224,12 +224,12 @@
       {% else %}
       <ul class="dropdown-menu" aria-labelledby="authDropdown" role="menu">
         <li>
-          <a class="dropdown-item" href="{{ url_for('login') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item" href="{{ url_for('auth.login') }}" role="menuitem" tabindex="0">
             <i class="fas fa-sign-in-alt me-2" aria-hidden="true"></i>Login
           </a>
         </li>
         <li>
-          <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+          <a class="dropdown-item" href="{{ url_for('payment.user_subscriptions') }}" role="menuitem" tabindex="0">
             <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
           </a>
         </li>
@@ -242,49 +242,49 @@
   <nav class="sidebar" id="sidebar">
     <div class="nav-list">
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" aria-label="Dashboard" data-page="index">
+        <a href="{{ url_for('seo_tools.index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" aria-label="Dashboard" data-page="index">
           <i class="nav-icon fas fa-home" aria-hidden="true"></i>
           <span class="nav-text">Dashboard</span>
           <span class="tooltip">Dashboard</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('url_search') }}" class="nav-link {% if request.endpoint == 'url_search' %}active{% endif %}" aria-label="URL Analysis" data-page="url_search">
+        <a href="{{ url_for('seo_tools.url_search') }}" class="nav-link {% if request.endpoint == 'url_search' %}active{% endif %}" aria-label="URL Analysis" data-page="url_search">
           <i class="nav-icon fas fa-search" aria-hidden="true"></i>
           <span class="nav-text">URL Analysis</span>
           <span class="tooltip">URL Analysis</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('h_search') }}" class="nav-link {% if request.endpoint == 'h_search' %}active{% endif %}" aria-label="Heading Analysis" data-page="h_search">
+        <a href="{{ url_for('seo_tools.h_search') }}" class="nav-link {% if request.endpoint == 'h_search' %}active{% endif %}" aria-label="Heading Analysis" data-page="h_search">
           <i class="nav-icon fas fa-heading" aria-hidden="true"></i>
           <span class="nav-text">Heading Analysis</span>
           <span class="tooltip">Heading Analysis</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('keyword_search') }}" class="nav-link {% if request.endpoint == 'keyword_search' %}active{% endif %}" aria-label="Keyword Analysis" data-page="keyword_search">
+        <a href="{{ url_for('seo_tools.keyword_search') }}" class="nav-link {% if request.endpoint == 'keyword_search' %}active{% endif %}" aria-label="Keyword Analysis" data-page="keyword_search">
           <i class="nav-icon fas fa-key" aria-hidden="true"></i>
           <span class="nav-text">Keyword Analysis</span>
           <span class="tooltip">Keyword Analysis</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('image_search') }}" class="nav-link {% if request.endpoint == 'image_search' %}active{% endif %}" aria-label="Image Analysis" data-page="image_search">
+        <a href="{{ url_for('seo_tools.image_search') }}" class="nav-link {% if request.endpoint == 'image_search' %}active{% endif %}" aria-label="Image Analysis" data-page="image_search">
           <i class="nav-icon fas fa-images" aria-hidden="true"></i>
           <span class="nav-text">Image Analysis</span>
           <span class="tooltip">Image Analysis</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('meta_search') }}" class="nav-link {% if request.endpoint == 'meta_search' %}active{% endif %}" aria-label="Meta Analysis" data-page="meta_search">
+        <a href="{{ url_for('seo_tools.meta_search') }}" class="nav-link {% if request.endpoint == 'meta_search' %}active{% endif %}" aria-label="Meta Analysis" data-page="meta_search">
           <i class="nav-icon fas fa-tags" aria-hidden="true"></i>
           <span class="nav-text">Meta Analysis</span>
           <span class="tooltip">Meta Analysis</span>
         </a>
       </div>
       <div class="nav-item" tabindex="0">
-        <a href="{{ url_for('site_structure') }}" class="nav-link {% if request.endpoint == 'site_structure' %}active{% endif %}" aria-label="Sitemap Analysis" data-page="site_structure">
+        <a href="{{ url_for('seo_tools.site_structure') }}" class="nav-link {% if request.endpoint == 'site_structure' %}active{% endif %}" aria-label="Sitemap Analysis" data-page="site_structure">
           <i class="nav-icon fas fa-sitemap" aria-hidden="true"></i>
           <span class="nav-text">Sitemap Analysis</span>
           <span class="tooltip">Sitemap Analysis</span>
@@ -316,9 +316,9 @@
     <div class="footer-container">
       <div class="footer-bottom">
         <p>&copy; <span id="currentYear"></span> Web Analyzer. All rights reserved. &nbsp;|&nbsp;
-          <a href="{{url_for('privacy')}}">Privacy Policy</a> &nbsp;|&nbsp;
-          <a href="{{url_for('terms')}}">Terms of Service</a> &nbsp;|&nbsp;
-          <a href="{{url_for('cookie_policy')}}">Cookie Policy</a>
+          <a href="{{url_for('public.privacy')}}">Privacy Policy</a> &nbsp;|&nbsp;
+          <a href="{{url_for('public.terms')}}">Terms of Service</a> &nbsp;|&nbsp;
+          <a href="{{url_for('public.cookie_policy')}}">Cookie Policy</a>
         </p>
       </div>
     </div>

@@ -64,7 +64,7 @@
                     </h6>
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('admin_update_website_settings') }}" method="post" enctype="multipart/form-data" id="settingsForm">
+                    <form action="{{ url_for('admin.admin_update_website_settings') }}" method="post" enctype="multipart/form-data" id="settingsForm">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         
                         <!-- Logo Type Selection -->
@@ -302,7 +302,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ url_for('admin_reset_website_settings') }}" method="post" class="d-inline">
+                <form action="{{ url_for('admin.admin_reset_website_settings') }}" method="post" class="d-inline">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-refresh me-2"></i>Clear All Settings

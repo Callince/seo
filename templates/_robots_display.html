@@ -50,7 +50,7 @@
                     {% for sitemap in robots_info.sitemaps %}
                     <li class="list-group-item">
                         <a href="{{ sitemap }}" target="_blank">{{ sitemap }}</a>
-                        <a href="{{ url_for('sitemap_analysis', url=url_input) }}" class="btn btn-sm btn-info float-end">
+                        <a href="{{ url_for('seo_tools.sitemap_analysis', url=url_input) }}" class="btn btn-sm btn-info float-end">
                             Analyze Sitemap
                         </a>
                     </li>

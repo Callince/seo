@@ -81,7 +81,7 @@
             </h5>
         </div>
         <div class="card-body">
-            <form method="GET" action="{{ url_for('admin_search_history') }}" id="search-filter-form">
+            <form method="GET" action="{{ url_for('admin.admin_search_history') }}" id="search-filter-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-4">
@@ -145,7 +145,7 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-filter me-1"></i> Apply Filters
                             </button>
-                            <a href="{{ url_for('admin_search_history') }}" class="btn btn-outline-secondary">
+                            <a href="{{ url_for('admin.admin_search_history') }}" class="btn btn-outline-secondary">
                                 <i class="fas fa-redo me-1"></i> Reset Filters
                             </a>
                         </div>
@@ -193,7 +193,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" href="{{ url_for('admin_user_details', user_id=entry.u_id) }}">
+                                        <a class="dropdown-item" href="{{ url_for('admin.admin_user_details', user_id=entry.u_id) }}">
                                             <i class="fas fa-user me-2 text-info"></i> View User
                                         </a>
                                     </li>
@@ -249,7 +249,7 @@
                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
                         <h5>No search history found</h5>
                         <p class="text-muted">Try adjusting your search or filter criteria</p>
-                        <a href="{{ url_for('admin_search_history') }}" class="btn btn-outline-primary">
+                        <a href="{{ url_for('admin.admin_search_history') }}" class="btn btn-outline-primary">
                             <i class="fas fa-redo me-1"></i> Reset Filters
                         </a>
                     </div>
@@ -348,7 +348,7 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="{{ url_for('admin_user_details', user_id=entry.u_id) }}">
+                                                <a class="dropdown-item" href="{{ url_for('admin.admin_user_details', user_id=entry.u_id) }}">
                                                     <i class="fas fa-user me-2 text-info"></i> View User
                                                 </a>
                                             </li>
@@ -371,7 +371,7 @@
                                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
                                         <h5>No search history found</h5>
                                         <p class="text-muted">Try adjusting your search or filter criteria</p>
-                                        <a href="{{ url_for('admin_search_history') }}" class="btn btn-outline-primary">
+                                        <a href="{{ url_for('admin.admin_search_history') }}" class="btn btn-outline-primary">
                                             <i class="fas fa-redo me-1"></i> Reset Filters
                                         </a>
                                     </div>
@@ -394,7 +394,7 @@
             <nav aria-label="Search history pagination">
                 <ul class="pagination pagination-sm mb-0 flex-wrap justify-content-center">
                     <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('admin_search_history', page=pagination.prev_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) if pagination.has_prev else '#' }}">
+                        <a class="page-link" href="{{ url_for('admin.admin_search_history', page=pagination.prev_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) if pagination.has_prev else '#' }}">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     </li>
@@ -405,7 +405,7 @@
                     
                     {% if start_page > 1 %}
                     <li class="page-item d-none d-sm-block">
-                        <a class="page-link" href="{{ url_for('admin_search_history', page=1, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">1</a>
+                        <a class="page-link" href="{{ url_for('admin.admin_search_history', page=1, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">1</a>
                     </li>
                     {% if start_page > 2 %}
                     <li class="page-item disabled d-none d-sm-block">
@@ -416,7 +416,7 @@
                     
                     {% for page_num in range(start_page, end_page) %}
                     <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('admin_search_history', page=page_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">{{ page_num }}</a>
+                        <a class="page-link" href="{{ url_for('admin.admin_search_history', page=page_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">{{ page_num }}</a>
                     </li>
                     {% endfor %}
                     
@@ -427,12 +427,12 @@
                     </li>
                     {% endif %}
                     <li class="page-item d-none d-sm-block">
-                        <a class="page-link" href="{{ url_for('admin_search_history', page=pagination.pages, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">{{ pagination.pages }}</a>
+                        <a class="page-link" href="{{ url_for('admin.admin_search_history', page=pagination.pages, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) }}">{{ pagination.pages }}</a>
                     </li>
                     {% endif %}
                     
                     <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-                        <a class="page-link" href="{{ url_for('admin_search_history', page=pagination.next_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) if pagination.has_next else '#' }}">
+                        <a class="page-link" href="{{ url_for('admin.admin_search_history', page=pagination.next_num, start_date=start_date, end_date=end_date, tool_filter=tool_filter, user_filter=user_filter, query_filter=query_filter, sort_by=sort_by) if pagination.has_next else '#' }}">
                             <i class="fas fa-chevron-right"></i>
                         </a>
                     </li>

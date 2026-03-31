@@ -81,7 +81,7 @@
                 </h5>
                 <div class="d-flex gap-2">
                     <!-- Export Button -->
-                    <a href="{{ url_for('admin_export_contact_submissions') }}{% if status_filter != 'all' %}?status={{ status_filter }}{% endif %}" 
+                    <a href="{{ url_for('admin.admin_export_contact_submissions') }}{% if status_filter != 'all' %}?status={{ status_filter }}{% endif %}" 
                        class="btn btn-sm btn-outline-success">
                         <i class="fas fa-download"></i> 
                         <span class="d-none d-sm-inline ms-1">Export CSV</span>
@@ -95,31 +95,31 @@
                     <ul class="nav nav-tabs flex-nowrap mobile-scroll" id="statusTabs" style="border-bottom: none;">
                         <li class="nav-item">
                             <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" 
-                               href="{{ url_for('admin_contact_submissions', status='all') }}">
+                               href="{{ url_for('admin.admin_contact_submissions', status='all') }}">
                                 All ({{ submissions.total }})
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if status_filter == 'new' %}active{% endif %}" 
-                               href="{{ url_for('admin_contact_submissions', status='new') }}">
+                               href="{{ url_for('admin.admin_contact_submissions', status='new') }}">
                                 <i class="fas fa-exclamation-circle text-danger"></i> New
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if status_filter == 'read' %}active{% endif %}" 
-                               href="{{ url_for('admin_contact_submissions', status='read') }}">
+                               href="{{ url_for('admin.admin_contact_submissions', status='read') }}">
                                 <i class="fas fa-eye text-warning"></i> Read
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if status_filter == 'responded' %}active{% endif %}" 
-                               href="{{ url_for('admin_contact_submissions', status='responded') }}">
+                               href="{{ url_for('admin.admin_contact_submissions', status='responded') }}">
                                 <i class="fas fa-check-circle text-success"></i> Responded
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {% if status_filter == 'spam' %}active{% endif %}" 
-                               href="{{ url_for('admin_contact_submissions', status='spam') }}">
+                               href="{{ url_for('admin.admin_contact_submissions', status='spam') }}">
                                 <i class="fas fa-ban text-secondary"></i> Spam
                             </a>
                         </li>
@@ -187,7 +187,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ url_for('admin_contact_submission_detail', submission_id=submission.id) }}" 
+                                            <a href="{{ url_for('admin.admin_contact_submission_detail', submission_id=submission.id) }}" 
                                             class="btn btn-sm btn-outline-primary" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                             </a>
@@ -263,7 +263,7 @@
                         </div>
                         
                         <div class="card-actions-mobile">
-                            <a href="{{ url_for('admin_contact_submission_detail', submission_id=submission.id) }}" 
+                            <a href="{{ url_for('admin.admin_contact_submission_detail', submission_id=submission.id) }}" 
                                class="btn btn-sm btn-outline-primary flex-fill">
                                 <i class="fas fa-eye"></i> View
                             </a>
@@ -300,7 +300,7 @@
                     <ul class="pagination justify-content-center mb-0 flex-wrap">
                         {% if submissions.has_prev %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for('admin_contact_submissions', page=submissions.prev_num, status=status_filter) }}">
+                            <a class="page-link" href="{{ url_for('admin.admin_contact_submissions', page=submissions.prev_num, status=status_filter) }}">
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="d-none d-sm-inline ms-1">Previous</span>
                             </a>
@@ -311,7 +311,7 @@
                             {% if page_num %}
                                 {% if page_num != submissions.page %}
                                 <li class="page-item d-none d-sm-block">
-                                    <a class="page-link" href="{{ url_for('admin_contact_submissions', page=page_num, status=status_filter) }}">{{ page_num }}</a>
+                                    <a class="page-link" href="{{ url_for('admin.admin_contact_submissions', page=page_num, status=status_filter) }}">{{ page_num }}</a>
                                 </li>
                                 {% else %}
                                 <li class="page-item active">
@@ -327,7 +327,7 @@
                         
                         {% if submissions.has_next %}
                         <li class="page-item">
-                            <a class="page-link" href="{{ url_for('admin_contact_submissions', page=submissions.next_num, status=status_filter) }}">
+                            <a class="page-link" href="{{ url_for('admin.admin_contact_submissions', page=submissions.next_num, status=status_filter) }}">
                                 <span class="d-none d-sm-inline me-1">Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>

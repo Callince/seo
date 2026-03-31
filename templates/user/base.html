@@ -219,19 +219,19 @@
                     <h3 class="text-lg font-semibold mb-6 relative after:content-[''] after:absolute after:h-1 after:w-12 after:-bottom-2 after:left-0 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded">Quick Links</h3>
                     <ul class="space-y-3">
                         <li>
-                            <a href="{{ url_for('index') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Dashboard</a>
+                            <a href="{{ url_for('seo_tools.index') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Dashboard</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('url_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">URL Analysis</a>
+                            <a href="{{ url_for('seo_tools.url_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">URL Analysis</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('h_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Heading Analysis</a>
+                            <a href="{{ url_for('seo_tools.h_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Heading Analysis</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('keyword_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Keyword Analysis</a>
+                            <a href="{{ url_for('seo_tools.keyword_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Keyword Analysis</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('image_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Image Analysis</a>
+                            <a href="{{ url_for('seo_tools.image_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Image Analysis</a>
                         </li>
                     </ul>
                 </div>
@@ -241,30 +241,30 @@
                     <h3 class="text-lg font-semibold mb-6 relative after:content-[''] after:absolute after:h-1 after:w-12 after:-bottom-2 after:left-0 after:bg-gradient-to-r after:from-primary after:to-secondary after:rounded">More Tools</h3>
                     <ul class="space-y-3">
                         <li>
-                            <a href="{{ url_for('content_checker') }}" target="_blank" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Content Checker Tool</a>
+                            <a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Content Checker Tool</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('meta_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Meta Analysis</a>
+                            <a href="{{ url_for('seo_tools.meta_search') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Meta Analysis</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('site_structure') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Sitemap Analysis</a>
+                            <a href="{{ url_for('seo_tools.site_structure') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Sitemap Analysis</a>
                         </li>
                         {% if current_user.is_authenticated %}
                         <li>
-                            <a href="{{ url_for('profile') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Profile</a>
+                            <a href="{{ url_for('auth.profile') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Profile</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
+                            <a href="{{ url_for('payment.user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('logout') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Logout</a>
+                            <a href="{{ url_for('auth.logout') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Logout</a>
                         </li>
                         {% else %}
                         <li>
-                            <a href="{{ url_for('login') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Login</a>
+                            <a href="{{ url_for('auth.login') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Login</a>
                         </li>
                         <li>
-                            <a href="{{ url_for('user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
+                            <a href="{{ url_for('payment.user_subscriptions') }}" class="text-textSecondary hover:text-primary transition-all duration-300 hover:translate-x-1 inline-block relative after:content-[''] after:absolute after:w-0 after:h-0.5 after:bg-primary after:left-0 after:-bottom-1 after:transition-all hover:after:w-full">Subscriptions</a>
                         </li>
                         {% endif %}
                     </ul>
@@ -290,9 +290,9 @@
                     &copy; <span id="currentYear"></span> SEO Dada. All rights reserved.
                 </div>
                 <div class="flex space-x-6">
-                    <a href="{{url_for('privacy')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Privacy Policy</a>
-                    <a href="{{url_for('terms')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Terms of Service</a>
-                    <a href="{{url_for('contact')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Cookie Policy</a>
+                    <a href="{{url_for('public.privacy')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Privacy Policy</a>
+                    <a href="{{url_for('public.terms')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Terms of Service</a>
+                    <a href="{{url_for('public.contact')}}" target="_blank" class="text-textSecondary hover:text-primary text-sm transition-colors duration-300">Cookie Policy</a>
                 </div>
                 
             </div>

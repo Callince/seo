@@ -1,0 +1,86 @@
+# DigitalOcean App Platform Specification
+# Deploy via: doctl apps create --spec .do/app.yaml
+# Or connect your GitHub repo in the DO dashboard and it auto-detects this file.
+
+name: seodada
+region: blr  # Bangalore (closest to India users). Options: nyc, sfo, ams, sgp, lon, fra, blr, syd, tor
+
+services:
+  - name: web
+    dockerfile_path: Dockerfile
+    source_dir: /seo
+    instance_size_slug: professional-xs  # 1 vCPU, 1GB RAM ($12/mo). Upgrade to professional-s for more.
+    instance_count: 1
+    http_port: 8080
+
+    # Health check
+    health_check:
+      http_path: /
+      initial_delay_seconds: 30
+      period_seconds: 15
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+
+    # Environment variables — set these in DO dashboard or via doctl
+    envs:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        type: SECRET
+        value: "CHANGE_ME_TO_RANDOM_64_CHAR_STRING"
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: "${db.DATABASE_URL}"
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "True"
+      - key: MAIL_SUPPORT_USERNAME
+        type: SECRET
+        value: "support@seodada.com"
+      - key: MAIL_SUPPORT_PASSWORD
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: MAIL_SUPPORT_SENDER
+        value: "support@seodada.com"
+      - key: MAIL_PAYMENT_USERNAME
+        type: SECRET
+        value: "payment@seodada.com"
+      - key: MAIL_PAYMENT_PASSWORD
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: MAIL_PAYMENT_SENDER
+        value: "payment@seodada.com"
+      - key: RAZORPAY_KEY_ID
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: RAZORPAY_KEY_SECRET
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: RAZORPAY_WEBHOOK_SECRET
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: RECAPTCHA_SITE_KEY
+        value: "CHANGE_ME"
+      - key: RECAPTCHA_SECRET_KEY
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: SITE_URL
+        value: "https://seodada.com"
+      - key: SUPER_ADMIN_PASSWORD
+        type: SECRET
+        value: "CHANGE_ME"
+      - key: GUNICORN_WORKERS
+        value: "2"
+
+# Attach your existing DigitalOcean Managed Database
+databases:
+  - name: db
+    engine: PG
+    production: true
+    cluster_name: fourdm  # Your existing DO managed PostgreSQL cluster name
+    db_name: defaultdb
+    db_user: doadmin

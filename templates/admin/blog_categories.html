@@ -12,7 +12,7 @@
                         <h5 class="mb-0 text-primary">
                             <i class="fas fa-folder me-2"></i>Blog Categories
                         </h5>
-                        <a href="{{ url_for('admin_add_blog_category') }}" class="btn btn-primary btn-sm">
+                        <a href="{{ url_for('admin.admin_add_blog_category') }}" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>Add Category
                         </a>
                     </div>
@@ -48,7 +48,7 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a href="{{ url_for('admin_edit_blog_category', id=category.id) }}"
+                                                <a href="{{ url_for('admin.admin_edit_blog_category', id=category.id) }}"
                                                    class="btn btn-outline-primary"
                                                    title="Edit">
                                                     <i class="fas fa-edit"></i>
@@ -68,7 +68,7 @@
                                         <td colspan="5" class="text-center py-5">
                                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                                             <p class="text-muted">No categories found</p>
-                                            <a href="{{ url_for('admin_add_blog_category') }}" class="btn btn-primary btn-sm">
+                                            <a href="{{ url_for('admin.admin_add_blog_category') }}" class="btn btn-primary btn-sm">
                                                 <i class="fas fa-plus me-1"></i>Add Your First Category
                                             </a>
                                         </td>
@@ -209,7 +209,7 @@
 <script>
     function deleteCategory(categoryId, categoryName, blogCount) {
         document.getElementById('categoryName').textContent = categoryName;
-        document.getElementById('deleteForm').action = "{{ url_for('admin_delete_blog_category', id=0) }}".replace('0', categoryId);
+        document.getElementById('deleteForm').action = "{{ url_for('admin.admin_delete_blog_category', id=0) }}".replace('0', categoryId);
 
         const warningMsg = document.getElementById('warningMessage');
         const deleteBtn = document.getElementById('deleteBtn');

@@ -23,10 +23,10 @@
       <section aria-labelledby="quick-actions-heading" class="mb-4">
         <h2 id="quick-actions-heading" class="h5 mb-3">Quick Actions</h2>
         <div class="d-flex flex-wrap gap-2">
-          <a href="{{ url_for('download_h_csv', url=url_input) }}" class="btn btn-primary" download>
+          <a href="{{ url_for('seo_tools.download_h_csv', url=url_input) }}" class="btn btn-primary" download>
             <i class="fas fa-download me-2" aria-hidden="true"></i> Download CSV
           </a>
-          <a href="{{ url_for('h_search') }}" class="btn btn-outline-secondary">
+          <a href="{{ url_for('seo_tools.h_search') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-2" aria-hidden="true"></i> Back to Search
           </a>
         </div>
@@ -253,7 +253,7 @@
             <h2 id="recent-analyses-heading" class="h5 mb-3">Related Links</h2>
             <div class="list-group" style="max-height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem;">
               {% for hlink in home_links %}
-                <a href="{{ url_for('h_detail', url=hlink|safe) }}" class="list-group-item list-group-item-action d-flex align-items-center">
+                <a href="{{ url_for('seo_tools.h_detail', url=hlink|safe) }}" class="list-group-item list-group-item-action d-flex align-items-center">
                   <i class="fas fa-history me-2 text-muted" aria-hidden="true"></i>
                   <span class="text-truncate">{{ hlink }}</span>
                 </a>

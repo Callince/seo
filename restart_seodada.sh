@@ -1,7 +1,10 @@
 #!/bin/bash
-echo "Restarting SEO Dada service to clear cache..."
+# Restart SEO Dada service on DigitalOcean Droplet
+echo "Restarting SEO Dada service..."
 sudo systemctl restart seodada
 sleep 3
 echo "Checking status..."
 sudo systemctl status seodada --no-pager
-echo "Service restarted successfully!"
+echo ""
+echo "Recent logs:"
+sudo journalctl -u seodada --no-pager -n 20

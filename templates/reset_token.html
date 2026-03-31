@@ -147,7 +147,7 @@
       <h2>Set New Password</h2>
     </div>
     
-    <form method="post" action="{{ url_for('reset_token', token=token) }}" class="auth-form" id="passwordResetForm">
+    <form method="post" action="{{ url_for('auth.reset_token', token=token) }}" class="auth-form" id="passwordResetForm">
       <!-- Add CSRF token -->
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
       <div class="form-group">
@@ -198,7 +198,7 @@
   </div>
 
   <div class="back-to-login">
-    <a href="{{ url_for('login') }}">
+    <a href="{{ url_for('auth.login') }}">
       <i class="fas fa-arrow-left"></i>
       Back to Login
     </a>

@@ -12,13 +12,13 @@
                         <h5 class="mb-0 text-primary">
                             <i class="fas fa-edit me-2"></i>Edit Blog
                         </h5>
-                        <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{{ url_for('admin.admin_blogs') }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Blogs
                         </a>
                     </div>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="{{ url_for('admin_edit_blog', id=blog.id) }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url_for('admin.admin_edit_blog', id=blog.id) }}" enctype="multipart/form-data">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
 
                         <!-- General Tab -->
@@ -234,7 +234,7 @@
                                     <button type="submit" class="btn btn-primary px-4">
                                         <i class="fas fa-save me-2"></i>Update Blog
                                     </button>
-                                    <a href="{{ url_for('admin_blogs') }}" class="btn btn-outline-secondary px-4">
+                                    <a href="{{ url_for('admin.admin_blogs') }}" class="btn btn-outline-secondary px-4">
                                         <i class="fas fa-times me-2"></i>Cancel
                                     </a>
                                 </div>
@@ -354,7 +354,7 @@
                 const data = new FormData();
                 data.append('upload', file);
 
-                fetch('{{ url_for("admin_blog_upload_image") }}', {
+                fetch('{{ url_for("admin.admin_blog_upload_image") }}', {
                     method: 'POST',
                     body: data,
                     credentials: 'include'

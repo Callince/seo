@@ -165,7 +165,7 @@
                             <i class="fas fa-bolt mr-2"></i>Quick Actions
                         </h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                            <a href="{{ url_for('user_subscriptions') }}" class="action-card action-card-primary">
+                            <a href="{{ url_for('payment.user_subscriptions') }}" class="action-card action-card-primary">
                                 <i class="fas fa-shopping-cart text-lg sm:text-xl mr-2 sm:mr-3"></i>
                                 <span class="font-medium text-sm sm:text-base">Manage Subscription</span>
                             </a>
@@ -173,7 +173,7 @@
                                 <i class="fas fa-key text-lg sm:text-xl mr-2 sm:mr-3"></i>
                                 <span class="font-medium text-sm sm:text-base">Change Password</span>
                             </button>
-                            <a href="{{ url_for('index') }}" class="action-card action-card-neutral">
+                            <a href="{{ url_for('seo_tools.index') }}" class="action-card action-card-neutral">
                                 <i class="fas fa-tachometer-alt text-lg sm:text-xl mr-2 sm:mr-3"></i>
                                 <span class="font-medium text-sm sm:text-base">Go to Dashboard</span>
                             </a>
@@ -188,7 +188,7 @@
                             <h2 class="text-lg sm:text-xl font-semibold text-white">Account Settings</h2>
                         </div>
                         <div class="p-4 sm:p-6">
-                            <form method="POST" action="{{ url_for('update_profile') }}">
+                            <form method="POST" action="{{ url_for('auth.update_profile') }}">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                                 <input type="hidden" name="update_type" value="account">
                                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
@@ -312,12 +312,12 @@
                                             <div class="mt-4 sm:mt-6 pt-4 border-t border-gray-200">
                                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <!-- Manage Subscription Button -->
-                                                    <a href="{{ url_for('user_subscriptions') }}" class="{% if now > sub.end_date %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-600 hover:bg-blue-700{% endif %} text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-sm sm:text-base" {% if now > sub.end_date %}onclick="return false;"{% endif %}>
+                                                    <a href="{{ url_for('payment.user_subscriptions') }}" class="{% if now > sub.end_date %}bg-gray-400 cursor-not-allowed{% else %}bg-blue-600 hover:bg-blue-700{% endif %} text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-sm sm:text-base" {% if now > sub.end_date %}onclick="return false;"{% endif %}>
                                                         <i class="fas fa-cog mr-2"></i> Manage Subscription
                                                     </a>
                                                     
                                                     <!-- View Details Button -->
-                                                    <a href="{{ url_for('subscription_details', subscription_id=sub.id) }}" class="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-center text-sm sm:text-base">
+                                                    <a href="{{ url_for('payment.subscription_details', subscription_id=sub.id) }}" class="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg font-medium flex items-center justify-center transition-colors text-center text-sm sm:text-base">
                                                         <i class="fas fa-chart-line mr-2"></i> View Details
                                                     </a>
                                                 </div>
@@ -331,7 +331,7 @@
                                         <div class="text-center">
                                             <p class="font-medium text-sm sm:text-base lg:text-lg">There is no Active Subscription Found, Subscribe to Access the Tools</p>
                                             <p class="text-xs sm:text-sm opacity-80 mt-2">
-                                                <a href="{{ url_for('user_subscriptions') }}" class="text-primary font-semibold hover:underline">Check out our subscription plans</a>
+                                                <a href="{{ url_for('payment.user_subscriptions') }}" class="text-primary font-semibold hover:underline">Check out our subscription plans</a>
                                             </p>
                                         </div>
                                     </div>
@@ -348,7 +348,7 @@
                             <h2 class="text-lg sm:text-xl font-semibold text-white">Security Settings</h2>
                         </div>
                         <div class="p-4 sm:p-6">
-                            <form method="POST" action="{{ url_for('update_profile') }}" id="passwordForm">
+                            <form method="POST" action="{{ url_for('auth.update_profile') }}" id="passwordForm">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                                 <input type="hidden" name="update_type" value="security">
                                 

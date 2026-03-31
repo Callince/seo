@@ -166,7 +166,7 @@ Fourth Dimension Team</textarea>
                 </h6>
             </div>
             <div class="card-body">
-                <form action="{{ url_for('update_contact_submission', submission_id=submission.id) }}" method="post">
+                <form action="{{ url_for('admin.update_contact_submission', submission_id=submission.id) }}" method="post">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <input type="hidden" name="status" value="{{ submission.status }}">
                     <div class="mb-3">
@@ -244,7 +244,7 @@ Fourth Dimension Team</textarea>
                         <i class="fas fa-trash me-2"></i>Delete Submission
                     </button>
                     
-                    <a href="{{ url_for('admin_contact_submissions') }}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ url_for('admin.admin_contact_submissions') }}" class="btn btn-outline-secondary btn-sm">
                         <i class="fas fa-arrow-left me-2"></i>Back to List
                     </a>
                 </div>
@@ -290,7 +290,7 @@ function openEmailClient() {
 
     // Mark as responded after opening email client
     setTimeout(() => {
-        fetch(`{{ url_for('update_contact_submission', submission_id=submission.id) }}`, {
+        fetch(`{{ url_for('admin.update_contact_submission', submission_id=submission.id) }}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -326,7 +326,7 @@ document.getElementById('quickReplyForm').addEventListener('submit', function(e)
     submitBtn.innerHTML = '<i class="fas fa-spin me-2"></i>Sending...';
 
     // Send email via backend
-    fetch(`{{ url_for('send_reply', id=submission.id) }}`, {
+    fetch(`{{ url_for('admin.send_reply', id=submission.id) }}`, {
         method: 'POST',
         body: formData,
     })
@@ -418,7 +418,7 @@ function deleteSubmission(submissionId) {
                 if (data.success) {
                     showAlert('Submission deleted successfully.', 'success');
                     setTimeout(() => {
-                        window.location.href = '{{ url_for("admin_contact_submissions") }}';
+                        window.location.href = '{{ url_for("admin.admin_contact_submissions") }}';
                     }, 1500);
                 } else {
                     showAlert('Error deleting submission: ' + (data.message || 'Unknown error'), 'danger');
@@ -433,7 +433,7 @@ function deleteSubmission(submissionId) {
 }
 
 function updateStatus(submissionId, status) {
-    fetch(`{{ url_for('update_contact_submission', submission_id=submission.id) }}`, {
+    fetch(`{{ url_for('admin.update_contact_submission', submission_id=submission.id) }}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',

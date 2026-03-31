@@ -60,7 +60,7 @@
             <!-- Status Update Form -->
             <div class="mt-4 pt-3 border-top">
                 <form method="POST" 
-                      action="{% if payment_type == 'tokens' %}{{ url_for('admin_update_token_payment', order_id=payment_details.payment.invoice_number) }}{% else %}{{ url_for('admin_update_payment', order_id=payment_details.payment.invoice_number) }}{% endif %}">
+                      action="{% if payment_type == 'tokens' %}{{ url_for('admin.admin_update_token_payment', order_id=payment_details.payment.invoice_number) }}{% else %}{{ url_for('admin.admin_update_payment', order_id=payment_details.payment.invoice_number) }}{% endif %}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <div class="row align-items-end">
                         <div class="col-md-4">
@@ -213,7 +213,7 @@
                                 {% for payment in related_subscription_payments %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('admin_payment_details', order_id=payment.invoice_number) }}" 
+                                        <a href="{{ url_for('admin.admin_payment_details', order_id=payment.invoice_number) }}" 
                                            class="text-decoration-none">
                                             {{ payment.invoice_number or 'N/A' }}
                                         </a>
@@ -252,7 +252,7 @@
                                 {% for token_payment in related_token_payments %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('admin_payment_details', order_id=token_payment.invoice_number) }}" 
+                                        <a href="{{ url_for('admin.admin_payment_details', order_id=token_payment.invoice_number) }}" 
                                            class="text-decoration-none">
                                             {{ token_payment.invoice_number or 'N/A' }}
                                         </a>
@@ -279,23 +279,23 @@
 
     <!-- Action Buttons -->
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ url_for('admin_payments') }}" class="btn btn-outline-secondary">
+        <a href="{{ url_for('admin.admin_payments') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Back to Payments
         </a>
         <div>
             {% if payment_details.payment.status == 'completed' and payment_details.payment.invoice_number %}
                 {% if payment_type == 'tokens' %}
-                <a href="{{ url_for('download_token_invoice', token_purchase_id=payment_details.payment.id) }}" target="_blank" class="btn btn-warning">
+                <a href="{{ url_for('payment.download_token_invoice', token_purchase_id=payment_details.payment.id) }}" target="_blank" class="btn btn-warning">
                     <i class="fas fa-file-pdf"></i> View Token Invoice
                 </a>
                 {% else %}
-                <a href="{{ url_for('admin_payment_invoice', order_id=payment_details.payment.razorpay_order_id) }}" target="_blank" class="btn btn-info">
+                <a href="{{ url_for('admin.admin_payment_invoice', order_id=payment_details.payment.razorpay_order_id) }}" target="_blank" class="btn btn-info">
                     <i class="fas fa-file-pdf"></i> View Invoice
                 </a>
                 {% endif %}
             {% endif %}
             
-            <a href="{{ url_for('admin_users', user_id=payment_details.user.id) }}" class="btn btn-secondary">
+            <a href="{{ url_for('admin.admin_users', user_id=payment_details.user.id) }}" class="btn btn-secondary">
                 <i class="fas fa-user"></i> View Customer
             </a>
         </div>

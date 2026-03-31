@@ -4,29 +4,48 @@ from dotenv import load_dotenv
 
 load_dotenv('.env')
 
+
 class Config:
     # Basic Flask configuration
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-super-secret-production-key-change-this')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'change-this-in-production')
 
     # Cache configuration
     CACHE_TYPE = 'simple'
     CACHE_DEFAULT_TIMEOUT = 7200
     CACHE_KEY_PREFIX = 'seo_app_'
 
-    # Redis configuration (for production)
+    # Redis configuration
     CACHE_REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
     CACHE_REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
     CACHE_REDIS_DB = int(os.environ.get('REDIS_DB', 0))
-    CACHE_REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD')
+    CACHE_REDIS_PASSWORD = os.environ.get('REDIS_PASSWORD') or None
 
     # Database configuration
-    DB_USERNAME = os.environ.get('DB_USERNAME', 'flaskuser')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'MyStrongPassword123')
-    DB_HOST = os.environ.get('DB_HOST', '127.0.0.1')
-    DB_PORT = os.environ.get('DB_PORT', '5432')
-    DB_NAME = os.environ.get('DB_NAME', 'flaskdb')
+    # DigitalOcean App Platform injects DATABASE_URL automatically.
+    # Falls back to individual DB_* env vars for local development.
+    _database_url = os.environ.get('DATABASE_URL')
+    if _database_url:
+        # DO may provide postgres:// but SQLAlchemy 2.x requires postgresql://
+        if _database_url.startswith('postgres://'):
+            _database_url = _database_url.replace('postgres://', 'postgresql://', 1)
+        SQLALCHEMY_DATABASE_URI = _database_url
+    else:
+        DB_USERNAME = os.environ.get('DB_USERNAME')
+        DB_PASSWORD = os.environ.get('DB_PASSWORD')
+        DB_HOST = os.environ.get('DB_HOST', '127.0.0.1')
+        DB_PORT = os.environ.get('DB_PORT', '5432')
+        DB_NAME = os.environ.get('DB_NAME')
+        DB_SSLMODE = os.environ.get('DB_SSLMODE', '')
 
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+        _db_uri = (
+            f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+            if DB_USERNAME and DB_PASSWORD and DB_NAME
+            else None
+        )
+        if _db_uri and DB_SSLMODE:
+            _db_uri += f"?sslmode={DB_SSLMODE}"
+
+        SQLALCHEMY_DATABASE_URI = _db_uri
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_timeout': 20,
@@ -37,46 +56,49 @@ class Config:
     }
 
     # Mail configuration - SMTP Only
-    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
-    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
-    MAIL_USE_TLS = os.getenv('MAIL_USE_TLS', 'True') == 'True'
-    MAIL_USE_SSL = os.getenv('MAIL_USE_SSL', 'False') == 'True'
+    MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'True') == 'True'
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', 'False') == 'True'
 
     # Support Mail
-    MAIL_USERNAME = os.getenv('MAIL_SUPPORT_USERNAME')
-    MAIL_PASSWORD = os.getenv('MAIL_SUPPORT_PASSWORD')
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_SUPPORT_SENDER')
+    MAIL_USERNAME = os.environ.get('MAIL_SUPPORT_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_SUPPORT_PASSWORD')
+    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_SUPPORT_SENDER')
 
     # Payment Mail (separate)
-    MAIL_PAYMENT_USERNAME = os.getenv('MAIL_PAYMENT_USERNAME')
-    MAIL_PAYMENT_PASSWORD = os.getenv('MAIL_PAYMENT_PASSWORD')
-    MAIL_PAYMENT_SENDER = os.getenv('MAIL_PAYMENT_SENDER')
+    MAIL_PAYMENT_USERNAME = os.environ.get('MAIL_PAYMENT_USERNAME')
+    MAIL_PAYMENT_PASSWORD = os.environ.get('MAIL_PAYMENT_PASSWORD')
+    MAIL_PAYMENT_SENDER = os.environ.get('MAIL_PAYMENT_SENDER')
 
-    # Gmail API - DISABLED (using SMTP only)
+    # Gmail API - DISABLED
     USE_GMAIL_API = False
 
-    # Razorpay credentials
-    RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_live_RcO4xIW6L4A8Kh')
-    RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'pnOmfnCRpG9rP1JXe6dBlGWV')
+    # Razorpay credentials - from .env only, NO hardcoded keys
+    RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID')
+    RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET')
+    RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET')
+
+    # reCAPTCHA
+    RECAPTCHA_SITE_KEY = os.environ.get('RECAPTCHA_SITE_KEY')
+    RECAPTCHA_SECRET_KEY = os.environ.get('RECAPTCHA_SECRET_KEY')
 
     # CSRF Configuration
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = 43200
-    WTF_CSRF_SSL_STRICT = False  # Keep False even with HTTPS to avoid strict referrer checks
+    WTF_CSRF_SSL_STRICT = False
 
-    # ⭐ SESSION CONFIGURATION - OPTIMIZED FOR AWS/NGINX WITH HTTPS ⭐
-    SESSION_TYPE = 'filesystem'  # Use filesystem sessions for better persistence
-    SESSION_PERMANENT = False  # Don't make sessions permanent by default
-    SESSION_USE_SIGNER = True  # Sign session cookies for security
-    SESSION_KEY_PREFIX = 'seodada:'  # Prefix for session keys
-    SESSION_COOKIE_NAME = 'seodada_session'  # Custom session cookie name
-    SESSION_COOKIE_SECURE = True  # True for HTTPS (you have SSL)
+    # Session configuration
+    SESSION_TYPE = 'filesystem'
+    SESSION_PERMANENT = False
+    SESSION_USE_SIGNER = True
+    SESSION_KEY_PREFIX = 'seodada:'
+    SESSION_COOKIE_NAME = 'seodada_session'
+    SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
-    # IMPORTANT: Use None for nginx proxy to avoid POST redirect issues
-    # With 'Lax', cookies may not be sent after POST → redirect with nginx
-    SESSION_COOKIE_SAMESITE = None  # None allows cookie in redirects (best for nginx)
-    SESSION_COOKIE_PATH = '/'  # Ensure cookie is available for all paths
-    SESSION_COOKIE_DOMAIN = None  # Let Flask handle domain automatically
+    SESSION_COOKIE_SAMESITE = None
+    SESSION_COOKIE_PATH = '/'
+    SESSION_COOKIE_DOMAIN = None
     PERMANENT_SESSION_LIFETIME = timedelta(hours=24)
 
     # Cleanup job configuration
@@ -84,10 +106,11 @@ class Config:
     CRAWL_MEMORY_CLEANUP_HOURS = 1
     DAILY_CLEANUP_HOUR = 2
 
-    # Cron secret
-    CRON_SECRET = os.environ.get('CRON_SECRET', 'change-this-secret-key')
-    # Site URL for generating links outside request context (e.g., scheduled emails)
+    # Security
+    CRON_SECRET = os.environ.get('CRON_SECRET')
+    SUPER_ADMIN_PASSWORD = os.environ.get('SUPER_ADMIN_PASSWORD')
     SITE_URL = os.environ.get('SITE_URL', 'https://seodada.com')
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
@@ -95,12 +118,18 @@ class DevelopmentConfig(Config):
     SESSION_COOKIE_SECURE = False
     WTF_CSRF_ENABLED = True
 
+
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     WTF_CSRF_ENABLED = True
-    # ✅ CONFIGURED FOR HTTPS (you have SSL certificate)
-    SESSION_COOKIE_SECURE = True  # True for HTTPS
-    WTF_CSRF_SSL_STRICT = False   # Keep False to avoid strict referrer issues with nginx
-    CACHE_TYPE = 'redis'
-    CACHE_REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    SESSION_COOKIE_SECURE = True
+    WTF_CSRF_SSL_STRICT = False
+
+    # Redis caching - use REDIS_URL if available (DigitalOcean managed Redis)
+    _redis_url = os.environ.get('REDIS_URL')
+    if _redis_url:
+        CACHE_TYPE = 'redis'
+        CACHE_REDIS_URL = _redis_url
+    else:
+        CACHE_TYPE = 'simple'

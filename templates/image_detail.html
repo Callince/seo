@@ -32,7 +32,7 @@
 
     <!-- Right side: Buttons -->
     <div class="d-flex gap-2 flex-wrap">
-      <a href="{{ url_for('image_search') }}" class="btn btn-outline-light back-to-search" aria-label="Back to image search">
+      <a href="{{ url_for('seo_tools.image_search') }}" class="btn btn-outline-light back-to-search" aria-label="Back to image search">
         <i class="fas fa-arrow-left me-1"></i> Back to Search
       </a>
       <button id="downloadCsvBtn" class="btn btn-outline-light" aria-label="Download CSV report">
@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const currentLink = '{{ link }}';
 
             // Create download URL
-            const downloadUrl = "{{ url_for('download_image_csv') }}?link=" + encodeURIComponent(currentLink);
+            const downloadUrl = "{{ url_for('seo_tools.download_image_csv') }}?link=" + encodeURIComponent(currentLink);
 
             // Show loading state
             const originalHtml = this.innerHTML;

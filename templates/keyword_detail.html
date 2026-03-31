@@ -18,7 +18,7 @@
           <span>Analyzing: <a href="{{ link }}" target="_blank" class="text-white">{{ link }}</a></span>
         </div>
         <div class="ms-auto">
-          <a href="{{ url_for('keyword_search') }}" class="btn btn-outline-light btn-sm">
+          <a href="{{ url_for('seo_tools.keyword_search') }}" class="btn btn-outline-light btn-sm">
             <i class="fas fa-arrow-left me-2"></i>
             Back to Search
           </a>
@@ -66,7 +66,7 @@
             <div class="d-flex align-items-center justify-content-between mb-3">
               <div class="stat-value">Related Links</div>
               {% if keyword_results %}
-              <a href="{{ url_for('download_keyword_txt', link=link, keywords_input=keywords_input) }}" class="btn btn-primary btn-sm" id="downloadBtn">
+              <a href="{{ url_for('seo_tools.download_keyword_txt', link=link, keywords_input=keywords_input) }}" class="btn btn-primary btn-sm" id="downloadBtn">
                 <i class="fas fa-download me-2"></i>
                 Download TXT
               </a>
@@ -76,7 +76,7 @@
             {% if home_links %}
             <div class="list-group related-links-container" style="height: 400px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.375rem; background-color: #f8f9fa;">
               {% for hlink in home_links %}
-              <a href="{{ url_for('keyword_detail', link=hlink|safe) }}" class="list-group-item list-group-item-action" style="border-radius: 0; border-left: none; border-right: none; border-top: none;" title="{{ hlink }}">
+              <a href="{{ url_for('seo_tools.keyword_detail', link=hlink|safe) }}" class="list-group-item list-group-item-action" style="border-radius: 0; border-left: none; border-right: none; border-top: none;" title="{{ hlink }}">
                 {{ hlink }}
               </a>
               {% endfor %}
@@ -180,7 +180,7 @@ $(document).ready(function() {
         // AJAX POST request
         $.ajax({
             type: 'POST',
-            url: '{{ url_for("keyword_detail_ajax") }}',
+            url: '{{ url_for("seo_tools.keyword_detail_ajax") }}',
             data: formData + '&link=' + encodeURIComponent('{{ link }}'),
             success: function(response) {
                 // Hide loading spinner
@@ -233,7 +233,7 @@ $(document).ready(function() {
     }
     
     function updateDownloadButton(keywordsInput) {
-        var downloadUrl = '{{ url_for("download_keyword_txt", link=link, keywords_input="") }}';
+        var downloadUrl = '{{ url_for("seo_tools.download_keyword_txt", link=link, keywords_input="") }}';
         downloadUrl = downloadUrl.replace('keywords_input=', 'keywords_input=' + encodeURIComponent(keywordsInput));
         
         if ($('#downloadBtn').length === 0) {

@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+venv/
+.venv/
+
+# Flask
+flask_session/
+flask_app.log
+link_analyzer.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files
+crawled_data/
+download_files/
+
+# Backup files
+*.save
+*.save.*
+*.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup/temp files
+*.save
+*.save.*
+*.original
+append
+
+# Uploads
+static/uploads/
+static/css_backup_*/

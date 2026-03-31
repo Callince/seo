@@ -5,7 +5,7 @@
 {% block page_title %}Add New User Subscription{% endblock %}
 
 {% block breadcrumb %}
-<li class="breadcrumb-item"><a href="{{ url_for('admin_subscribed_users') }}">Subscribed Users</a></li>
+<li class="breadcrumb-item"><a href="{{ url_for('admin.admin_subscribed_users') }}">Subscribed Users</a></li>
 <li class="breadcrumb-item active">Add New</li>
 {% endblock %}
 
@@ -18,7 +18,7 @@
                     <i class="fas fa-plus-circle me-2"></i> New Subscription Details
                 </div>
                 <div class="card-body">
-                    <form action="{{ url_for('admin_new_subscribed_user') }}" method="POST">
+                    <form action="{{ url_for('admin.admin_new_subscribed_user') }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                         
                         <div class="mb-4">
@@ -55,7 +55,7 @@
                         </div>
                         
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('admin_subscribed_users') }}" class="btn btn-outline-secondary me-md-2">
+                            <a href="{{ url_for('admin.admin_subscribed_users') }}" class="btn btn-outline-secondary me-md-2">
                                 <i class="fas fa-times me-1"></i> Cancel
                             </a>
                             <button type="submit" class="btn btn-primary">

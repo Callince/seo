@@ -15,7 +15,7 @@
           <div class="alert alert-warning" role="alert">
             <h5 class="alert-heading">Subscription Required</h5>
             <p>To access advanced features and tools, please upgrade your subscription.</p>
-            <a href="{{ url_for('user_subscriptions') }}" class="btn btn-primary compact-btn">Upgrade Now</a>
+            <a href="{{ url_for('payment.user_subscriptions') }}" class="btn btn-primary compact-btn">Upgrade Now</a>
           </div>
         </div>
       {% endif %}
@@ -155,7 +155,7 @@
         <div class="card-content py-2">
           <p class="small">Comprehensive analysis of individual URLs for performance and SEO.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('url_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.url_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -173,7 +173,7 @@
         <div class="card-content py-2">
           <p class="small">Analyze H1-H6 tags to ensure proper heading structure and SEO optimization.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('h_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.h_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -191,7 +191,7 @@
         <div class="card-content py-2">
           <p class="small">Extract and analyze keyword usage and density across your web pages.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('keyword_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.keyword_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -209,7 +209,7 @@
         <div class="card-content py-2">
           <p class="small">Check image optimization, alt tags, and loading performance.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('image_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.image_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -227,7 +227,7 @@
         <div class="card-content py-2">
           <p class="small">Evaluate meta tags, descriptions, and other critical SEO elements.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('meta_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.meta_search') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -245,7 +245,7 @@
         <div class="card-content py-2">
           <p class="small">Review your site structure and navigation patterns for better UX.</p>
           {% if has_active_subscription %}
-            <a href="{{ url_for('site_structure') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
+            <a href="{{ url_for('seo_tools.site_structure') }}" class="btn btn-primary compact-btn mt-2">Explore</a>
           {% else %}
             <button class="btn btn-secondary compact-btn mt-2" disabled title="Subscription required">
               <i class="fas fa-lock"></i> Locked
@@ -315,7 +315,7 @@
     </div>
     
     <div class="text-center mt-3">
-      <a href="{{ url_for('search_history') }}" class="btn btn-primary compact-btn">
+      <a href="{{ url_for('auth.search_history') }}" class="btn btn-primary compact-btn">
         <i class="fas fa-history"></i> View Full History
       </a>
     </div>

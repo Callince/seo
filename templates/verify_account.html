@@ -70,7 +70,7 @@
       
       <div class="divider">or</div>
       
-      <form id="resendForm" class="auth-form" method="post" action="{{ url_for('resend_verification') }}">
+      <form id="resendForm" class="auth-form" method="post" action="{{ url_for('auth.resend_verification') }}">
         
         <!-- Add CSRF token -->
         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
@@ -98,7 +98,7 @@
   </div>
 
   <div class="back-to-login">
-    <a href="{{ url_for('login') }}">
+    <a href="{{ url_for('auth.login') }}">
       <i class="fas fa-arrow-left"></i>
       Back to Login
     </a>

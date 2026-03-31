@@ -23,7 +23,6 @@ itsdangerous
 requests
 beautifulsoup4
 aiohttp
-asyncio
 urllib3
 lxml
 parse
@@ -44,7 +43,6 @@ razorpay
 # Time and Date
 pytz
 python-dateutil
-uuid
 
 # Imaging
 Pillow
@@ -55,7 +53,6 @@ num2words  # For converting numbers to words in invoices
 
 # Environment and Deployment
 python-dotenv
-gunicorn
 cryptography
 marshmallow
 

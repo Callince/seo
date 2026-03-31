@@ -32,7 +32,7 @@
   "publisher": {
     "@type": "Organization",
     "name": "SEODADA",
-    "url": "{{ url_for('index', _external=True) }}"
+    "url": "{{ url_for('seo_tools.index', _external=True) }}"
   }
   {% if blogs %}
   ,
@@ -41,7 +41,7 @@
     {
       "@type": "BlogPosting",
       "headline": "{{ blog.title }}",
-      "url": "{{ url_for('blog_detail', slug=blog.slug, _external=True) }}",
+      "url": "{{ url_for('public.blog_detail', slug=blog.slug, _external=True) }}",
       "datePublished": "{{ (blog.publish_date.isoformat() if blog.publish_date else blog.created_at.isoformat()) }}",
       "dateModified": "{{ blog.updated_at.isoformat() if blog.updated_at else blog.created_at.isoformat() }}",
       {% if blog.image %}
@@ -64,26 +64,26 @@
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "@id": "{% if selected_category %}{{ url_for('public_blogs', category=selected_category.id, _external=True) }}#breadcrumb{% else %}{{ url_for('public_blogs', _external=True) }}#breadcrumb{% endif %}",
+  "@id": "{% if selected_category %}{{ url_for('public.public_blogs', category=selected_category.id, _external=True) }}#breadcrumb{% else %}{{ url_for('public.public_blogs', _external=True) }}#breadcrumb{% endif %}",
   "itemListElement": [
     {
       "@type": "ListItem",
       "position": 1,
       "name": "Home",
-      "item": "{{ url_for('landing', _external=True) }}"
+      "item": "{{ url_for('public.landing', _external=True) }}"
     },
     {
       "@type": "ListItem",
       "position": 2,
       "name": "Blogs",
-      "item": "{{ url_for('public_blogs', _external=True) }}"
+      "item": "{{ url_for('public.public_blogs', _external=True) }}"
     }
     {% if selected_category %}
     ,{
       "@type": "ListItem",
       "position": 3,
       "name": "{{ selected_category.name }}",
-      "item": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}"
+      "item": "{{ url_for('public.public_blogs', category=selected_category.id, _external=True) }}"
     }
     {% endif %}
   ]
@@ -96,13 +96,13 @@
 {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  "@id": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}#collection",
+  "@id": "{{ url_for('public.public_blogs', category=selected_category.id, _external=True) }}#collection",
   "name": "{{ selected_category.name }} Blogs",
   "description": "A collection of {{ selected_category.name }} articles and guides published by SEO Dada.",
-  "url": "{{ url_for('public_blogs', category=selected_category.id, _external=True) }}",
+  "url": "{{ url_for('public.public_blogs', category=selected_category.id, _external=True) }}",
   "isPartOf": {
     "@type": "WebSite",
-    "@id": "{{ url_for('index', _external=True) }}#website"
+    "@id": "{{ url_for('seo_tools.index', _external=True) }}#website"
   }
 }
 </script>
@@ -325,7 +325,7 @@
 <div class="main-container">
     <!-- Breadcrumbs -->
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <a href="{{ url_for('public.landing') }}"><i class="fas fa-home"></i> Home</a>
         <span class="separator"><i class="fas fa-chevron-right"></i></span>
         <span class="current">Blog</span>
         {% if selected_category %}
@@ -348,12 +348,12 @@
             <div>
                 <h5><i class="fas fa-filter me-2"></i>Filter by Category</h5>
                 <div>
-                    <a href="{{ url_for('public_blogs') }}"
+                    <a href="{{ url_for('public.public_blogs') }}"
                        class="category-btn {% if not selected_category %}active{% endif %}">
                         <i class="fas fa-th me-1"></i>All Posts
                     </a>
                     {% for category in categories %}
-                    <a href="{{ url_for('public_blogs', category=category.id) }}"
+                    <a href="{{ url_for('public.public_blogs', category=category.id) }}"
                        class="category-btn {% if selected_category and selected_category.id == category.id %}active{% endif %}">
                         {{ category.name }}
                     </a>
@@ -395,7 +395,7 @@
             <span class="featured-post-category">{{ featured.category.name }}</span>
             {% endif %}
             <h2 class="featured-post-title">
-                <a href="{{ url_for('blog_detail', slug=featured.slug) }}">{{ featured.title }}</a>
+                <a href="{{ url_for('public.blog_detail', slug=featured.slug) }}">{{ featured.title }}</a>
             </h2>
             <p class="featured-post-excerpt">
                 {% if featured.meta_description %}
@@ -416,7 +416,7 @@
                 </span>
                 {% endif %}
             </div>
-            <a href="{{ url_for('blog_detail', slug=featured.slug) }}" class="featured-post-btn">
+            <a href="{{ url_for('public.blog_detail', slug=featured.slug) }}" class="featured-post-btn">
                 Read Article <i class="fas fa-arrow-right"></i>
             </a>
         </div>
@@ -433,7 +433,7 @@
         {% for blog in blogs %}
         {% if selected_category or pagination.page > 1 or loop.index > 1 %}
         <article class="blog-card" data-title="{{ blog.title|lower }}" data-category="{{ blog.category.name|lower if blog.category else '' }}">
-            <a href="{{ url_for('blog_detail', slug=blog.slug) }}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
+            <a href="{{ url_for('public.blog_detail', slug=blog.slug) }}" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; height: 100%;">
                 {% if blog.image %}
                 <img src="{{ url_for('static', filename='uploads/blogs/' + blog.image) }}"
                      alt="{{ blog.title }}"
@@ -490,7 +490,7 @@
             <ul class="pagination">
                 {% if pagination.has_prev %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.prev_num, category=selected_category.id if selected_category else '') }}">
+                    <a class="page-link" href="{{ url_for('public.public_blogs', page=pagination.prev_num, category=selected_category.id if selected_category else '') }}">
                         <i class="fas fa-chevron-left"></i> Previous
                     </a>
                 </li>
@@ -499,7 +499,7 @@
                 {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                     {% if page_num %}
                         <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('public_blogs', page=page_num, category=selected_category.id if selected_category else '') }}">
+                            <a class="page-link" href="{{ url_for('public.public_blogs', page=page_num, category=selected_category.id if selected_category else '') }}">
                                 {{ page_num }}
                             </a>
                         </li>
@@ -512,7 +512,7 @@
 
                 {% if pagination.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('public_blogs', page=pagination.next_num, category=selected_category.id if selected_category else '') }}">
+                    <a class="page-link" href="{{ url_for('public.public_blogs', page=pagination.next_num, category=selected_category.id if selected_category else '') }}">
                         Next <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>
@@ -527,7 +527,7 @@
         <i class="fas fa-blog"></i>
         <h3>No Blog Posts Yet</h3>
         <p>Check back soon for exciting blog posts!</p>
-        <a href="{{ url_for('landing') }}" class="featured-post-btn" style="margin-top: 1rem;">
+        <a href="{{ url_for('public.landing') }}" class="featured-post-btn" style="margin-top: 1rem;">
             <i class="fas fa-home me-2"></i>Back to Home
         </a>
     </div>

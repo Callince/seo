@@ -10,28 +10,28 @@
             </h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ url_for('url_search') }}">URL Search</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('seo_tools.url_search') }}">URL Search</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Sitemap Analysis</li>
                 </ol>
             </nav>
         </div>
         <div class="col-auto">
             <div class="btn-group" role="group" aria-label="Sitemap Actions">
-                <a href="{{ url_for('download_sitemap_urls', url=url) }}" class="btn btn-outline-success">
+                <a href="{{ url_for('seo_tools.download_sitemap_urls', url=url) }}" class="btn btn-outline-success">
                     <i class="fas fa-file-csv me-1"></i>Export All URLs
                 </a>
                 <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-filter me-1"></i>Export Filtered
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='blog') }}">Blog Posts</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='search') }}">Search Pages</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='blog') }}">Blog Posts</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='search') }}">Search Pages</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><h6 class="dropdown-header">By Status</h6></li>
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_2xx') }}">200 Status (OK)</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_3xx') }}">300 Status (Redirect)</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_4xx') }}">400 Status (Client Error)</a></li>
-                    <li><a class="dropdown-item" href="{{ url_for('download_sitemap_urls', url=url, filter_type='status_5xx') }}">500 Status (Server Error)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='status_2xx') }}">200 Status (OK)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='status_3xx') }}">300 Status (Redirect)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='status_4xx') }}">400 Status (Client Error)</a></li>
+                    <li><a class="dropdown-item" href="{{ url_for('seo_tools.download_sitemap_urls', url=url, filter_type='status_5xx') }}">500 Status (Server Error)</a></li>
                 </ul>
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#sitemapHelpModal">
                     <i class="fas fa-question-circle me-1"></i>Help
@@ -272,11 +272,11 @@
                                                     <td>{{ url_data.changefreq or 'N/A' }}</td>
                                                     <td>
                                                         <div class="btn-group btn-group-sm" role="group">
-                                                            <a href="{{ url_for('keyword_detail', link=url_data.url) }}" 
+                                                            <a href="{{ url_for('seo_tools.keyword_detail', link=url_data.url) }}" 
                                                                class="btn btn-outline-info" title="Keywords Analysis">
                                                                 <i class="fas fa-key"></i>
                                                             </a>
-                                                            <a href="{{ url_for('meta_detail', link=url_data.url) }}" 
+                                                            <a href="{{ url_for('seo_tools.meta_detail', link=url_data.url) }}" 
                                                                class="btn btn-outline-warning" title="Meta Tags">
                                                                 <i class="fas fa-tags"></i>
                                                             </a>

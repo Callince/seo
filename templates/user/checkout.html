@@ -67,7 +67,7 @@
                     <div class="flex items-start">
                         <i class="fas fa-info-circle text-blue-500 mt-1 mr-2"></i>
                         <div>
-                            <p class="text-sm text-gray-700">By completing this purchase, you agree to our <a href="{{ url_for('terms') }}" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="{{ url_for('privacy') }}" class="text-blue-600 hover:underline">Privacy Policy</a>.</p>
+                            <p class="text-sm text-gray-700">By completing this purchase, you agree to our <a href="{{ url_for('public.terms') }}" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="{{ url_for('public.privacy') }}" class="text-blue-600 hover:underline">Privacy Policy</a>.</p>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                     <h2 class="text-xl font-semibold">Payment Details</h2>
                 </div>
                 
-                <form method="post" action="{{ url_for('checkout', order_id=payment.razorpay_order_id) }}" novalidate>
+                <form method="post" action="{{ url_for('payment.checkout', order_id=payment.razorpay_order_id) }}" novalidate>
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <div class="bg-white p-8 rounded-lg shadow-sm border border-gray-100">
                         <!-- Clean, minimalist form design -->

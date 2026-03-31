@@ -9,7 +9,7 @@
         <div class="card-header py-2 d-flex justify-content-between align-items-center">
             <h5 class="mb-0 text-dark">Search for URLs</h5>
             {% if links_data %}
-            <a href="{{ url_for('download_url', url=url_input, respectrobots='true' if request.form.get('respectrobots') == 'on' else 'false') }}" 
+            <a href="{{ url_for('seo_tools.download_url', url=url_input, respectrobots='true' if request.form.get('respectrobots') == 'on' else 'false') }}" 
                class="btn btn-outline-primary compact-btn download-csv-btn"
                data-url="{{ url_input }}"
                data-respectrobots="true">
@@ -18,7 +18,7 @@
             {% endif %}
         </div>
         <div class="card-body">
-            <form method="post" action="{{ url_for('url_search') }}" id="urlSearchForm">
+            <form method="post" action="{{ url_for('seo_tools.url_search') }}" id="urlSearchForm">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 
                 <!-- Mobile search section (hidden on desktop) -->
@@ -90,7 +90,7 @@
                                    title="Open link in new tab">
                                     <i class="fas fa-external-link-alt fa-sm"></i>
                                 </a>
-                                <a href="{{ url_for('url_detail', link=link) }}" 
+                                <a href="{{ url_for('seo_tools.url_detail', link=link) }}" 
                                    class="badge bg-secondary action-badge" title="View details">
                                     <i class="fas fa-info-circle fa-sm"></i>
                                 </a>
@@ -107,7 +107,7 @@
 
         <!-- Back to Home Button - Mobile Only -->
         <div class="text-center mt-4 mobile-only">
-            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary compact-btn">
+            <a href="{{ url_for('seo_tools.index') }}" class="btn btn-outline-secondary compact-btn">
                 <i class="fas fa-home"></i> Back to Home
             </a>
         </div>
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(iframe);
         
         // Build the download URL
-        const downloadUrl = "{{ url_for('download_url') }}?url=" + encodeURIComponent(url) + 
+        const downloadUrl = "{{ url_for('seo_tools.download_url') }}?url=" + encodeURIComponent(url) + 
                           "&respectrobots=" + encodeURIComponent(respectrobots);
         
         // Set the iframe source to trigger download
@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('respectrobots', 'on');
         
         // Send AJAX request
-        fetch("{{ url_for('url_search_ajax') }}", {
+        fetch("{{ url_for('seo_tools.url_search_ajax') }}", {
             method: 'POST',
             body: formData,
             headers: {
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to record search history
     function recordSearch(url, tool) {
-        fetch("{{ url_for('record_search') }}", {
+        fetch("{{ url_for('seo_tools.record_search') }}", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

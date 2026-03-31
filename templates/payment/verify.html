@@ -76,7 +76,7 @@
                     class="h-20 w-40 object-contain">
                 </div>
 
-                <form id="razorpay-form" action="{{ url_for('verify_payment', order_id=payment.razorpay_order_id) }}" method="POST" class="w-full max-w-md">
+                <form id="razorpay-form" action="{{ url_for('payment.verify_payment', order_id=payment.razorpay_order_id) }}" method="POST" class="w-full max-w-md">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
                     <input type="hidden" name="razorpay_order_id" id="razorpay_order_id" value="{{ payment.razorpay_order_id }}">
@@ -113,7 +113,7 @@
     </div>
 
     <div class="mt-6 text-center">
-        <a href="{{ url_for('user_subscriptions') }}" class="hover:underline" style="color: #273879;">
+        <a href="{{ url_for('payment.user_subscriptions') }}" class="hover:underline" style="color: #273879;">
             &larr; Return to subscriptions
         </a>
     </div>

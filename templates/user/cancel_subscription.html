@@ -113,14 +113,14 @@
       </div>
       
       <div class="flex items-center space-x-4">
-        <form action="{{ url_for('cancel_subscription', subscription_id=subscription.id) }}" method="post">
+        <form action="{{ url_for('payment.cancel_subscription', subscription_id=subscription.id) }}" method="post">
           <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
           <button type="submit" class="py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition duration-200 flex items-center">
             <i class="fas fa-times-circle mr-2"></i> Confirm Cancellation
           </button>
         </form>
         
-        <a href="{{ url_for('user_subscriptions') }}" class="py-3 px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition duration-200 flex items-center">
+        <a href="{{ url_for('payment.user_subscriptions') }}" class="py-3 px-6 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-lg transition duration-200 flex items-center">
           <i class="fas fa-arrow-left mr-2"></i> Keep my subscription
         </a>
       </div>

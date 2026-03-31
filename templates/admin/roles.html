@@ -9,7 +9,7 @@
 {% block breadcrumb %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.admin_dashboard') }}">Dashboard</a></li>
         <li class="breadcrumb-item active" aria-current="page">Roles</li>
     </ol>
 </nav>
@@ -248,7 +248,7 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li>
-                                            <a class="dropdown-item" href="{{ url_for('edit_role', role_id=role.id) }}">
+                                            <a class="dropdown-item" href="{{ url_for('admin.edit_role', role_id=role.id) }}">
                                                 <i class="fas fa-edit me-2"></i>Edit
                                             </a>
                                         </li>
@@ -348,7 +348,7 @@
                                             </td>
                                             <td class="text-end position-sticky" style="right: 0; background-color: white; box-shadow: -2px 0 5px rgba(0,0,0,0.05);">
                                                 <div class="btn-group">
-                                                    <a href="{{ url_for('edit_role', role_id=role.id) }}" class="btn btn-sm btn-outline-primary" aria-label="Edit role">
+                                                    <a href="{{ url_for('admin.edit_role', role_id=role.id) }}" class="btn btn-sm btn-outline-primary" aria-label="Edit role">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                     <button type="button" class="btn btn-sm btn-outline-info view-role-details" data-role-id="{{ role.id }}" aria-label="View role details">

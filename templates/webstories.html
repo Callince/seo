@@ -31,7 +31,7 @@
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "{{ url_for('landing', _external=True) }}"
+          "item": "{{ url_for('public.landing', _external=True) }}"
         },
         {
           "@type": "ListItem",
@@ -53,7 +53,7 @@
 <div class="main-container">
     <!-- Breadcrumbs -->
     <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="{{ url_for('landing') }}"><i class="fas fa-home"></i> Home</a>
+        <a href="{{ url_for('public.landing') }}"><i class="fas fa-home"></i> Home</a>
         <span class="separator"><i class="fas fa-chevron-right"></i></span>
         <span class="current">Web Stories</span>
     </nav>
@@ -89,7 +89,7 @@
 
     <div class="stories-grid">
         {% for webstory in webstories %}
-        <div class="story-card" onclick="window.location.href='{{ url_for('webstory_detail', slug=webstory.slug) }}'">
+        <div class="story-card" onclick="window.location.href='{{ url_for('public.webstory_detail', slug=webstory.slug) }}'">
             {% if webstory.cover_image %}
             <img src="{{ url_for('static', filename='uploads/webstories/' + webstory.cover_image) }}"
                  alt="{{ webstory.meta_title }}"
@@ -103,7 +103,7 @@
 
             <div class="story-card-body">
                 <h3 class="story-title">
-                    <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}">
+                    <a href="{{ url_for('public.webstory_detail', slug=webstory.slug) }}">
                         {{ webstory.meta_title }}
                     </a>
                 </h3>
@@ -117,7 +117,7 @@
                         <i class="far fa-calendar"></i>
                         {{ webstory.publish_date.strftime('%b %d, %Y') if webstory.publish_date else 'N/A' }}
                     </span>
-                    <a href="{{ url_for('webstory_detail', slug=webstory.slug) }}" class="read-more">
+                    <a href="{{ url_for('public.webstory_detail', slug=webstory.slug) }}" class="read-more">
                         View <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -133,7 +133,7 @@
             <ul class="pagination">
                 {% if pagination.has_prev %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('public_webstories', page=pagination.prev_num) }}">
+                    <a class="page-link" href="{{ url_for('public.public_webstories', page=pagination.prev_num) }}">
                         <i class="fas fa-chevron-left"></i> Previous
                     </a>
                 </li>
@@ -142,7 +142,7 @@
                 {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                     {% if page_num %}
                         <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('public_webstories', page=page_num) }}">
+                            <a class="page-link" href="{{ url_for('public.public_webstories', page=page_num) }}">
                                 {{ page_num }}
                             </a>
                         </li>
@@ -155,7 +155,7 @@
 
                 {% if pagination.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('public_webstories', page=pagination.next_num) }}">
+                    <a class="page-link" href="{{ url_for('public.public_webstories', page=pagination.next_num) }}">
                         Next <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>

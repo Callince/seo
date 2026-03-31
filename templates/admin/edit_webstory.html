@@ -54,13 +54,13 @@
                         <h5 class="mb-0 text-primary">
                             <i class="fas fa-edit me-2"></i>Edit Web Story
                         </h5>
-                        <a href="{{ url_for('admin_webstories') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{{ url_for('admin.admin_webstories') }}" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Web Stories
                         </a>
                     </div>
                 </div>
                 <div class="card-body p-4">
-                    <form method="POST" action="{{ url_for('admin_edit_webstory', id=webstory.id) }}" enctype="multipart/form-data" id="webstoryForm">
+                    <form method="POST" action="{{ url_for('admin.admin_edit_webstory', id=webstory.id) }}" enctype="multipart/form-data" id="webstoryForm">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <input type="hidden" name="slide_count" id="slide_count" value="{{ webstory.slides|length if webstory.slides else 0 }}">
 
@@ -317,7 +317,7 @@
                                     <button type="submit" class="btn btn-primary px-4">
                                         <i class="fas fa-save me-2"></i>Update Web Story
                                     </button>
-                                    <a href="{{ url_for('admin_webstories') }}" class="btn btn-outline-secondary px-4">
+                                    <a href="{{ url_for('admin.admin_webstories') }}" class="btn btn-outline-secondary px-4">
                                         <i class="fas fa-times me-2"></i>Cancel
                                     </a>
                                 </div>
@@ -818,7 +818,7 @@
         feedbackDiv.innerHTML = '<small class="text-muted"><i class="fas fa-spinner fa-spin me-1"></i>Checking availability...</small>';
 
         slugCheckTimeout = setTimeout(function() {
-            fetch('{{ url_for("admin_webstory_check_slug") }}', {
+            fetch('{{ url_for("admin.admin_webstory_check_slug") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1094,7 +1094,7 @@
             const formData = new FormData();
             formData.append('upload', file);
 
-            fetch('{{ url_for("admin_webstory_upload_image") }}', {
+            fetch('{{ url_for("admin.admin_webstory_upload_image") }}', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include',

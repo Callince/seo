@@ -65,12 +65,12 @@
         "author": {
             "@type": "Organization",
             "name": "SEODADA",
-            "url": "{{ url_for('landing', _external=True) }}"
+            "url": "{{ url_for('public.landing', _external=True) }}"
         },
         "publisher": {
             "@type": "Organization",
             "name": "SEODADA",
-            "url": "{{ url_for('landing', _external=True) }}"
+            "url": "{{ url_for('public.landing', _external=True) }}"
         },
         "mainEntityOfPage": {
             "@type": "WebPage",
@@ -513,7 +513,7 @@
             <div class="slide-counter" id="slideCounter">1 / {{ active_slides|length }}</div>
 
             <!-- Close button -->
-            <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'" aria-label="Close story">
+            <button class="story-close" onclick="window.location.href='{{ url_for('public.public_webstories') }}'" aria-label="Close story">
                 <i class="fas fa-times"></i>
             </button>
 
@@ -549,7 +549,7 @@
             {% else %}
             <div class="story-slide active" style="background: var(--story-gradient);">
                 <div class="story-header">
-                    <button class="story-close" onclick="window.location.href='{{ url_for('public_webstories') }}'">
+                    <button class="story-close" onclick="window.location.href='{{ url_for('public.public_webstories') }}'">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
@@ -672,7 +672,7 @@
                             nextSlide();
                         } else {
                             setTimeout(() => {
-                                window.location.href = '{{ url_for("public_webstories") }}';
+                                window.location.href = '{{ url_for("public.public_webstories") }}';
                             }, 800);
                         }
                     }, remainingTime);
@@ -699,7 +699,7 @@
                             nextSlide();
                         } else {
                             setTimeout(() => {
-                                window.location.href = '{{ url_for("public_webstories") }}';
+                                window.location.href = '{{ url_for("public.public_webstories") }}';
                             }, 800);
                         }
                     }, SLIDE_DURATION);
@@ -747,7 +747,7 @@
             if (currentSlide < slides.length - 1) {
                 showSlide(currentSlide + 1);
             } else {
-                window.location.href = '{{ url_for("public_webstories") }}';
+                window.location.href = '{{ url_for("public.public_webstories") }}';
             }
         }
 
@@ -854,7 +854,7 @@
                 e.preventDefault();
                 nextSlide();
             } else if (e.key === 'Escape') {
-                window.location.href = '{{ url_for("public_webstories") }}';
+                window.location.href = '{{ url_for("public.public_webstories") }}';
             } else if (e.key === 'p' || e.key === 'P') {
                 if (isPaused) {
                     resumeStory();

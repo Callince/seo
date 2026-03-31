@@ -1,0 +1,139 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Process Refund - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-undo"></i> Process Refund</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Payment Details -->
+                    <div class="alert alert-info">
+                        <h6 class="mb-2"><strong>Payment Details</strong></h6>
+                        <table class="table table-sm table-borderless mb-0">
+                            <tr>
+                                <td class="fw-bold" style="width:200px">Invoice Number:</td>
+                                <td>{{ payment.invoice_number }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">User:</td>
+                                <td>{{ user.name if user else 'Unknown' }} ({{ user.company_email if user else 'N/A' }})</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Plan:</td>
+                                <td>{{ subscription.plan if subscription else 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Amount Paid:</td>
+                                <td class="text-success fw-bold">Rs. {{ "%.2f"|format(payment.total_amount) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Base Amount:</td>
+                                <td>Rs. {{ "%.2f"|format(payment.base_amount) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">GST (18%):</td>
+                                <td>Rs. {{ "%.2f"|format(payment.gst_amount) }}</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Payment Status:</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if payment.status == 'completed' else 'warning' if payment.status == 'created' else 'danger' }}">
+                                        {{ payment.status|upper }}
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Razorpay Payment ID:</td>
+                                <td><code>{{ payment.razorpay_payment_id or 'N/A' }}</code></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold">Payment Date:</td>
+                                <td>{{ payment.created_at.strftime('%d %b %Y, %H:%M') if payment.created_at else 'N/A' }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    {% if payment.status != 'completed' %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Only completed payments can be refunded. This payment has status: <strong>{{ payment.status }}</strong>
+                    </div>
+                    {% else %}
+
+                    <!-- Refund Form -->
+                    <form method="POST" id="refundForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Refund Type</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="refund_type" id="fullRefund" value="full" checked onchange="togglePartialAmount()">
+                                <label class="form-check-label" for="fullRefund">
+                                    Full Refund (Rs. {{ "%.2f"|format(payment.total_amount) }})
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="refund_type" id="partialRefund" value="partial" onchange="togglePartialAmount()">
+                                <label class="form-check-label" for="partialRefund">
+                                    Partial Refund
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="partialAmountDiv" style="display:none;">
+                            <label for="partial_amount" class="form-label fw-bold">Refund Amount (Rs.)</label>
+                            <input type="number" class="form-control" id="partial_amount" name="partial_amount"
+                                   min="1" max="{{ payment.total_amount }}" step="0.01"
+                                   placeholder="Enter amount to refund">
+                            <small class="text-muted">Maximum: Rs. {{ "%.2f"|format(payment.total_amount) }}</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reason" class="form-label fw-bold">Reason for Refund</label>
+                            <select class="form-select" id="reason" name="reason">
+                                <option value="customer_request">Customer Request</option>
+                                <option value="wrong_subscription">Wrong Subscription Booked</option>
+                                <option value="service_issue">Service Issue</option>
+                                <option value="duplicate_payment">Duplicate Payment</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <strong>Warning:</strong> This action will:
+                            <ul class="mb-0 mt-1">
+                                <li>Issue a refund via Razorpay (5-7 business days to credit)</li>
+                                <li>Full refund will also <strong>deactivate the subscription</strong></li>
+                                <li>Purchased tokens will be <strong>paused</strong></li>
+                                <li>This action <strong>cannot be undone</strong></li>
+                            </ul>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to process this refund? This cannot be undone.')">
+                                <i class="fas fa-undo"></i> Process Refund
+                            </button>
+                            <a href="{{ url_for('admin.admin_payments') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Payments
+                            </a>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePartialAmount() {
+    const partialDiv = document.getElementById('partialAmountDiv');
+    const partialRadio = document.getElementById('partialRefund');
+    partialDiv.style.display = partialRadio.checked ? 'block' : 'none';
+}
+</script>
+{% endblock %}

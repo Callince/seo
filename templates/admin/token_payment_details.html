@@ -38,7 +38,7 @@
             </div>
 
             {% if token_purchase.status == 'created' %}
-            <form method="POST" action="{{ url_for('admin_update_token_payment', token_purchase_id=token_purchase.id) }}">
+            <form method="POST" action="{{ url_for('admin.admin_update_token_payment', token_purchase_id=token_purchase.id) }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="row mt-3">
                     <div class="col-md-4">
@@ -206,17 +206,17 @@
 
     <!-- Action Buttons -->
     <div class="d-flex justify-content-between mt-4">
-        <a href="{{ url_for('admin_payments') }}" class="btn btn-outline-secondary">
+        <a href="{{ url_for('admin.admin_payments') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Back to Payments
         </a>
         <div>
             {% if token_purchase.invoice_number and token_purchase.status == 'completed' %}
-            <a href="{{ url_for('download_token_invoice', token_purchase_id=token_purchase.id) }}" 
+            <a href="{{ url_for('payment.download_token_invoice', token_purchase_id=token_purchase.id) }}" 
                target="_blank" class="btn btn-success">
                 <i class="fas fa-file-pdf"></i> Download Invoice
             </a>
             {% endif %}
-            <a href="{{ url_for('admin_users', user_id=user.id) }}" class="btn btn-info">
+            <a href="{{ url_for('admin.admin_users', user_id=user.id) }}" class="btn btn-info">
                 <i class="fas fa-user"></i> View Customer
             </a>
         </div>

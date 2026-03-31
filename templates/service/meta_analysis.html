@@ -42,12 +42,12 @@
                 </p>
                 <div class="mt-8">
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('meta_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                        <a href="{{ url_for('seo_tools.meta_search') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
                             Start Meta Analysis
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
                     {% else %}
-                        <a href="{{ url_for('signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
+                        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary inline-flex items-center text-lg px-8 py-4">
                             Get Started Free
                             <i class="fas fa-arrow-right ml-2"></i>
                         </a>
@@ -567,12 +567,12 @@
                 Start your <strong>meta analysis</strong> today and improve your search visibility with our powerful <strong>meta tag analysis tool</strong>
             </p>
             {% if current_user.is_authenticated %}
-                <a href="{{ url_for('meta_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                <a href="{{ url_for('seo_tools.meta_search') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
                     Start Meta Analysis Now
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             {% else %}
-                <a href="{{ url_for('signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
+                <a href="{{ url_for('auth.signup') }}" class="btn bg-white text-primary hover:bg-gray-100 inline-flex items-center text-lg px-8 py-4">
                     Get Started Free
                     <i class="fas fa-arrow-right ml-2"></i>
                 </a>

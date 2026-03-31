@@ -44,7 +44,7 @@
 
         <!-- Previous Page -->
         {% if usage_history.has_prev %}
-            <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=usage_history.prev_num) }}" 
+            <a href="{{ url_for('payment.get_usage_history', subscription_id=subscription.id, page=usage_history.prev_num) }}" 
                class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
                 <i class="fas fa-chevron-left"></i>
             </a>
@@ -58,7 +58,7 @@
         {% for page_num in usage_history.iter_pages() %}
             {% if page_num %}
                 {% if page_num != usage_history.page %}
-                    <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=page_num) }}" 
+                    <a href="{{ url_for('payment.get_usage_history', subscription_id=subscription.id, page=page_num) }}" 
                        class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
                         {{ page_num }}
                     </a>
@@ -74,7 +74,7 @@
 
         <!-- Next Page -->
         {% if usage_history.has_next %}
-            <a href="{{ url_for('get_usage_history', subscription_id=subscription.id, page=usage_history.next_num) }}" 
+            <a href="{{ url_for('payment.get_usage_history', subscription_id=subscription.id, page=usage_history.next_num) }}" 
                class="pagination-link px-3 py-2 text-sm font-medium rounded-md">
                 <i class="fas fa-chevron-right"></i>
             </a>

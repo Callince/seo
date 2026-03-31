@@ -249,10 +249,10 @@
                 <a href="#clients" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <i class="fas fa-users mr-3 text-primary" aria-hidden="true"></i>Our Clients
                 </a>
-                <a href="{{ url_for('public_blogs') }}" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+                <a href="{{ url_for('public.public_blogs') }}" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <i class="fas fa-blog mr-3 text-primary" aria-hidden="true"></i>Blog
                 </a>
-	        <a href="{{ url_for('content_checker') }}" target="_blank" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
+	        <a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
                     <i class="fas fa-blog mr-3 text-primary" aria-hidden="true"></i>SEODADA Content Checker Tool
                 </a>
                 <!-- Our Services Dropdown for Mobile -->
@@ -262,12 +262,12 @@
                         <i class="fas fa-chevron-down text-sm transition-transform duration-300" id="mobileServicesChevron" aria-hidden="true"></i>
                     </button>
                     <div class="mobile-services-submenu hidden pl-4 mt-1 space-y-1" id="mobileServicesSubmenu">
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('url_analysis_page') }}"><i class="fas fa-link me-2 text-primary"></i>URL Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('heading_analysis_page') }}"><i class="fas fa-heading me-2 text-primary"></i>Heading Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('keyword_analysis_page') }}"><i class="fas fa-key me-2 text-primary"></i>Keyword Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('image_analysis_page') }}"><i class="fas fa-image me-2 text-primary"></i>Image Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('meta_analysis_page') }}"><i class="fas fa-tags me-2 text-primary"></i>Meta Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2 text-primary"></i>Sitemap Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.url_analysis_page') }}"><i class="fas fa-link me-2 text-primary"></i>URL Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.heading_analysis_page') }}"><i class="fas fa-heading me-2 text-primary"></i>Heading Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.keyword_analysis_page') }}"><i class="fas fa-key me-2 text-primary"></i>Keyword Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.image_analysis_page') }}"><i class="fas fa-image me-2 text-primary"></i>Image Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.meta_analysis_page') }}"><i class="fas fa-tags me-2 text-primary"></i>Meta Analysis</a>
+                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2 text-primary"></i>Sitemap Analysis</a>
                     </div>
                 </div>
             </nav>
@@ -280,16 +280,16 @@
                     <i class="fas fa-user me-2"></i>{{ current_user.name|title }}
                 </div>
                 <!-- User Menu Items -->
-                <a href="{{ url_for('index') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                <a href="{{ url_for('seo_tools.index') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
                     <i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard
                 </a>
-                <a href="{{ url_for('profile') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                <a href="{{ url_for('auth.profile') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
                     <i class="fas fa-user-circle me-2 text-primary"></i>Profile
                 </a>
-                <a href="{{ url_for('user_subscriptions') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
+                <a href="{{ url_for('payment.user_subscriptions') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
                     <i class="fas fa-credit-card me-2 text-primary"></i>Subscriptions
                 </a>
-                <a href="{{ url_for('logout') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-red-300 text-red-600 font-medium rounded-lg transition-colors hover:bg-red-50">
+                <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-red-300 text-red-600 font-medium rounded-lg transition-colors hover:bg-red-50">
                     <i class="fas fa-sign-out-alt me-2"></i>Logout
                 </a>
                 {% else %}
@@ -345,15 +345,15 @@
                             Our Services <i class="fas fa-chevron-down dropdown-caret"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
-                            <li><a class="dropdown-item" href="{{ url_for('url_analysis_page') }}"><i class="fas fa-link me-2"></i>URL Analysis</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('heading_analysis_page') }}"><i class="fas fa-heading me-2"></i>Heading Analysis</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('keyword_analysis_page') }}"><i class="fas fa-key me-2"></i>Keyword Analysis</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('image_analysis_page') }}"><i class="fas fa-image me-2"></i>Image Analysis</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('meta_analysis_page') }}"><i class="fas fa-tags me-2"></i>Meta Analysis</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2"></i>Sitemap Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.url_analysis_page') }}"><i class="fas fa-link me-2"></i>URL Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.heading_analysis_page') }}"><i class="fas fa-heading me-2"></i>Heading Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.keyword_analysis_page') }}"><i class="fas fa-key me-2"></i>Keyword Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.image_analysis_page') }}"><i class="fas fa-image me-2"></i>Image Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.meta_analysis_page') }}"><i class="fas fa-tags me-2"></i>Meta Analysis</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('public.sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2"></i>Sitemap Analysis</a></li>
                         </ul>
                     </div>
-                    <a href="{{ url_for('public_blogs') }}" class="elegant-link font-medium hover:text-primary transition-colors">Blog</a>
+                    <a href="{{ url_for('public.public_blogs') }}" class="elegant-link font-medium hover:text-primary transition-colors">Blog</a>
                 </div>
 
                 <!-- Desktop Auth Buttons - CSS handles show/hide based on screen size -->
@@ -368,7 +368,7 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown" role="menu">
                             {% if request.endpoint != 'index' %}
                             <li>
-                                <a class="dropdown-item" href="{{ url_for('index') }}" role="menuitem" tabindex="0">
+                                <a class="dropdown-item" href="{{ url_for('seo_tools.index') }}" role="menuitem" tabindex="0">
                                     <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Dashboard
                                 </a>
                             </li>
@@ -376,7 +376,7 @@
 
                             {% if request.endpoint != 'profile' %}
                             <li>
-                                <a class="dropdown-item" href="{{ url_for('profile') }}" role="menuitem" tabindex="0">
+                                <a class="dropdown-item" href="{{ url_for('auth.profile') }}" role="menuitem" tabindex="0">
                                     <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
                                 </a>
                             </li>
@@ -384,7 +384,7 @@
 
                             {% if request.endpoint != 'user_subscriptions' %}
                             <li>
-                                <a class="dropdown-item" href="{{ url_for('user_subscriptions') }}" role="menuitem" tabindex="0">
+                                <a class="dropdown-item" href="{{ url_for('payment.user_subscriptions') }}" role="menuitem" tabindex="0">
                                     <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
                                 </a>
                             </li>
@@ -392,7 +392,7 @@
 
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item text-danger" href="{{ url_for('logout') }}" role="menuitem" tabindex="0">
+                                <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}" role="menuitem" tabindex="0">
                                     <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
                                 </a>
                             </li>
@@ -432,11 +432,11 @@
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 fade-in" style="transition-delay: 0.4s;">
                         {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('index') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
+                        <a href="{{ url_for('seo_tools.index') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
                             <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
                         </a>
                         {% else %}
-                        <a href="{{ url_for('signup') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
+                        <a href="{{ url_for('auth.signup') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
                             <i class="fas fa-user-plus mr-2"></i>Sign up for free
                         </a>
                         {% endif %}
@@ -1094,23 +1094,23 @@
                     <div class="text-left">
                         <h3 class="text-lg font-bold mb-4">Solutions</h3>
                         <ul class="space-y-2">
-                            <li><a href="{{ url_for('url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
-                            <li><a href="{{ url_for('keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
-                            <li><a href="{{ url_for('image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
-                            <li><a href="{{ url_for('h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
-                            <li><a href="{{ url_for('meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
-                            <li><a href="{{ url_for('site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
+                            <li><a href="{{ url_for('seo_tools.site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
                         </ul>
                     </div>
 
                     <div class="text-left">
                         <h3 class="text-lg font-bold mb-4">Resources</h3>
                         <ul class="space-y-2">
-			    <li><a href="{{ url_for('content_checker') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
-			    <li><a href="{{ url_for('pillar_technical_seo') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Technical SEO Guide</a></li>		
-                            <li><a href="{{ url_for('public_blogs') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
-                            <li><a href="{{ url_for('public_webstories') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
-                            <li><a href="{{ url_for('help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
+			    <li><a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
+			    <li><a href="{{ url_for('public.pillar_technical_seo') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Technical SEO Guide</a></li>		
+                            <li><a href="{{ url_for('public.public_blogs') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
+                            <li><a href="{{ url_for('public.public_webstories') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
+                            <li><a href="{{ url_for('public.help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
                         </ul>
                     </div>
 

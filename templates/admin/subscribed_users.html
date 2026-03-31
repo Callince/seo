@@ -11,14 +11,14 @@ Subscribed Users
 
 <!-- Mobile View Button -->
 <div class="d-block d-sm-none mb-3">
-<a href="{{ url_for('admin_new_subscribed_user') }}" class="btn btn-primary d-block d-sm-none ">
+<a href="{{ url_for('admin.admin_new_subscribed_user') }}" class="btn btn-primary d-block d-sm-none ">
     <i class="fas fa-plus-circle me-1"></i>
     Add New
 </a>
  </div>
 <!-- Desktop View Button -->
 <div class="d-none d-sm-block mb-3">
-<a href="{{ url_for('admin_new_subscribed_user') }}" class="btn btn-primary d-none d-sm-inline-flex .mb-1">
+<a href="{{ url_for('admin.admin_new_subscribed_user') }}" class="btn btn-primary d-none d-sm-inline-flex .mb-1">
     <i class="fas fa-plus-circle me-1"></i>
     Add New Subscription
 </a>
@@ -94,7 +94,7 @@ Subscribed Users
             </div>
         </div>
         <div class="card-body">
-            <form action="{{ url_for('admin_subscribed_users') }}" method="GET" class="row g-3">
+            <form action="{{ url_for('admin.admin_subscribed_users') }}" method="GET" class="row g-3">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="col-12 col-md-6 col-lg-3">
                     <label for="search_email" class="form-label">Search by Email</label>
@@ -165,7 +165,7 @@ Subscribed Users
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a href="{{ url_for('admin_edit_subscribed_user', id=sub_user.id) }}" class="dropdown-item">
+                                    <a href="{{ url_for('admin.admin_edit_subscribed_user', id=sub_user.id) }}" class="dropdown-item">
                                         <i class="fas fa-edit me-2 text-primary"></i> Edit
                                     </a>
                                 </li>
@@ -334,7 +334,7 @@ Subscribed Users
                             </td>
                             <td>
                                 <div class="d-flex gap-1 justify-content-center">
-                                    <a href="{{ url_for('admin_edit_subscribed_user', id=sub_user.id) }}"
+                                    <a href="{{ url_for('admin.admin_edit_subscribed_user', id=sub_user.id) }}"
                                     class="btn btn-sm btn-outline-primary"
                                     title="Edit Subscription">
                                         <i class="fas fa-edit"></i>
@@ -389,7 +389,7 @@ Subscribed Users
                 </h5>
                 <button type="button" class="btn-close btn-close-white close-modal-btn" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('admin_extend_subscription', id=sub_user.id) }}" method="POST">
+            <form action="{{ url_for('admin.admin_extend_subscription', id=sub_user.id) }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="custom-modal-body">
                     <div class="text-center mb-3">
@@ -443,7 +443,7 @@ Subscribed Users
             </div>
             <div class="custom-modal-footer">
                 <button type="button" class="btn btn-outline-secondary close-modal-btn">Cancel</button>
-                <form action="{{ url_for('admin_reactivate_subscription', id=sub_user.id) }}" method="POST" style="display: inline;">
+                <form action="{{ url_for('admin.admin_reactivate_subscription', id=sub_user.id) }}" method="POST" style="display: inline;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <button type="submit" class="btn btn-info">
                         <i class="fas fa-play me-1"></i> Reactivate
@@ -482,7 +482,7 @@ Subscribed Users
             </div>
             <div class="custom-modal-footer">
                 <button type="button" class="btn btn-outline-secondary close-modal-btn">Cancel</button>
-                <form action="{{ url_for('admin_delete_subscribed_user', id=sub_user.id) }}" method="POST" style="display: inline;">
+                <form action="{{ url_for('admin.admin_delete_subscribed_user', id=sub_user.id) }}" method="POST" style="display: inline;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                     <button type="submit" class="btn btn-danger">
                         <i class="fas fa-trash-alt me-1"></i> Delete

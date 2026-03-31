@@ -258,7 +258,7 @@
   <header class="glass-header sticky top-0 z-50 shadow-lg shadow-navy-600/10 dark:shadow-black/20">
     <div class="max-w-[1280px] mx-auto flex items-center justify-between px-4 sm:px-6 h-14">
       <!-- Logo -->
-      <a href="{{ url_for('landing') }}" class="flex items-center gap-3">
+      <a href="{{ url_for('public.landing') }}" class="flex items-center gap-3">
         {% if website_settings.website_logo_file %}
           <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
             alt="{{ website_settings.website_name }}"
@@ -943,22 +943,22 @@
           <div class="text-left">
             <h3 class="text-lg font-bold mb-4">Solutions</h3>
             <ul class="space-y-2">
-              <li><a href="{{ url_for('url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
-              <li><a href="{{ url_for('keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
-              <li><a href="{{ url_for('image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
-              <li><a href="{{ url_for('h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
-              <li><a href="{{ url_for('meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
-              <li><a href="{{ url_for('site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
+              <li><a href="{{ url_for('seo_tools.site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
             </ul>
           </div>
 
           <div class="text-left">
             <h3 class="text-lg font-bold mb-4">Resources</h3>
             <ul class="space-y-2">
-              <li><a href="{{ url_for('content_checker') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
-              <li><a href="{{ url_for('public_blogs') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
-              <li><a href="{{ url_for('public_webstories') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
-              <li><a href="{{ url_for('help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
+              <li><a href="{{ url_for('seo_tools.content_checker') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
+              <li><a href="{{ url_for('public.public_blogs') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
+              <li><a href="{{ url_for('public.public_webstories') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
+              <li><a href="{{ url_for('public.help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
             </ul>
           </div>
 

@@ -125,7 +125,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-50" style="height: 4.375rem;">
         <nav class="container mx-auto px-4 sm:px-6" style="height: 100%;">
             <div class="flex justify-between items-center" style="height: 100%;">
-                <a href="{{ url_for('landing') }}" class="logo-display min-w-0">
+                <a href="{{ url_for('public.landing') }}" class="logo-display min-w-0">
                     {% if website_settings and website_settings.website_logo_file %}
                         <img src="{{ url_for('static', filename='uploads/' + website_settings.website_logo_file) }}"
                             alt="SEO Dada Logo" class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image">
@@ -134,7 +134,7 @@
                             alt="SEO Dada Logo" class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image">
                     {% endif %}
                 </a>
-                <a href="{{ url_for('sitemap_page') }}" class="text-primary hover:text-primary-dark font-medium">
+                <a href="{{ url_for('public.sitemap_page') }}" class="text-primary hover:text-primary-dark font-medium">
                     <i class="fas fa-arrow-left mr-2"></i>Back to Sitemap
                 </a>
             </div>
@@ -160,7 +160,7 @@
     <div class="bg-white border-b">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
             <nav class="flex items-center space-x-2 text-sm">
-                <a href="{{ url_for('sitemap_page') }}" class="text-gray-500 hover:text-primary">Sitemap</a>
+                <a href="{{ url_for('public.sitemap_page') }}" class="text-gray-500 hover:text-primary">Sitemap</a>
                 <i class="fas fa-chevron-right text-gray-300 text-xs"></i>
                 <span class="text-gray-900 font-medium">Web Stories</span>
             </nav>
@@ -183,7 +183,7 @@
                             <p class="text-sm text-gray-500">{{ webstories|length }} stories published</p>
                         </div>
                     </div>
-                    <a href="{{ url_for('public_webstories') }}" class="hidden sm:inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition">
+                    <a href="{{ url_for('public.public_webstories') }}" class="hidden sm:inline-flex items-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition">
                         <i class="fas fa-external-link-alt mr-2"></i>Visit Stories
                     </a>
                 </div>
@@ -202,7 +202,7 @@
                         <!-- Main Web Stories Page -->
                         <tr class="table-row bg-blue-50">
                             <td class="px-6 py-4">
-                                <a href="{{ url_for('public_webstories') }}" class="text-primary hover:text-primary-dark font-semibold">
+                                <a href="{{ url_for('public.public_webstories') }}" class="text-primary hover:text-primary-dark font-semibold">
                                     <i class="fas fa-folder-open mr-2"></i>All Web Stories (Main Page)
                                 </a>
                             </td>
@@ -215,7 +215,7 @@
                             {% for story in webstories %}
                             <tr class="table-row">
                                 <td class="px-6 py-4">
-                                    <a href="{{ url_for('webstory_detail', slug=story.slug) }}" class="text-gray-700 hover:text-primary font-medium">
+                                    <a href="{{ url_for('public.webstory_detail', slug=story.slug) }}" class="text-gray-700 hover:text-primary font-medium">
                                         <i class="fas fa-play-circle mr-2 text-gray-400"></i>{{ story.meta_title }}
                                     </a>
                                 </td>
@@ -257,9 +257,9 @@
             <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                 <p class="text-gray-400 text-sm">&copy; {{ current_year }} SEO Dada. All rights reserved.</p>
                 <div class="flex space-x-6 text-sm">
-                    <a href="{{ url_for('privacy') }}" class="text-gray-400 hover:text-white transition">Privacy</a>
-                    <a href="{{ url_for('terms') }}" class="text-gray-400 hover:text-white transition">Terms</a>
-                    <a href="{{ url_for('contact') }}" class="text-gray-400 hover:text-white transition">Contact</a>
+                    <a href="{{ url_for('public.privacy') }}" class="text-gray-400 hover:text-white transition">Privacy</a>
+                    <a href="{{ url_for('public.terms') }}" class="text-gray-400 hover:text-white transition">Terms</a>
+                    <a href="{{ url_for('public.contact') }}" class="text-gray-400 hover:text-white transition">Contact</a>
                 </div>
             </div>
         </div>

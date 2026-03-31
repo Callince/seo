@@ -186,7 +186,7 @@
         <div class="card chart-card h-100">
             <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                 <h5 class="mb-0">Popular Subscription Plans</h5>
-                <a href="{{ url_for('admin_subscriptions') }}" class="btn btn-sm btn-primary">Manage Plans</a>
+                <a href="{{ url_for('admin.admin_subscriptions') }}" class="btn btn-sm btn-primary">Manage Plans</a>
             </div>
             <div class="card-body d-flex flex-column">
                 <div class="mb-3 flex-grow-1 position-relative" style="min-height: 200px;">
@@ -264,7 +264,7 @@
         <div class="card">
             <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
                 <h5 class="mb-0">Recent Payments</h5>
-                <a href="{{ url_for('admin_payments') }}" class="btn btn-sm btn-primary">View All</a>
+                <a href="{{ url_for('admin.admin_payments') }}" class="btn btn-sm btn-primary">View All</a>
             </div>
             <div class="card-body p-0">
                 <!-- Desktop Table View -->
@@ -284,7 +284,7 @@
                                 {% for item in recent_payments %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('admin_user_details', user_id=item.user.id) }}">{{ item.user.name }}</a>
+                                        <a href="{{ url_for('admin.admin_user_details', user_id=item.user.id) }}">{{ item.user.name }}</a>
                                     </td>
                                     <td>{{ item.subscription.plan }}</td>
                                     <td>₹{{ item.format_amount() }}</td>
@@ -358,7 +358,7 @@
   <ul class="pagination justify-content-center">
     {% if recent_payments_pagination.has_prev %}
       <li class="page-item">
-        <a class="page-link" href="{{ url_for('admin_dashboard', page=recent_payments_pagination.prev_num) }}">Previous</a>
+        <a class="page-link" href="{{ url_for('admin.admin_dashboard', page=recent_payments_pagination.prev_num) }}">Previous</a>
       </li>
     {% else %}
       <li class="page-item disabled">
@@ -374,7 +374,7 @@
           </li>
         {% else %}
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('admin_dashboard', page=page_num) }}">{{ page_num }}</a>
+            <a class="page-link" href="{{ url_for('admin.admin_dashboard', page=page_num) }}">{{ page_num }}</a>
           </li>
         {% endif %}
       {% else %}
@@ -384,7 +384,7 @@
 
     {% if recent_payments_pagination.has_next %}
       <li class="page-item">
-        <a class="page-link" href="{{ url_for('admin_dashboard', page=recent_payments_pagination.next_num) }}">Next</a>
+        <a class="page-link" href="{{ url_for('admin.admin_dashboard', page=recent_payments_pagination.next_num) }}">Next</a>
       </li>
     {% else %}
       <li class="page-item disabled">
@@ -401,7 +401,7 @@
         <div class="card">
             <div class="card-header d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
                 <h5 class="mb-0">Subscriptions Expiring in Next 7 Days</h5>
-                <a href="{{ url_for('admin_subscribed_users') }}" class="btn btn-sm btn-primary">View All Subscriptions</a>
+                <a href="{{ url_for('admin.admin_subscribed_users') }}" class="btn btn-sm btn-primary">View All Subscriptions</a>
             </div>
             <div class="card-body p-0">
                 <!-- Desktop Table View -->
@@ -424,7 +424,7 @@
                                 {% set modal_id = 'extendModal' ~ subscribed_user.id %}
                                 <tr>
                                     <td>
-                                        <a href="{{ url_for('admin_user_details', user_id=user.id) }}">{{ user.name }}</a>
+                                        <a href="{{ url_for('admin.admin_user_details', user_id=user.id) }}">{{ user.name }}</a>
                                     </td>
                                     <td>{{ user.company_email }}</td>
                                     <td>{{ subscription.plan }}</td>
@@ -448,7 +448,7 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ url_for('admin_edit_subscribed_user', id=subscribed_user.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{ url_for('admin.admin_edit_subscribed_user', id=subscribed_user.id) }}" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
@@ -512,7 +512,7 @@
                         </div>
                         
                         <div class="card-actions-mobile">
-                            <a href="{{ url_for('admin_edit_subscribed_user', id=subscribed_user.id) }}" class="btn btn-sm btn-outline-primary flex-fill">
+                            <a href="{{ url_for('admin.admin_edit_subscribed_user', id=subscribed_user.id) }}" class="btn btn-sm btn-outline-primary flex-fill">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             <button type="button" class="btn btn-sm btn-outline-success flex-fill" data-bs-toggle="modal" data-bs-target="#{{ modal_id }}">
@@ -541,7 +541,7 @@
                 <h5 class="modal-title">Extend Subscription</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('admin_extend_subscription', id=subscribed_user.id) }}" method="post">
+            <form action="{{ url_for('admin.admin_extend_subscription', id=subscribed_user.id) }}" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
                 <div class="modal-body">
                     <p>Extend subscription for <strong>{{ user.name }}</strong> ({{ subscription.plan }} plan)</p>
