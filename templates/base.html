@@ -126,7 +126,7 @@
       {% else %}
         <i class="{{ website_settings.website_icon }} brand-icon"></i>
       {% endif %}
-      <span class="brand-text">{{ website_settings.website_name }}</span>
+      {% if website_settings.website_name %}<span class="brand-text">{{ website_settings.website_name }}</span>{% endif %}
     </div>
 
 
