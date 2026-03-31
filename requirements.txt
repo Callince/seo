@@ -1,6 +1,7 @@
 # Core Web Framework and Extensions
 Flask
 Flask-SQLAlchemy
+Flask-Migrate
 Flask-WTF
 Flask-Caching
 Flask-Mail
