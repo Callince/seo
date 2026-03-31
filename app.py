@@ -246,7 +246,7 @@ def _register_template_helpers(app):
     def inject_website_settings():
         try:
             from models import WebsiteSettings
-            website_name = WebsiteSettings.get_setting('website_name', 'SEO Dada')
+            website_name = WebsiteSettings.get_setting('website_name', '')
             website_icon = WebsiteSettings.get_setting('website_icon', 'fas fa-chart-line')
             website_logo_file = WebsiteSettings.get_setting('website_logo_file')
             website_tagline = WebsiteSettings.get_setting('website_tagline', 'Professional SEO Dada Tools')
@@ -271,10 +271,10 @@ def _register_template_helpers(app):
             app.logger.error(f"Error loading website settings: {str(e)}")
             return dict(
                 website_settings={
-                    'website_name': 'SEO Dada',
+                    'website_name': '',
                     'website_icon': 'fas fa-chart-line',
                     'website_logo_file': None,
-                    'website_tagline': 'Professional SEO Dada Tools'
+                    'website_tagline': ''
                 },
                 current_year=datetime.now().year
             )
