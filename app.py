@@ -251,8 +251,8 @@ def _register_template_helpers(app):
             website_logo_file = WebsiteSettings.get_setting('website_logo_file')
             website_tagline = WebsiteSettings.get_setting('website_tagline', 'Professional SEO Dada Tools')
 
-            if not website_name or not website_name.strip():
-                website_name = 'SEO Dada'
+            if website_name is None:
+                website_name = ''
             if not website_icon or not website_icon.strip():
                 website_icon = 'fas fa-chart-line'
             if not website_tagline or not website_tagline.strip():
