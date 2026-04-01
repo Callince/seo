@@ -660,5 +660,18 @@
 
   <!-- Bootstrap JS - KEEPING ORIGINAL -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  <!-- Auto-dismiss flash messages after 5 seconds -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.flash-message, .alert-dismissible').forEach(function(el) {
+        setTimeout(function() {
+          el.style.transition = 'opacity 0.5s';
+          el.style.opacity = '0';
+          setTimeout(function() { el.remove(); }, 500);
+        }, 5000);
+      });
+    });
+  </script>
 </body>
 </html>
