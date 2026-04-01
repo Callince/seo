@@ -18,8 +18,8 @@
                     
                     <!-- User Info - Centered on mobile, flex-grow on desktop -->
                     <div class="text-center sm:text-left sm:flex-grow order-1 sm:order-none">
-                        <h1 class="text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-1">{{ user.name|title }}</h1>
-                        <p class="text-white/80 flex items-center justify-center">
+                        <h1 class="text-xl sm:text-2xl font-bold text-black mb-2 sm:mb-1">{{ user.name|title }}</h1>
+                        <p class="text-black/80 flex items-center justify-center">
                             <i class="fas fa-envelope mr-2"></i>{{ user.company_email }}
                             
                         </p>
@@ -30,12 +30,12 @@
                         {% if active_subscription %}
                             {% set sub, plan = active_subscription %}
                             <div class="mb-2">
-                                <span class="inline-block bg-blue-500 text-white text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full">
+                                <span class="inline-block bg-blue-500 text-black text-xs sm:text-sm font-medium px-2 sm:px-3 py-1 rounded-full">
                                     <i class="fas fa-crown mr-1"></i>{{ plan.plan }} Plan
                                 </span>
                             </div>
                         {% endif %}
-                        <p class="text-xs sm:text-sm text-white/80">
+                        <p class="text-xs sm:text-sm text-black/80">
                             <i class="fas fa-calendar mr-1"></i>
                             Member since {% if user.created_at %}{{ user.created_at.strftime('%B %Y') }}{% else %}N/A{% endif %}
                         </p>
