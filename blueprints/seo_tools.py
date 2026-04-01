@@ -2811,9 +2811,14 @@ def site_structure():
 
         current_app.logger.info(f"Created crawl job {job_id} for URL: {start_url}")
 
-        # Run the crawler in a background thread
+        # Run the crawler in a background thread with app context
         try:
-            executor.submit(run_async_in_thread_with_progress, main_crawl(start_url, job_id), job_id)
+            app = current_app._get_current_object()
+            coro = main_crawl(start_url, job_id)
+            def run_with_context(app, coro, job_id):
+                with app.app_context():
+                    return run_async_in_thread_with_progress(coro, job_id)
+            executor.submit(run_with_context, app, coro, job_id)
             current_app.logger.info(f"Crawler submitted to executor for job {job_id}")
         except Exception as e:
             current_app.logger.error(f"Error submitting crawler: {e}")
