@@ -1404,16 +1404,15 @@ def admin_new_subscribed_user():
             flash('Subscription plan not found.', 'danger')
             return redirect(url_for('admin.admin_new_subscribed_user'))
 
-        # Check if user already has this subscription (only active ones)
+        # Check if user already has any active subscription
         existing_sub = SubscribedUser.query.filter(
             SubscribedUser.U_ID == user_id,
-            SubscribedUser.S_ID == subscription_id,
             SubscribedUser.end_date > datetime.now(UTC),
             SubscribedUser._is_active == True
         ).first()
 
         if existing_sub:
-            flash('User already has an active subscription to this plan.', 'warning')
+            flash('User already has an active subscription. Please cancel it first before assigning a new one.', 'warning')
             return redirect(url_for('admin.admin_subscribed_users'))
 
         # Calculate dates
