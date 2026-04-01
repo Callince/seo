@@ -673,5 +673,55 @@
       });
     });
   </script>
+
+  <!-- Custom Modal for confirm/alert dialogs -->
+  <div id="customModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99999; justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:12px; padding:24px 28px; max-width:420px; width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:modalFadeIn 0.2s ease;">
+      <div style="display:flex; align-items:center; margin-bottom:16px;">
+        <i id="customModalIcon" class="fas fa-question-circle" style="font-size:24px; color:#3b82f6; margin-right:12px;"></i>
+        <h3 id="customModalTitle" style="margin:0; font-size:18px; font-weight:600; color:#1e293b;"></h3>
+      </div>
+      <p id="customModalMessage" style="margin:0 0 24px; color:#475569; font-size:15px; line-height:1.5;"></p>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button id="customModalCancel" style="padding:8px 20px; border:1px solid #e2e8f0; background:#fff; color:#64748b; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500;">Cancel</button>
+        <button id="customModalOk" style="padding:8px 20px; border:none; background:linear-gradient(135deg,#273879,#0f74b2); color:#fff; border-radius:8px; cursor:pointer; font-size:14px; font-weight:500;">Confirm</button>
+      </div>
+    </div>
+  </div>
+  <style>
+    @keyframes modalFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+    #customModalCancel:hover { background:#f1f5f9; }
+    #customModalOk:hover { opacity:0.9; }
+  </style>
+  <script>
+    function customConfirm(message, title) {
+      return new Promise(function(resolve) {
+        var modal = document.getElementById('customModal');
+        document.getElementById('customModalTitle').textContent = title || 'Confirm';
+        document.getElementById('customModalMessage').textContent = message;
+        document.getElementById('customModalIcon').className = 'fas fa-question-circle';
+        document.getElementById('customModalIcon').style.color = '#3b82f6';
+        document.getElementById('customModalCancel').style.display = '';
+        modal.style.display = 'flex';
+        document.getElementById('customModalOk').onclick = function() { modal.style.display = 'none'; resolve(true); };
+        document.getElementById('customModalCancel').onclick = function() { modal.style.display = 'none'; resolve(false); };
+      });
+    }
+    function customAlert(message, title, type) {
+      return new Promise(function(resolve) {
+        var modal = document.getElementById('customModal');
+        var icon = document.getElementById('customModalIcon');
+        document.getElementById('customModalTitle').textContent = title || 'Notice';
+        document.getElementById('customModalMessage').textContent = message;
+        document.getElementById('customModalCancel').style.display = 'none';
+        if (type === 'error') { icon.className = 'fas fa-times-circle'; icon.style.color = '#ef4444'; }
+        else if (type === 'success') { icon.className = 'fas fa-check-circle'; icon.style.color = '#22c55e'; }
+        else if (type === 'warning') { icon.className = 'fas fa-exclamation-triangle'; icon.style.color = '#f59e0b'; }
+        else { icon.className = 'fas fa-info-circle'; icon.style.color = '#3b82f6'; }
+        modal.style.display = 'flex';
+        document.getElementById('customModalOk').onclick = function() { modal.style.display = 'none'; resolve(true); };
+      });
+    }
+  </script>
 </body>
 </html>

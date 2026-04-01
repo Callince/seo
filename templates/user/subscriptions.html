@@ -975,7 +975,7 @@ function processTokenPurchase() {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            alert('Error: ' + data.error);
+            customAlert('Error: ' + data.error, 'Error', 'error');
             resetTokenPurchaseButton();
             return;
         }
@@ -1006,7 +1006,7 @@ function processTokenPurchase() {
     })
     .catch(error => {
         console.error('Error initiating token purchase:', error);
-        alert('Error initiating purchase. Please try again.');
+        customAlert('Error initiating purchase. Please try again.', 'Error', 'error');
         resetTokenPurchaseButton();
     });
 }
@@ -1028,7 +1028,7 @@ function verifyTokenPayment(paymentResponse) {
     .then(response => response.json())
     .then(data => {
         if (data.error) {
-            alert('Payment verification failed: ' + data.error);
+            customAlert('Payment verification failed: ' + data.error, 'Payment Error', 'error');
         } else {
             // Show success message
             showSuccessMessage(data.message);
@@ -1045,7 +1045,7 @@ function verifyTokenPayment(paymentResponse) {
     })
     .catch(error => {
         console.error('Error verifying payment:', error);
-        alert('Error verifying payment. Please contact support.');
+        customAlert('Error verifying payment. Please contact support.', 'Payment Error', 'error');
         resetTokenPurchaseButton();
     });
 }
@@ -1188,7 +1188,7 @@ function hideSubscribeConfirmation() {
 function processSubscription() {
     if (currentPlanId) {
         {% if active_subscription %}
-            alert('You already have an active subscription. Please cancel it first or wait for it to expire.');
+            customAlert('You already have an active subscription. Please cancel it first or wait for it to expire.', 'Subscription Active', 'warning');
             return;
         {% endif %}
         
@@ -1208,45 +1208,43 @@ function processSubscription() {
 }
 
 function showActiveSubscriptionInfo() {
-    alert('You already have an active subscription. You need to wait for it to expire or cancel it before subscribing to a new plan.');
+    customAlert('You already have an active subscription. You need to wait for it to expire or cancel it before subscribing to a new plan.', 'Subscription Active', 'warning');
 }
 function toggleAutoRenewal(subscriptionId, newStatus) {
-    // Show confirmation dialog
     const action = newStatus === 1 ? 'enable' : 'disable';
     const confirmMessage = `Are you sure you want to ${action} auto-renewal for your subscription?`;
-    
-    if (!confirm(confirmMessage)) {
-        return;
-    }
-    
-    // Show loading state
-    const button = event.target.closest('button');
-    const originalContent = button.innerHTML;
-    button.disabled = true;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
-    
-    // Make the request
-    fetch(`/subscription/auto-renew/${subscriptionId}/${newStatus}`, {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            // Reload the page to show updated status
-            window.location.reload();
-        } else {
-            throw new Error('Failed to update auto-renewal setting');
-        }
-    })
-    .catch(error => {
-        console.error('Error updating auto-renewal:', error);
-        alert('Failed to update auto-renewal setting. Please try again.');
-        
-        // Restore button state
-        button.disabled = false;
-        button.innerHTML = originalContent;
+
+    customConfirm(confirmMessage, 'Auto-Renewal').then(function(confirmed) {
+        if (!confirmed) return;
+
+        // Show loading state
+        const button = event.target.closest('button');
+        const originalContent = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+
+        // Make the request
+        fetch(`/subscription/auto-renew/${subscriptionId}/${newStatus}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                throw new Error('Failed to update auto-renewal setting');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating auto-renewal:', error);
+            customAlert('Failed to update auto-renewal setting. Please try again.', 'Error', 'error');
+
+            // Restore button state
+            button.disabled = false;
+            button.innerHTML = originalContent;
+        });
     });
 }
 
