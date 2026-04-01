@@ -51,26 +51,8 @@
         </div>
 
 
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="mb-6 border-l-4 p-4 rounded relative flash-message flash-{{ category }}">
-                        <div class="flex">
-                            <div class="flex-shrink-0">
-                                <i class="fas {% if category == 'success' %}fa-check-circle{% elif category == 'danger' %}fa-times-circle{% elif category == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-sm">{{ message }}</p>
-                            </div>
-                            <button type="button" class="ml-auto -mr-1 px-2" onclick="this.parentElement.parentElement.remove()">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <!-- Consume flash messages silently on profile page -->
+        {% with messages = get_flashed_messages(with_categories=true) %}{% endwith %}
 
         <div class="flex flex-col lg:flex-row gap-4 lg:gap-6">
             <!-- Left Sidebar Navigation -->
