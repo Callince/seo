@@ -6,345 +6,129 @@
     <title>What Your SEO Analytics Isn't Telling You (Until Now)</title>
     <meta name="description" content="See the insights your usual SEO tools miss. Track performance, spot issues, and find growth opportunities with clear, real SEO analytics.">
 
-    <!-- Preconnect to external domains for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
 
-    <!-- Critical CSS - inline for above-the-fold content -->
-    <style>
-        /* Critical styles for first paint */
-        *,*::before,*::after{box-sizing:border-box}
-        body{font-family:'Inter',system-ui,-apple-system,sans-serif;margin:0;padding:0;overflow-x:hidden}
-        .glass-nav{background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-        .btn-primary{background:linear-gradient(135deg,#273879 0%,#0f74b2 100%);color:#fff;padding:0.625rem 1.25rem;border-radius:0.75rem;border:none;cursor:pointer}
-        .gradient-text{background:linear-gradient(90deg,#273879,#0f74b2);-webkit-background-clip:text;background-clip:text;color:transparent}
-        .container{width:100%;max-width:1280px;margin:0 auto;padding:0 1rem}
+    <!-- Fonts — Syne (display) + DM Sans (body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        /* CSS Animated Background (replaces Three.js ~500KB savings) */
-        #css-background{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;overflow:hidden;pointer-events:none}
-        .bg-particle{position:absolute;border-radius:50%;background:linear-gradient(135deg,rgba(39,56,121,0.08),rgba(15,116,178,0.08));animation:float 20s infinite ease-in-out}
-        .bg-particle:nth-child(1){width:400px;height:400px;top:10%;left:10%;animation-delay:0s}
-        .bg-particle:nth-child(2){width:300px;height:300px;top:60%;right:10%;animation-delay:-7s}
-        .bg-particle:nth-child(3){width:250px;height:250px;bottom:10%;left:30%;animation-delay:-14s}
-        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(1.1)}}
+    <!-- Tailwind — loaded synchronously to prevent FOUC -->
+    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#273879','primary-dark':'#1f2d5f','primary-light':'#0f74b2',secondary:'#0f74b2',accent:'#38bdf8',dark:'#0b1120',surface:'#ffffff',text:'#1e293b','text-light':'#64748b'},fontFamily:{display:['Syne','sans-serif'],body:['DM Sans','sans-serif']}}}};</script>
 
-        /* CSS-based animations (replaces GSAP ~60KB savings) */
-        .fade-in{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease-out,transform 0.6s ease-out}
-        .fade-in.active{opacity:1;transform:translateY(0)}
-        .stagger-item{opacity:0;transform:translateY(15px);transition:opacity 0.5s ease-out,transform 0.5s ease-out}
-        .stagger-item.active{opacity:1;transform:translateY(0)}
-
-        /* Critical Tailwind utilities for above-the-fold (before Tailwind loads) */
-        .hidden{display:none}
-        .flex{display:flex}.flex-col{flex-direction:column}.flex-row{flex-direction:row}
-        .items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}
-        .relative{position:relative}.absolute{position:absolute}.fixed{position:fixed}
-        .top-0{top:0}.left-0{left:0}.right-0{right:0}.bottom-0{bottom:0}
-        .z-10{z-index:10}.z-20{z-index:20}
-        .w-full{width:100%}.h-full{height:100%}.min-h-screen{min-height:100vh}
-        .mx-auto{margin-left:auto;margin-right:auto}
-        .px-4{padding-left:1rem;padding-right:1rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}
-        .pt-32{padding-top:8rem}.pb-24{padding-bottom:6rem}
-        .mb-6{margin-bottom:1.5rem}.mb-12{margin-bottom:3rem}
-        .text-white{color:#fff}.text-center{text-align:center}
-        .font-bold{font-weight:700}.font-medium{font-weight:500}
-        .text-4xl{font-size:2.25rem;line-height:2.5rem}
-        .text-lg{font-size:1.125rem;line-height:1.75rem}
-        .rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}
-        .overflow-hidden{overflow:hidden}
-        .bg-white{background-color:#fff}.bg-gray-50{background-color:#f9fafb}
-        .shadow-lg{box-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05)}
-        .shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
-        .space-x-4>:not([hidden])~:not([hidden]){margin-left:1rem}
-        .space-x-8>:not([hidden])~:not([hidden]){margin-left:2rem}
-        .gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-8{gap:2rem}
-        .grid{display:grid}
-        .grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}
-        .border{border-width:1px}.border-gray-100{border-color:#f3f4f6}
-        .transition-colors{transition-property:color,background-color,border-color;transition-duration:.15s}
-        .hover\:text-primary:hover{color:#273879}
-
-        /* Desktop header - show nav on large screens */
-        @media(min-width:640px){.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}}
-        @media(min-width:768px){.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.md\:text-5xl{font-size:3rem;line-height:1}}
-
-        /* CRITICAL: Desktop navigation - must show immediately on >=1024px screens */
-        .desktop-nav,.desktop-auth{display:none!important}
-        .mobile-menu-btn{display:flex!important}
-        @media(min-width:1024px){
-            .desktop-nav,.desktop-auth{display:flex!important}
-            .mobile-menu-btn{display:none!important}
-            .lg\:flex{display:flex!important}
-            .lg\:hidden{display:none!important}
-            .lg\:flex-row{flex-direction:row}
-            .lg\:w-1\/2{width:50%}
-            .lg\:mb-0{margin-bottom:0}
-            .lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-            .lg\:text-6xl{font-size:3.75rem;line-height:1}
-        }
-
-        /* Header navigation links styling */
-        .elegant-link{position:relative;text-decoration:none;color:#1e293b}
-        .elegant-link::after{content:'';position:absolute;width:0;height:1.5px;bottom:-2px;left:0;background-color:#273879;transition:width 0.3s ease}
-        .elegant-link:hover::after{width:100%}
-
-        /* Services dropdown */
-        .services-dropdown{position:relative}
-        .services-dropdown .dropdown-menu{position:absolute;top:100%;left:0;min-width:200px;background:#fff;border-radius:0.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1);padding:0.5rem 0;opacity:0;visibility:hidden;transform:translateY(10px);transition:all 0.3s ease;z-index:1000}
-        .services-dropdown:hover .dropdown-menu{opacity:1;visibility:visible;transform:translateY(0)}
-        .dropdown-item{display:block;padding:0.75rem 1.25rem;color:#374151;text-decoration:none;transition:all 0.2s ease}
-        .dropdown-item:hover{background:linear-gradient(135deg,#273879,#0f74b2);color:#fff}
-        .dropdown-caret{font-size:0.6rem;margin-left:0.35rem;transition:transform 0.3s ease}
-        .services-dropdown:hover .dropdown-caret{transform:rotate(180deg)}
-
-        /* User dropdown */
-        .user-dropdown .dropdown-menu{position:absolute;top:100%;right:0;min-width:180px;background:#fff;border-radius:0.75rem;box-shadow:0 10px 15px -3px rgba(0,0,0,.1);padding:0.5rem 0;display:none;z-index:1000}
-        .user-dropdown.show .dropdown-menu{display:block}
-
-        /* Loading Screen */
-        .page-loader{position:fixed;top:0;left:0;width:100%;height:100%;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity 0.4s ease,visibility 0.4s ease}
-        .page-loader.loaded{opacity:0;visibility:hidden;pointer-events:none}
-        .loader-logo{height:2.5rem;width:auto;margin-bottom:1.5rem;animation:pulse 1.5s infinite ease-in-out}
-        .loader-spinner{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:#273879;border-radius:50%;animation:spin 0.8s linear infinite}
-        .loader-text{margin-top:1rem;color:#64748b;font-size:0.875rem;font-weight:500}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.05);opacity:0.8}}
-    </style>
-
-    <!-- Google Fonts with display=swap for better font loading -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"></noscript>
-
-    <!-- Bootstrap CSS - load async -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"></noscript>
-
-    <!-- Font Awesome - load async (subset) -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"></noscript>
-
-    <!-- Landing page CSS - external file for caching -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Landing CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
 
-    <!-- Tailwind CSS - load after page interactive for better performance -->
-    <script>
-        // Tailwind config (applied when Tailwind loads)
-        window.tailwindConfig = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#273879',
-                        'primary-dark': '#1f2d5f',
-                        'primary-light': '#0f74b2',
-                        secondary: '#0f74b2',
-                        accent: '#0891b2',
-                        background: '#f8fafc',
-                        surface: '#ffffff',
-                        text: '#1e293b',
-                        'text-light': '#64748b',
-                    }
-                }
-            }
-        };
-        // Load Tailwind only after page is interactive
-        function loadTailwind() {
-            var s = document.createElement('script');
-            s.src = 'https://cdn.tailwindcss.com/3.4.1';
-            s.onload = function() { if(window.tailwind) tailwind.config = window.tailwindConfig; };
-            document.head.appendChild(s);
-        }
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(loadTailwind);
-        } else {
-            setTimeout(loadTailwind, 100);
-        }
-    </script>
+    <!-- Critical inline styles for instant render -->
+    <style>
+        body{font-family:'DM Sans',sans-serif;margin:0;padding:0}
+        .desktop-nav,.desktop-auth{display:none!important}
+        .mobile-menu-btn{display:flex!important}
+        @media(min-width:1024px){.desktop-nav,.desktop-auth{display:flex!important}.mobile-menu-btn{display:none!important}}
+    </style>
 
-    <!-- Animation libraries removed for performance - using CSS animations instead -->
-
-    <!-- Google Tag Manager - defer to not block rendering -->
+    <!-- GTM deferred -->
     <script>
-        // Load GTM after page is interactive (1 second delay)
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','GTM-PM5LKV7D');
-            }, 1000);
-        });
+        window.addEventListener('load',function(){setTimeout(function(){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PM5LKV7D');},1000);});
     </script>
 </head>
-<body style="background-color: #f8fafc; color: #1e293b;">
-    <!-- Loading Screen -->
-    <div class="page-loader" id="pageLoader">
-        {% if website_settings.website_logo_file %}
-        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}" alt="Loading" class="loader-logo" />
-        {% else %}
-        <div class="loader-logo" style="width:60px;height:60px;background:linear-gradient(135deg,#273879,#0f74b2);border-radius:12px;display:flex;align-items:center;justify-content:center;">
-            <span style="color:#fff;font-weight:bold;font-size:1.25rem;">S</span>
-        </div>
-        {% endif %}
-        <div class="loader-spinner"></div>
-        <p class="loader-text">Loading...</p>
-    </div>
+<body class="bg-[#f8fafc] text-text">
+    <!-- GTM noscript -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM5LKV7D" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-    <!-- Skip to main content link for accessibility -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[9999] focus:bg-primary focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">Skip to main content</a>
-
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PM5LKV7D"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-    <!-- CSS Animated Background (replaces Three.js) -->
-    <div id="css-background">
-        <div class="bg-particle"></div>
-        <div class="bg-particle"></div>
-        <div class="bg-particle"></div>
-    </div>
 
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
-    <!-- Mobile Menu - LOGO ONLY VERSION -->
+    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
-        <div class="p-4 sm:p-6 min-h-full flex flex-col">
-            <!-- Mobile Menu Header - LOGO ONLY -->
-            <div class="flex justify-between items-center mb-6 flex-shrink-0">
-                <div class="logo-display min-w-0">
+        <div class="p-5 min-h-full flex flex-col">
+            <div class="flex justify-between items-center mb-8 flex-shrink-0">
+                <div class="logo-display">
                     {% if website_settings.website_logo_file %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
-                            alt="{{ website_settings.website_name }}"
-                            class="h-8 w-auto rounded logo-image" />
+                    <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}" alt="{{ website_settings.website_name }}" class="h-8 w-auto rounded logo-image" />
                     {% elif website_settings.website_icon %}
-                        <div class="w-8 h-8 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center logo-icon">
-                            <i class="{{ website_settings.website_icon }} text-primary text-xl"></i>
-                        </div>
+                    <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+                        <i class="{{ website_settings.website_icon }} text-white text-xl"></i>
+                    </div>
                     {% endif %}
                 </div>
-
-                <button class="mobile-menu-close text-gray-500 hover:text-gray-700 p-2" id="mobileMenuClose" aria-label="Close mobile menu">
-                    <i class="fas fa-times text-xl" aria-hidden="true"></i>
+                <button class="mobile-menu-close text-white/60 hover:text-white p-2" id="mobileMenuClose" aria-label="Close">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            
-            <!-- Mobile Navigation Links -->
             <nav class="space-y-1 flex-1">
-                <a href="#features" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-cog mr-3 text-primary" aria-hidden="true"></i>Features
-                </a>
-                <a href="#how-it-works" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-tasks mr-3 text-primary" aria-hidden="true"></i>How It Works
-                </a>
-                <a href="#analytics" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-chart-line mr-3 text-primary" aria-hidden="true"></i>Analytics
-                </a>
-                <a href="#clients" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-users mr-3 text-primary" aria-hidden="true"></i>Our Clients
-                </a>
-                <a href="{{ url_for('public.public_blogs') }}" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-blog mr-3 text-primary" aria-hidden="true"></i>Blog
-                </a>
-	        <a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="mobile-menu-item block py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors">
-                    <i class="fas fa-blog mr-3 text-primary" aria-hidden="true"></i>SEODADA Content Checker Tool
-                </a>
-                <!-- Our Services Dropdown for Mobile -->
+                <a href="#features" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-grid-2 mr-3 text-accent"></i>Features</a>
+                <a href="#how-it-works" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-tasks mr-3 text-accent"></i>How It Works</a>
+                <a href="#analytics" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-chart-line mr-3 text-accent"></i>Analytics</a>
+                <a href="#clients" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-users mr-3 text-accent"></i>Our Clients</a>
+                <a href="{{ url_for('public.public_blogs') }}" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-pen-nib mr-3 text-accent"></i>Blog</a>
+                <a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="mobile-menu-item block py-3 px-4 rounded-lg font-medium transition-colors"><i class="fas fa-spell-check mr-3 text-accent"></i>Content Checker</a>
                 <div class="mobile-services-dropdown">
-                    <button class="mobile-menu-item w-full flex items-center justify-between py-3 px-4 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors" id="mobileServicesToggle" type="button" aria-expanded="false" aria-controls="mobileServicesSubmenu">
-                        <span><i class="fas fa-cogs mr-3 text-primary" aria-hidden="true"></i>Our Services</span>
-                        <i class="fas fa-chevron-down text-sm transition-transform duration-300" id="mobileServicesChevron" aria-hidden="true"></i>
+                    <button class="mobile-menu-item w-full flex items-center justify-between py-3 px-4 rounded-lg font-medium transition-colors" id="mobileServicesToggle" type="button">
+                        <span><i class="fas fa-cogs mr-3 text-accent"></i>Our Services</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300" id="mobileServicesChevron"></i>
                     </button>
-                    <div class="mobile-services-submenu hidden pl-4 mt-1 space-y-1" id="mobileServicesSubmenu">
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.url_analysis_page') }}"><i class="fas fa-link me-2 text-primary"></i>URL Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.heading_analysis_page') }}"><i class="fas fa-heading me-2 text-primary"></i>Heading Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.keyword_analysis_page') }}"><i class="fas fa-key me-2 text-primary"></i>Keyword Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.image_analysis_page') }}"><i class="fas fa-image me-2 text-primary"></i>Image Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.meta_analysis_page') }}"><i class="fas fa-tags me-2 text-primary"></i>Meta Analysis</a>
-                        <a class="block py-2 px-4 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors" href="{{ url_for('public.sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2 text-primary"></i>Sitemap Analysis</a>
+                    <div class="hidden pl-4 mt-1 space-y-1" id="mobileServicesSubmenu">
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.url_analysis_page') }}"><i class="fas fa-link me-2 text-accent/60"></i>URL Analysis</a>
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.heading_analysis_page') }}"><i class="fas fa-heading me-2 text-accent/60"></i>Heading Analysis</a>
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.keyword_analysis_page') }}"><i class="fas fa-key me-2 text-accent/60"></i>Keyword Analysis</a>
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.image_analysis_page') }}"><i class="fas fa-image me-2 text-accent/60"></i>Image Analysis</a>
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.meta_analysis_page') }}"><i class="fas fa-tags me-2 text-accent/60"></i>Meta Analysis</a>
+                        <a class="block py-2 px-4 text-sm rounded-lg transition-colors" href="{{ url_for('public.sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2 text-accent/60"></i>Sitemap Analysis</a>
                     </div>
                 </div>
             </nav>
-            
-            <!-- Mobile Auth Buttons -->
             <div class="mt-6 space-y-3 flex-shrink-0">
                 {% if current_user.is_authenticated %}
-                <!-- User Info -->
-                <div class="mobile-menu-item block w-full text-center py-3 px-4 bg-primary text-white font-medium rounded-lg" style="background: linear-gradient(135deg, #273879, #0f74b2);">
-                    <i class="fas fa-user me-2"></i>{{ current_user.name|title }}
-                </div>
-                <!-- User Menu Items -->
-                <a href="{{ url_for('seo_tools.index') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
-                    <i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard
-                </a>
-                <a href="{{ url_for('auth.profile') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
-                    <i class="fas fa-user-circle me-2 text-primary"></i>Profile
-                </a>
-                <a href="{{ url_for('payment.user_subscriptions') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-gray-300 text-gray-700 font-medium rounded-lg transition-colors hover:bg-gray-100">
-                    <i class="fas fa-credit-card me-2 text-primary"></i>Subscriptions
-                </a>
-                <a href="{{ url_for('auth.logout') }}" class="mobile-menu-item block w-full text-left py-3 px-4 border border-red-300 text-red-600 font-medium rounded-lg transition-colors hover:bg-red-50">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
-                </a>
+                <div class="block w-full text-center py-3 px-4 bg-white/10 text-white font-medium rounded-xl"><i class="fas fa-user me-2"></i>{{ current_user.name|title }}</div>
+                <a href="{{ url_for('seo_tools.index') }}" class="block w-full text-left py-3 px-4 border border-white/10 text-white/80 rounded-xl transition hover:bg-white/5"><i class="fas fa-tachometer-alt me-2 text-accent"></i>Dashboard</a>
+                <a href="{{ url_for('auth.profile') }}" class="block w-full text-left py-3 px-4 border border-white/10 text-white/80 rounded-xl transition hover:bg-white/5"><i class="fas fa-user-circle me-2 text-accent"></i>Profile</a>
+                <a href="{{ url_for('auth.logout') }}" class="block w-full text-left py-3 px-4 border border-red-500/30 text-red-400 rounded-xl transition hover:bg-red-500/10"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
                 {% else %}
-                <a href="/login" class="mobile-menu-item block w-full text-center py-3 px-4 border border-primary text-primary font-medium rounded-lg transition-colors hover:bg-primary hover:text-white">
-                    Login
-                </a>
-                
-                <a href="/signup" class="mobile-menu-item block w-full text-center py-3 px-4 bg-primary text-white font-medium rounded-lg transition-colors hover:bg-primary-dark" style="background: linear-gradient(135deg, #273879, #0f74b2);">
-                    Get Started
-                </a>
-                
+                <a href="/login" class="block w-full text-center py-3 px-4 border border-white/20 text-white font-medium rounded-xl transition hover:bg-white/5">Login</a>
+                <a href="/signup" class="block w-full text-center py-3 px-4 btn-primary font-medium rounded-xl">Get Started Free</a>
                 {% endif %}
-            </div>
-            
-            <!-- Mobile Contact Info -->
-            <div class="mt-6 pt-4 border-t border-gray-200 flex-shrink-0">
-                <div class="mobile-menu-item text-center">
-                    <p class="text-sm text-gray-600 mb-2">Need help?</p>
-                    <a href="/contact" class="text-primary font-medium text-sm hover:text-primary-dark">
-                        Contact Support
-                    </a>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- Header/Navbar - LOGO ONLY VERSION -->
-    <header class="fixed top-0 left-0 right-0 glass-nav" style="z-index: 100; height: 4.375rem;">
-        <nav class="container mx-auto px-4 sm:px-6" style="height: 100%;">
-            <div class="flex justify-between items-center" style="height: 100%;">
-                <!-- Logo Only - MODIFIED -->
-                <div class="logo-display min-w-0">
+    <!-- ============================================================
+         HEADER — dark glass nav
+         ============================================================ -->
+    <header class="fixed top-0 left-0 right-0 glass-nav z-[100]" style="height:4.375rem">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 h-full">
+            <div class="flex justify-between items-center h-full">
+                <!-- Logo -->
+                <div class="logo-display">
                     {% if website_settings.website_logo_file %}
-                        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
-                            alt="{{ website_settings.website_name }}"
-                            class="h-8 w-auto sm:h-10 sm:w-auto rounded logo-image" />
+                    <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}" alt="{{ website_settings.website_name }}" class="h-8 sm:h-10 w-auto rounded logo-image" />
                     {% elif website_settings.website_icon %}
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center logo-icon">
-                            <i class="{{ website_settings.website_icon }} text-primary text-xl sm:text-2xl"></i>
-                        </div>
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                        <i class="{{ website_settings.website_icon }} text-white text-xl sm:text-2xl"></i>
+                    </div>
                     {% endif %}
                 </div>
 
-                <!-- Desktop Navigation - CSS handles show/hide based on screen size -->
-                <div class="desktop-nav items-center space-x-8">
-                    <a href="#features" class="elegant-link font-medium hover:text-primary transition-colors">Features</a>
-                    <a href="#how-it-works" class="elegant-link font-medium hover:text-primary transition-colors">How It Works</a>
-                    <a href="#analytics" class="elegant-link font-medium hover:text-primary transition-colors">Analytics</a>
-                    <a href="#clients" class="elegant-link font-medium hover:text-primary transition-colors">Our Clients</a>
-                    <!-- Our Services Dropdown -->
-                    <div class="dropdown services-dropdown nav-link-wrapper">
-                        <a href="#" class="font-medium hover:text-primary transition-colors dropdown-toggle" id="servicesDropdown" aria-expanded="false">
-                            Our Services <i class="fas fa-chevron-down dropdown-caret"></i>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                <!-- Desktop Nav -->
+                <div class="desktop-nav items-center gap-8">
+                    <a href="#features" class="elegant-link">Features</a>
+                    <a href="#how-it-works" class="elegant-link">How It Works</a>
+                    <a href="#analytics" class="elegant-link">Analytics</a>
+                    <a href="#clients" class="elegant-link">Our Clients</a>
+                    <div class="dropdown services-dropdown">
+                        <a href="#" class="elegant-link" id="servicesDropdown">Our Services <i class="fas fa-chevron-down dropdown-caret"></i></a>
+                        <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('public.url_analysis_page') }}"><i class="fas fa-link me-2"></i>URL Analysis</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('public.heading_analysis_page') }}"><i class="fas fa-heading me-2"></i>Heading Analysis</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('public.keyword_analysis_page') }}"><i class="fas fa-key me-2"></i>Keyword Analysis</a></li>
@@ -353,699 +137,360 @@
                             <li><a class="dropdown-item" href="{{ url_for('public.sitemap_analysis_page') }}"><i class="fas fa-sitemap me-2"></i>Sitemap Analysis</a></li>
                         </ul>
                     </div>
-                    <a href="{{ url_for('public.public_blogs') }}" class="elegant-link font-medium hover:text-primary transition-colors">Blog</a>
+                    <a href="{{ url_for('public.public_blogs') }}" class="elegant-link">Blog</a>
                 </div>
 
-                <!-- Desktop Auth Buttons - CSS handles show/hide based on screen size -->
-                <div class="desktop-auth items-center space-x-4">
+                <!-- Desktop Auth -->
+                <div class="desktop-auth items-center gap-4">
                     {% if current_user.is_authenticated %}
-                    <!-- User Dropdown -->
                     <div class="user-dropdown dropdown">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="authDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-user" aria-hidden="true"></i>
-                            <span class="user-name">{{ current_user.name|title }}</span>
+                            <i class="fas fa-user"></i><span class="user-name">{{ current_user.name|title }}</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown" role="menu">
-                            {% if request.endpoint != 'index' %}
-                            <li>
-                                <a class="dropdown-item" href="{{ url_for('seo_tools.index') }}" role="menuitem" tabindex="0">
-                                    <i class="fas fa-tachometer-alt me-2" aria-hidden="true"></i>Dashboard
-                                </a>
-                            </li>
-                            {% endif %}
-
-                            {% if request.endpoint != 'profile' %}
-                            <li>
-                                <a class="dropdown-item" href="{{ url_for('auth.profile') }}" role="menuitem" tabindex="0">
-                                    <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
-                                </a>
-                            </li>
-                            {% endif %}
-
-                            {% if request.endpoint != 'user_subscriptions' %}
-                            <li>
-                                <a class="dropdown-item" href="{{ url_for('payment.user_subscriptions') }}" role="menuitem" tabindex="0">
-                                    <i class="fas fa-credit-card me-2" aria-hidden="true"></i>Subscriptions
-                                </a>
-                            </li>
-                            {% endif %}
-
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}" role="menuitem" tabindex="0">
-                                    <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
-                                </a>
-                            </li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="authDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('seo_tools.index') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('payment.user_subscriptions') }}"><i class="fas fa-credit-card me-2"></i>Subscriptions</a></li>
+                            <li><hr class="dropdown-divider" style="border-color:rgba(255,255,255,.1)"></li>
+                            <li><a class="dropdown-item text-red-400" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </div>
                     {% else %}
-                    <a href="/login" class="elegant-link font-medium hover:text-primary transition-colors">Login</a>
-                    <a href="/signup" class="text-white font-medium px-5 py-2 rounded-lg transition-colors" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">Get Started</a>
+                    <a href="/login" class="elegant-link">Login</a>
+                    <a href="/signup" class="btn btn-primary">Get Started</a>
                     {% endif %}
                 </div>
 
-                <!-- Mobile Menu Button - CSS handles show/hide based on screen size -->
-                <button class="mobile-menu-btn hamburger" id="mobileMenuToggle" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <!-- Mobile hamburger -->
+                <button class="mobile-menu-btn hamburger" id="mobileMenuToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
             </div>
         </nav>
     </header>
 
     <main id="main-content">
-    <!-- Hero Section -->
-    <section class="relative min-h-screen pt-32 pb-24 overflow-hidden" aria-labelledby="main-headline">
-        <div class="subtle-blob top-0 right-0"></div>
-        <div class="subtle-blob bottom-0 left-0"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center">
-                <div class="lg:w-1/2 mb-12 lg:mb-0 relative z-20">
-                    <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 fade-in">
-                        <span class="gradient-text" id="main-headline">Enterprise SEO Analytics</span> 
-                        <span>for Data-Driven Organizations</span>
+
+    <!-- ============================================================
+         HERO — dark section with mesh gradient blobs
+         ============================================================ -->
+    <section class="hero-dark min-h-screen flex items-center pt-20 pb-20 lg:pt-0 lg:pb-0">
+        <!-- Mesh blobs -->
+        <div class="mesh-blob mesh-blob-1"></div>
+        <div class="mesh-blob mesh-blob-2"></div>
+        <div class="mesh-blob mesh-blob-3"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 w-full">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                <!-- Left: Copy -->
+                <div class="lg:w-1/2 text-center lg:text-left fade-in">
+                    <div class="inline-flex items-center gap-2 bg-white/[.06] border border-white/10 rounded-full px-4 py-1.5 mb-6 text-sm text-white/70">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Trusted by 2,000+ teams
+                    </div>
+                    <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 text-white">
+                        Enterprise <span class="bg-gradient-to-r from-accent to-sky-300 bg-clip-text text-transparent">SEO Analytics</span> for Data-Driven Teams
                     </h1>
-                    <p class="hero-description text-text-light text-lg md:text-xl mb-8 max-w-2xl fade-in" id="hero-description" style="transition-delay: 0.2s;">
-                       We built Seodada for teams that need clear, reliable seo analytics at scale. Our platform helps you understand what is working on your site, what is holding you back, and what to fix next. Every insight is based on real data from your pages, so your decisions are backed by facts, not guesswork. This is built for deep search engine optimization analysis across large websites.
+                    <p class="text-white/60 text-lg sm:text-xl mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                        We built SEO Dada for teams that need clear, reliable SEO analytics at scale. Every insight is based on real data, so your decisions are backed by facts.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4 fade-in" style="transition-delay: 0.4s;">
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                         {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('seo_tools.index') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
-                            <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
-                        </a>
+                        <a href="{{ url_for('seo_tools.index') }}" class="btn btn-primary text-base px-8 py-3.5"><i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard</a>
                         {% else %}
-                        <a href="{{ url_for('auth.signup') }}" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors text-center" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
-                            <i class="fas fa-user-plus mr-2"></i>Sign up for free
-                        </a>
+                        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary text-base px-8 py-3.5"><i class="fas fa-rocket mr-2"></i>Start Free Trial</a>
+                        <a href="#features" class="btn border border-white/20 text-white hover:bg-white/5 text-base px-8 py-3.5">See Features</a>
                         {% endif %}
                     </div>
-                    
-                    <div class="mt-12 flex flex-col sm:flex-row sm:items-center fade-in" style="transition-delay: 0.6s;">
-                        <div class="flex -space-x-2 mb-4 sm:mb-0">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client testimonial avatar" width="40" height="40" loading="lazy">
-                            <img src="https://randomuser.me/api/portraits/men/86.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client testimonial avatar" width="40" height="40" loading="lazy">
-                            <img src="https://randomuser.me/api/portraits/women/63.jpg" class="w-10 h-10 rounded-full border-2 border-white" alt="Client testimonial avatar" width="40" height="40" loading="lazy">
+
+                    <!-- Social proof -->
+                    <div class="mt-10 flex flex-col sm:flex-row items-center gap-4 fade-in" style="transition-delay:.4s">
+                        <div class="flex -space-x-2">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-9 h-9 rounded-full border-2 border-dark" alt="User" width="36" height="36" loading="lazy">
+                            <img src="https://randomuser.me/api/portraits/men/86.jpg" class="w-9 h-9 rounded-full border-2 border-dark" alt="User" width="36" height="36" loading="lazy">
+                            <img src="https://randomuser.me/api/portraits/women/63.jpg" class="w-9 h-9 rounded-full border-2 border-dark" alt="User" width="36" height="36" loading="lazy">
                         </div>
-                        <div class="sm:ml-4">
-                            <p class="text-sm font-medium">Trusted by <span class="text-primary font-bold">2,000+</span> enterprise clients</p>
-                            <div class="flex items-center mt-1">
-                                <div class="flex">
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                    <i class="fas fa-star text-yellow-400"></i>
-                                </div>
-                                <span class="ml-2 text-sm text-text-light">4.9/5 from 500+ reviews</span>
-                            </div>
+                        <div>
+                            <div class="flex items-center gap-1 text-amber-400 text-sm"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <p class="text-white/40 text-sm">4.9/5 from 500+ reviews</p>
                         </div>
                     </div>
                 </div>
-                
-                <div class="lg:w-1/2 relative z-10">
-                    <div class="relative w-full h-[400px] sm:h-[500px] perspective-1000 fade-in" style="transition-delay: 0.5s;">
-                        <div id="floating-dashboard" class="absolute inset-0 rounded-xl shadow-2xl border border-gray-200 overflow-hidden floating-card">
-                            <img src="{{ url_for('static', filename='images/dashboard-preview.webp') }}"
-                                 alt="SEO analytics Dashboard Preview showing keyword rankings, traffic metrics, and performance charts"
-                                 class="w-full h-full object-cover"
-                                 width="800"
-                                 height="500"
-                                 fetchpriority="high" />
-                        </div>
-                        <div class="absolute top-10 -right-8 sm:-right-16 w-32 sm:w-48 h-32 sm:h-48 bg-accent rounded-full opacity-10 filter blur-3xl"></div>
-                        <div class="absolute -bottom-10 -left-8 sm:-left-16 w-48 sm:w-72 h-48 sm:h-72 bg-primary rounded-full opacity-5 filter blur-3xl"></div>
+
+                <!-- Right: Dashboard preview -->
+                <div class="lg:w-1/2 relative fade-in" style="transition-delay:.3s">
+                    <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 floating-card">
+                        <img src="{{ url_for('static', filename='images/dashboard-preview.webp') }}" alt="SEO Analytics Dashboard Preview" class="w-full h-auto" width="800" height="500" fetchpriority="high" />
                     </div>
-                    
-                    <!-- Floating data points -->
-                    <div class="absolute top-5 -left-2 sm:-left-4 bg-white p-3 rounded-lg shadow-lg z-20 fade-in" style="transition-delay: 0.7s;">
-                        <div class="flex items-center">
-                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-                                <i class="fas fa-arrow-up text-xs sm:text-sm"></i>
-                            </div>
-                            <div class="ml-2">
-                                <p class="text-xs font-medium">Organic Traffic</p>
-                                <p class="text-sm font-bold">+127%</p>
-                            </div>
+                    <!-- Floating data cards -->
+                    <div class="absolute top-4 -left-4 sm:-left-8 bg-dark/80 backdrop-blur-xl border border-white/10 p-3 rounded-xl shadow-2xl z-20 fade-in" style="transition-delay:.7s">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="fas fa-arrow-up text-xs"></i></div>
+                            <div><p class="text-[11px] text-white/50">Organic Traffic</p><p class="text-sm font-bold text-white">+127%</p></div>
                         </div>
                     </div>
-                    
-                    <div class="absolute bottom-5 -right-2 sm:-right-4 bg-white p-3 rounded-lg shadow-lg z-20 fade-in" style="transition-delay: 0.9s;">
-                        <div class="flex items-center">
-                            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center" style="background-color: rgba(39, 56, 121, 0.1); color: #273879;">
-                                <i class="fas fa-chart-line text-xs sm:text-sm"></i>
-                            </div>
-                            <div class="ml-2">
-                                <p class="text-xs font-medium">Keywords Ranked</p>
-                                <p class="text-sm font-bold">432</p>
-                            </div>
+                    <div class="absolute bottom-4 -right-4 sm:-right-8 bg-dark/80 backdrop-blur-xl border border-white/10 p-3 rounded-xl shadow-2xl z-20 fade-in" style="transition-delay:.9s">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent"><i class="fas fa-chart-line text-xs"></i></div>
+                            <div><p class="text-[11px] text-white/50">Keywords Ranked</p><p class="text-sm font-bold text-white">432</p></div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Stats row inside hero -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 lg:mt-20 fade-in" style="transition-delay:.5s">
+                <div class="stat-card stagger-item"><div class="stat-number">1.2M+</div><div class="stat-label">URLs Analyzed</div></div>
+                <div class="stat-card stagger-item"><div class="stat-number">98%</div><div class="stat-label">Client Success</div></div>
+                <div class="stat-card stagger-item"><div class="stat-number">3.5x</div><div class="stat-label">Traffic Increase</div></div>
+                <div class="stat-card stagger-item"><div class="stat-number">50k+</div><div class="stat-label">Global Clients</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         FEATURES — bento grid
+         ============================================================ -->
+    <section id="features" class="py-20 lg:py-28 bg-[#f8fafc]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 fade-in">
+                <p class="text-accent font-semibold text-sm uppercase tracking-widest mb-3">Comprehensive Tools</p>
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Everything you need for SEO Analytics</h2>
+                <p class="text-text-light text-lg">Accurate SEO analytics and practical checks in one place. Surface issues in content, structure, and performance.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- URL Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-link"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">URL Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Scan URLs to understand structure, internal links, and crawl paths. Spot issues that slow indexing.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Internal & External Link Discovery</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Broken Link Detection</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Robots.txt Compliance Check</li>
+                    </ul>
+                </div>
+                <!-- Keyword Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-key"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">Keyword Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Pull keywords from your pages and show what your content is really targeting for better content plans.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Density & Distribution Analysis</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Semantic Relevance Scoring</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Competitor Keyword Comparison</li>
+                    </ul>
+                </div>
+                <!-- Image Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-image"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">Image Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Images impact load speed and rankings. We flag missing details and heavy files for your SEO review.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Alt Text Analysis</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Image Size & Format Recommendations</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Loading Speed Impact Assessment</li>
+                    </ul>
+                </div>
+                <!-- Heading Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-heading"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">Heading Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Check your H1 to H6 flow so content stays clear for readers and crawlers alike.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>H1-H6 Hierarchy Analysis</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Keyword Placement Recommendations</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Content Structure Visualization</li>
+                    </ul>
+                </div>
+                <!-- Meta Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-code"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">Meta Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Review titles, descriptions, and schema so your pages show up properly and earn clicks.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Title & Description Evaluation</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Schema Markup Validation</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Social Media Optimization</li>
+                    </ul>
+                </div>
+                <!-- Sitemap Analysis -->
+                <div class="bento-card stagger-item">
+                    <div class="bento-icon"><i class="fas fa-sitemap"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-2">Sitemap Analysis</h3>
+                    <p class="text-text-light text-sm mb-4">Map your site structure and highlight crawl gaps for better search engine understanding.</p>
+                    <ul class="space-y-2 text-sm text-text-light">
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Interactive Site Maps</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Navigation Flow Analysis</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i>Sitemap.xml Validation</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
-    <section class="py-16 bg-gray-50">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
-                    <i class="fas fa-search text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
-                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">1.2M+</div>
-                    <p class="text-text-light text-sm sm:text-base">URLs Analyzed</p>
+    <!-- ============================================================
+         HOW IT WORKS
+         ============================================================ -->
+    <section id="how-it-works" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 fade-in">
+                <p class="text-accent font-semibold text-sm uppercase tracking-widest mb-3">Simple Process</p>
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
+                <p class="text-text-light text-lg">Audit fast, share results, and act without delays. Three simple steps.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="step-card fade-in">
+                    <div class="step-badge">1</div>
+                    <div class="step-icon"><i class="fas fa-link"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-3">Data Collection</h3>
+                    <p class="text-text-light">We collect data from your pages and run a full scan of content, layout, and technical signals.</p>
                 </div>
-                
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
-                    <i class="fas fa-chart-line text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
-                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">98%</div>
-                    <p class="text-text-light text-sm sm:text-base">Client Success Rate</p>
+                <div class="step-card fade-in" style="transition-delay:.2s">
+                    <div class="step-badge">2</div>
+                    <div class="step-icon"><i class="fas fa-list-check"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-3">Analysis & Report</h3>
+                    <p class="text-text-light">Our system processes everything into one clear report. Ranking signals, page health, keyword patterns, and priority fixes.</p>
                 </div>
-                
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
-                    <i class="fas fa-bolt text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
-                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">3.5x</div>
-                    <p class="text-text-light text-sm sm:text-base">Traffic Increase</p>
-                </div>
-                
-                <div class="bg-white p-4 sm:p-6 rounded-xl shadow-lg depth-card stagger-item">
-                    <i class="fas fa-globe text-2xl sm:text-4xl text-primary mb-2 sm:mb-4"></i>
-                    <div class="text-xl sm:text-3xl font-bold mb-1 sm:mb-2">50k+</div>
-                    <p class="text-text-light text-sm sm:text-base">Global Clients</p>
+                <div class="step-card fade-in" style="transition-delay:.4s">
+                    <div class="step-badge">3</div>
+                    <div class="step-icon"><i class="fas fa-rocket"></i></div>
+                    <h3 class="font-display text-xl font-bold mb-3">Strategic Action</h3>
+                    <p class="text-text-light">Turn insights into actions with trackable report outputs your team can follow over time.</p>
                 </div>
             </div>
         </div>
     </section>
 
-
-    <!-- Features Section -->
-    <section id="features" class="py-24 relative">
-        <div class="subtle-blob top-1/4 left-0"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Comprehensive SEO Analytics</h2>
-                <p class="text-text-light text-lg ">
-                    Seodada brings together accurate seo analytics and practical checks in one place. 
-                    We run full web seo analytics across your site to surface issues in content, structure, 
-                    and performance. Think of it as a complete seo analytics tools suite that shows what 
-                    needs attention and why. If you want an all-in-one seo analytics website view, this is 
-                    where it starts.
-                </p>
-
+    <!-- ============================================================
+         ANALYTICS DASHBOARD
+         ============================================================ -->
+    <section id="analytics" class="py-20 lg:py-28 bg-[#f8fafc]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 fade-in">
+                <p class="text-accent font-semibold text-sm uppercase tracking-widest mb-3">Real-Time Insights</p>
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Enterprise Analytics Dashboard</h2>
+                <p class="text-text-light text-lg">Track growth, spot changes, and get fast answers — all in one place.</p>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-link text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">URL Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                         We scan your URLs to understand structure, internal links, and crawl paths. Our web page seo analysis checks help you spot issues that slow down indexing or confuse users. You get a clean web seo analysis view of how pages connect and where flow breaks.
-
-                        </p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Internal & External Link Discovery</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Broken Link Detection</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Robots.txt Compliance Check</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-key text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">Keyword Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                            We pull keywords from your pages and show what your content is really targeting. This supports everyday analytics for seo decisions and helps you build better content plans. You also get clear seo analytics reporting to see which themes drive visibility.</p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Density & Distribution Analysis</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Semantic Relevance Scoring</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Competitor Keyword Comparison</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-image text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">Image Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                            Images impact load speed and rankings more than most sites realize. We flag missing details and heavy files as part of your seo analytics review. This fits into any serious web seo analysis or online audit.
-                         </p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Alt Text Analysis</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Image Size & Format Recommendations</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Loading Speed Impact Assessment</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-heading text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">Heading Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                            Headings tell search engines what your page is about. We check your H1 to H6 flow so content stays clear for readers and crawlers. This is part of a complete seo site analysis.
-
-                        </p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>H1-H6 Hierarchy Analysis</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Keyword Placement Recommendations</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Content Structure Visualization</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-code text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">Meta Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                            We review titles, descriptions, and schema so your pages show up properly and earn clicks. This is a key part of any seo and analytics setup and supports a clean seo analytics report output.
-
-                          </p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Title & Description Evaluation</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Schema Markup Validation</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Social Media Optimization</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg depth-card relative overflow-hidden group stagger-item">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary-light opacity-5 rounded-bl-[100px] group-hover:opacity-10 transition-opacity"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 sm:w-14 h-12 sm:h-14 bg-primary/10 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
-                            <i class="fas fa-sitemap text-primary text-xl sm:text-2xl"></i>
-                        </div>
-                        <h3 class="text-lg sm:text-xl font-bold mb-3">Sitemap Analysis</h3>
-                        <p class="text-text-light mb-4 text-sm sm:text-base">
-                            Your site layout decides how easily search engines understand your content. We map your structure and highlight crawl gaps using website analysis tool logic and a modern technical seo analysis approach.
-
-                        </p>
-                        <ul class="space-y-2">
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Interactive Site Maps</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Navigation Flow Analysis</span>
-                            </li>
-                            <li class="flex items-center text-xs sm:text-sm">
-                                <i class="fas fa-check text-green-500 mr-2"></i>
-                                <span>Sitemap.xml Validation</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- How it Works Section -->
-    <section id="how-it-works" class="py-24 bg-gradient-to-b from-background to-gray-50">
-        <div class="container mx-auto px-4 sm:px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">How It Works</h2>
-                <p class="text-text-light text-lg">
-                    We keep seo analytics simple for large teams. Our three-step flow is built so you can audit fast, share results, and act without delays. It also supports structured seo analytics and reporting for stakeholders.
-
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10">
-                <!-- Card 1: Data Collection -->
-                <div class="fade-in h-full">
-                    <div class="bg-white p-8 sm:p-10 rounded-2xl shadow-lg text-center how-it-works-card relative h-full flex flex-col">
-                        <!-- Number Badge -->
-                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-11 h-11 rounded-full text-white flex items-center justify-center text-lg font-bold shadow-lg z-10" style="background-color: #273879;">1</div>
-
-                        <!-- Icon -->
-                        <div class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-6 mt-4" style="background-color: rgba(39, 56, 121, 0.1);">
-                            <i class="fas fa-link text-2xl" style="color: #273879;"></i>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Data Collection</h3>
-
-                        <!-- Description -->
-                        <p class="text-gray-500 text-base leading-relaxed flex-grow">
-                            We collect data from your pages and run a full web seo analysis online scan of content, layout, and technical signals.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 2: Analysis and Report -->
-                <div class="fade-in h-full" style="transition-delay: 0.2s;">
-                    <div class="bg-white p-8 sm:p-10 rounded-2xl shadow-lg text-center how-it-works-card relative h-full flex flex-col">
-                        <!-- Number Badge -->
-                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-11 h-11 rounded-full text-white flex items-center justify-center text-lg font-bold shadow-lg z-10" style="background-color: #273879;">2</div>
-
-                        <!-- Icon -->
-                        <div class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-6 mt-4" style="background-color: rgba(39, 56, 121, 0.1);">
-                            <i class="fas fa-list-check text-2xl" style="color: #273879;"></i>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Analysis and Report</h3>
-
-                        <!-- Description -->
-                        <p class="text-gray-500 text-base leading-relaxed flex-grow">
-                            Our system processes everything into one clear seo analytics report. You get ranking signals, page health, keyword patterns, and priority fixes.
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 3: Strategic Implementation -->
-                <div class="fade-in h-full" style="transition-delay: 0.4s;">
-                    <div class="bg-white p-8 sm:p-10 rounded-2xl shadow-lg text-center how-it-works-card relative h-full flex flex-col">
-                        <!-- Number Badge -->
-                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-11 h-11 rounded-full text-white flex items-center justify-center text-lg font-bold shadow-lg z-10" style="background-color: #273879;">3</div>
-
-                        <!-- Icon -->
-                        <div class="w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-6 mt-4" style="background-color: rgba(39, 56, 121, 0.1);">
-                            <i class="fas fa-rocket text-2xl" style="color: #273879;"></i>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">Strategic Implementation</h3>
-
-                        <!-- Description -->
-                        <p class="text-gray-500 text-base leading-relaxed flex-grow">
-                            We work with your team to turn insights into actions, supported by seo analytics report outputs you can track over time.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- <div class="mt-16 text-center fade-in" style="transition-delay: 0.6s;">
-                <a href="#demo" class="inline-flex items-center text-primary font-medium hover:text-primary-dark elegant-link">
-                    <span>See it in action</span>
-                    <i class="fas fa-arrow-right ml-2"></i>
-                </a>
-            </div> -->
-        </div>
-    </section>
-
-    <!-- Analytics Showcase Section -->
-    <section id="analytics" class="py-24 relative bg-white">
-        <div class="subtle-blob top-1/3 right-0"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Enterprise Analytics Dashboard</h2>
-                <p class="text-text-light text-lg">
-                    Your dashboard gives a complete seo analytics view in real time. You can track growth, dropdowns, and changes across the site in one place. It is designed for analytics seo teams who need fast answers and reliable numbers. You also get a built-in online seo analysis tool and on page seo checker for daily checks.
-
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
                 <div class="fade-in order-2 lg:order-1">
-                    <div class="bg-white rounded-xl overflow-hidden shadow-xl border border-gray-100">
-                        <img src="{{ url_for('static', filename='images/dashboard-preview.webp') }}"
-                             alt="SEO Analytics Dashboard with real-time metrics and performance tracking"
-                             class="w-full h-auto"
-                             width="800"
-                             height="500"
-                             loading="lazy" />
+                    <div class="rounded-2xl overflow-hidden shadow-xl border border-gray-200">
+                        <img src="{{ url_for('static', filename='images/dashboard-preview.webp') }}" alt="SEO Analytics Dashboard" class="w-full h-auto" width="800" height="500" loading="lazy" />
                     </div>
                 </div>
-                
-                <div class="space-y-4 sm:space-y-6 fade-in order-1 lg:order-2" style="transition-delay: 0.3s;">
-                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
-                        <div class="flex items-start">
-                            <div class="bg-primary/10 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
-                                <i class="fas fa-chart-line text-primary text-lg sm:text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-base sm:text-lg font-bold mb-2">Real-time Performance Tracking</h3>
-                                <p class="text-text-light text-sm sm:text-base">
-                                    Monitor rankings, traffic trends, and page health with historical comparison. This works like a live seo analytics report you can check anytime.
-
-                                </p>
-                            </div>
-                        </div>
+                <div class="space-y-5 fade-in order-1 lg:order-2" style="transition-delay:.3s">
+                    <div class="bento-card flex items-start gap-4">
+                        <div class="bento-icon flex-shrink-0 mt-0.5"><i class="fas fa-chart-line"></i></div>
+                        <div><h3 class="font-display text-lg font-bold mb-1">Real-time Performance Tracking</h3><p class="text-text-light text-sm">Monitor rankings, traffic trends, and page health with historical comparison.</p></div>
                     </div>
-                    
-                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
-                        <div class="flex items-start">
-                            <div class="bg-primary/10 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
-                                <i class="fas fa-users text-primary text-lg sm:text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-base sm:text-lg font-bold mb-2">Competitor Analysis</h3>
-                                <p class="text-text-light text-sm sm:text-base">
-                                    Compare your pages with competitors using side-by-side data. It supports clear seo analytics and reporting for leadership, plus deeper web seo analytics insights for your team. </p>
-                            </div>
-                        </div>
+                    <div class="bento-card flex items-start gap-4">
+                        <div class="bento-icon flex-shrink-0 mt-0.5"><i class="fas fa-users"></i></div>
+                        <div><h3 class="font-display text-lg font-bold mb-1">Competitor Analysis</h3><p class="text-text-light text-sm">Compare your pages with competitors using side-by-side data and clear insights.</p></div>
                     </div>
-                    
-                    <div class="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-md depth-card">
-                        <div class="flex items-start">
-                            <div class="bg-primary/10 p-2 sm:p-3 rounded-lg mr-3 sm:mr-4">
-                                <i class="fas fa-file-export text-primary text-lg sm:text-xl"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-base sm:text-lg font-bold mb-2">Customizable Reports</h3>
-                                <p class="text-text-light text-sm sm:text-base">
-                                   Create export-ready reports for different teams and stakeholders. This includes seo analytics reporting and shareable results for audits and reviews.
-
-                                </p>
-                            </div>
-                        </div>
+                    <div class="bento-card flex items-start gap-4">
+                        <div class="bento-icon flex-shrink-0 mt-0.5"><i class="fas fa-file-export"></i></div>
+                        <div><h3 class="font-display text-lg font-bold mb-1">Customizable Reports</h3><p class="text-text-light text-sm">Create export-ready reports for different teams and stakeholders.</p></div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Demo Section -->
-    <!-- <section id="demo" class="py-24 relative bg-gray-50">
-        <div class="subtle-blob bottom-0 right-0"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">See It In Action</h2>
-                <p class="text-text-light text-lg">
-                    Watch how our platform can transform your organization's SEO strategy with enterprise-grade analytics.
-                </p>
+    <!-- ============================================================
+         TESTIMONIALS + LOGOS
+         ============================================================ -->
+    <section id="clients" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-3xl mx-auto mb-14 fade-in">
+                <p class="text-accent font-semibold text-sm uppercase tracking-widest mb-3">Success Stories</p>
+                <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Our Enterprise Clients</h2>
+                <p class="text-text-light text-lg">Discover how SEO Dada has helped organizations improve their SEO performance.</p>
             </div>
-            
-            <div class="relative w-full max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video fade-in">
-                <div class="absolute inset-0 bg-gray-100 flex items-center justify-center">
-                    <div class="text-center">
-                        <div class="w-16 sm:w-20 h-16 sm:h-20 mx-auto bg-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-primary-dark transition-colors">
-                            <i class="fas fa-play text-white text-xl sm:text-2xl"></i>
-                        </div>
-                        <p class="mt-4 text-text-light text-sm sm:text-base">Watch Product Demo</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+                <div class="testimonial-card fade-in" style="transition-delay:.1s">
+                    <div class="quote-mark">"</div>
+                    <p class="text-text-light mb-6 text-sm leading-relaxed italic">
+                        "Before using this tool, we were mostly guessing which pages worked best for each state or vehicle. Now we clearly see what's ranking and what's bringing in leads."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ url_for('static', filename='images/Artboard 7.png') }}" class="w-11 h-11 rounded-full" alt="Komaki" width="44" height="44" loading="lazy">
+                        <div><p class="font-bold text-sm">Komaki Electric Vehicles</p><p class="text-text-light text-xs">Marketing Lead</p></div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section> -->
-
-    <!-- Combined Testimonials and Logo Section -->
-    <section id="clients" class="py-24 relative">
-        <div class="subtle-blob top-1/4 right-0"></div>
-        
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="text-center max-w-3xl mx-auto mb-16 fade-in">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Enterprise Clients</h2>
-                <p class="text-text-light text-lg">
-                    Discover how SEO Dada has helped organizations improve their SEO performance through advanced web SEO analysis capabilities.
-
-                </p>
-            </div>
-            
-            <!-- Testimonials -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mb-16">
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.1s;">
-                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-                        <i class="fas fa-quote-left"></i>
-                    </div>
-                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
-                        "Before using this tool, we were mostly guessing which pages worked best for each state or vehicle. Now we clearly see what's ranking and what's bringing in leads. For example, we noticed that 'Ranger vs Petrol Bike' performs better in Gujarat than in Delhi. These insights helped our team focus efforts more sharply and stop wasting time on guesswork."</p>
-                    <div class="flex items-center">
-                        <img src="{{ url_for('static', filename='images/Artboard 7.png') }}" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Komaki Electric Vehicles company logo" width="48" height="48" loading="lazy">
-                        <div>
-                            <p class="font-bold text-sm sm:text-base">Komaki (Electric Vehicles Brand)</p>
-                            <p class="text-text-light text-xs sm:text-sm">Marketing Lead, Komaki Electric Vehicles
-                            </p>
-                        </div>
+                <div class="testimonial-card fade-in" style="transition-delay:.3s">
+                    <div class="quote-mark">"</div>
+                    <p class="text-text-light mb-6 text-sm leading-relaxed italic">
+                        "This tool helped us understand exactly what farmers are searching for. That kind of clarity helped us build the right pages and get real leads."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ url_for('static', filename='images/Artboard 8.png') }}" class="w-11 h-11 rounded-full" alt="Morca" width="44" height="44" loading="lazy">
+                        <div><p class="font-bold text-sm">Morca Solar Pumps</p><p class="text-text-light text-xs">Founder</p></div>
                     </div>
                 </div>
-
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.3s;">
-                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-                        <i class="fas fa-quote-left" aria-hidden="true"></i>
-                    </div>
-                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
-                        "We offer different solar pumps depending on the state and usage. This tool helped us understand exactly what farmers are searching for. In Maharashtra, we found more interest in borewell pump subsidies. That kind of clarity helped us build the right pages and get real leads instead of just relying on dealers."</p>
-                    <div class="flex items-center">
-                        <img src="{{ url_for('static', filename='images/Artboard 8.png') }}" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Morca Solar Pumps company logo" width="48" height="48" loading="lazy">
-                        <div>
-                            <p class="font-bold text-sm sm:text-base">Morca (Solar Pump Brand)</p>
-                            <p class="text-text-light text-xs sm:text-sm">Founder, Morca Pumps</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg relative depth-card fade-in" style="transition-delay: 0.5s;">
-                    <div class="absolute -top-5 -left-5 w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white">
-                        <i class="fas fa-quote-left" aria-hidden="true"></i>
-                    </div>
-                    <p class="text-text-light mb-6 italic text-sm sm:text-base">
-                       "We didn't expect SEO to work this well for shirts. But the tool showed us that people do search for very specific terms like 'checked shirts in Pune' or 'cotton office shirts'. We used that insight to build pages that actually bring traffic and orders. The best part is our team could handle it without needing tech support every time."</p>
-                    <div class="flex items-center">
-                        <img src="{{ url_for('static', filename='images/Artboard 5.png') }}" class="w-10 sm:w-12 h-10 sm:h-12 rounded-full mr-3 sm:mr-4" alt="Botticelli fashion brand company logo" width="48" height="48" loading="lazy">
-                        <div>
-                            <p class="font-bold text-sm sm:text-base">Botticelli (Men's Fashion Brand)</p>
-                            <p class="text-text-light text-xs sm:text-sm">Ecommerce Head, Botticelli</p>
-                        </div>
+                <div class="testimonial-card fade-in" style="transition-delay:.5s">
+                    <div class="quote-mark">"</div>
+                    <p class="text-text-light mb-6 text-sm leading-relaxed italic">
+                        "The tool showed us that people search for very specific terms. We used that insight to build pages that actually bring traffic and orders."</p>
+                    <div class="flex items-center gap-3">
+                        <img src="{{ url_for('static', filename='images/Artboard 5.png') }}" class="w-11 h-11 rounded-full" alt="Botticelli" width="44" height="44" loading="lazy">
+                        <div><p class="font-bold text-sm">Botticelli Fashion</p><p class="text-text-light text-xs">Ecommerce Head</p></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Trusted by section with logo carousel -->
+            <!-- Logo carousel -->
             <div class="fade-in">
-                <p class="text-center text-text-light mb-8 sm:mb-12 text-base font-medium">
-                    Trusted by leading enterprises worldwide
-                </p>
-                
-                <div class="logo-carousel max-w-7xl mx-auto">
+                <p class="text-center text-text-light mb-8 text-sm font-medium uppercase tracking-wider">Trusted by leading enterprises worldwide</p>
+                <div class="logo-carousel max-w-6xl mx-auto">
                     <div class="logo-track" id="logoTrack">
-                    <!-- First set of 12 logos -->
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 7.png') }}" alt="Komaki Electric Vehicles logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 5.png') }}" alt="Botticelli logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item special-logo"><img src="{{ url_for('static', filename='images/Veegaland Homes.png') }}" alt="Veegaland Homes logo" width="100" height="50" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 3.png') }}" alt="Seven Doors to Heaven logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 4.png') }}" alt="SGR 777 Foods logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 2.png') }}" alt="SRM University Online logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/deepee.jpg') }}" alt="Deepee Rubber logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 9.png') }}" alt="Tabbi logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 8.png') }}" alt="Morca Solar Pumps logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 1.png') }}" alt="SRM School of Banking logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 6.png') }}" alt="Fybros logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 10.png') }}" alt="Pepyogi logo" width="120" height="70" loading="lazy" /></div>
-
-                    <!-- Duplicate set for infinite scroll -->
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 7.png') }}" alt="Komaki Electric Vehicles logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 5.png') }}" alt="Botticelli logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item special-logo"><img src="{{ url_for('static', filename='images/Veegaland Homes.png') }}" alt="Veegaland Homes logo" width="100" height="50" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 3.png') }}" alt="Seven Doors to Heaven logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 4.png') }}" alt="SGR 777 Foods logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 2.png') }}" alt="SRM University Online logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/deepee.jpg') }}" alt="Deepee Rubber logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 9.png') }}" alt="Tabbi logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 8.png') }}" alt="Morca Solar Pumps logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 1.png') }}" alt="SRM School of Banking logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 6.png') }}" alt="Fybros logo" width="120" height="70" loading="lazy" /></div>
-                    <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 10.png') }}" alt="Pepyogi logo" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 7.png') }}" alt="Komaki" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 5.png') }}" alt="Botticelli" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item special-logo"><img src="{{ url_for('static', filename='images/Veegaland Homes.png') }}" alt="Veegaland Homes" width="100" height="50" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 3.png') }}" alt="Seven Doors" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 4.png') }}" alt="SGR 777 Foods" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 2.png') }}" alt="SRM University" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/deepee.jpg') }}" alt="Deepee Rubber" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 9.png') }}" alt="Tabbi" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 8.png') }}" alt="Morca" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 1.png') }}" alt="SRM Banking" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 6.png') }}" alt="Fybros" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 10.png') }}" alt="Pepyogi" width="120" height="70" loading="lazy" /></div>
+                        <!-- Duplicate for infinite scroll -->
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 7.png') }}" alt="Komaki" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 5.png') }}" alt="Botticelli" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item special-logo"><img src="{{ url_for('static', filename='images/Veegaland Homes.png') }}" alt="Veegaland Homes" width="100" height="50" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 3.png') }}" alt="Seven Doors" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 4.png') }}" alt="SGR 777 Foods" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 2.png') }}" alt="SRM University" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/deepee.jpg') }}" alt="Deepee Rubber" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 9.png') }}" alt="Tabbi" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 8.png') }}" alt="Morca" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 1.png') }}" alt="SRM Banking" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 6.png') }}" alt="Fybros" width="120" height="70" loading="lazy" /></div>
+                        <div class="logo-item"><img src="{{ url_for('static', filename='images/Artboard 10.png') }}" alt="Pepyogi" width="120" height="70" loading="lazy" /></div>
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="py-16 sm:py-20 relative">
-        <div class="absolute inset-0 bg-primary opacity-5"></div>
-        <div class="container mx-auto px-4 sm:px-6 relative z-10">
-            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border-animation fade-in">
+    <!-- ============================================================
+         CTA
+         ============================================================ -->
+    <section class="py-20 bg-[#f8fafc]">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6">
+            <div class="cta-card overflow-hidden fade-in">
                 <div class="flex flex-col md:flex-row">
-                    <div class="md:w-1/2 p-8 sm:p-12 flex flex-col justify-center">
-                        <h2 class="text-2xl sm:text-3xl font-bold mb-4">Ready to Transform Your SEO Strategy?</h2>
-                        <p class="text-text-light mb-6 sm:mb-8 text-sm sm:text-base">
-                            Request a personalized consultation with our SEO analysts to discuss your organization's needs.
-                        </p>
-                        <a href="/contact" class="text-white font-medium px-6 sm:px-8 py-3 rounded-lg transition-colors inline-block text-center text-sm sm:text-base" style="background: linear-gradient(135deg, #273879, #0f74b2);" onmouseover="this.style.background='linear-gradient(135deg, #1f2d5f, #0a5d8a)'" onmouseout="this.style.background='linear-gradient(135deg, #273879, #0f74b2)'">
-                            Request Consultation
-                        </a>
+                    <div class="md:w-1/2 p-8 sm:p-12 flex flex-col justify-center relative z-10">
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold mb-4 text-white">Ready to Transform Your SEO Strategy?</h2>
+                        <p class="text-white/60 mb-6 text-sm sm:text-base">Request a personalized consultation with our SEO analysts to discuss your organization's needs.</p>
+                        <a href="/contact" class="btn bg-white text-dark font-semibold px-8 py-3 rounded-xl hover:bg-gray-100 inline-flex w-fit">Request Consultation</a>
                     </div>
-                    <div class="md:w-1/2 p-8 sm:p-12 text-white" style="background: linear-gradient(135deg, #273879, #0f74b2);">
-                        <h3 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6">Our Enterprise Solution Includes:</h3>
-                        <ul class="space-y-3 sm:space-y-4">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
-                                <span class="text-sm sm:text-base">Dedicated Account Manager</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
-                                <span class="text-sm sm:text-base">Custom Implementation Strategy</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
-                                <span class="text-sm sm:text-base">Comprehensive Analytics Dashboard</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-white mt-1 mr-3"></i>
-                                <span class="text-sm sm:text-base">Strategic Quarterly Reviews</span>
-                            </li>
+                    <div class="md:w-1/2 p-8 sm:p-12 bg-gradient-to-br from-primary to-secondary relative">
+                        <h3 class="text-lg sm:text-xl font-bold mb-6 text-white font-display">Enterprise Solution Includes:</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-center gap-3 text-white/90 text-sm sm:text-base"><i class="fas fa-check-circle text-accent"></i>Dedicated Account Manager</li>
+                            <li class="flex items-center gap-3 text-white/90 text-sm sm:text-base"><i class="fas fa-check-circle text-accent"></i>Custom Implementation Strategy</li>
+                            <li class="flex items-center gap-3 text-white/90 text-sm sm:text-base"><i class="fas fa-check-circle text-accent"></i>Comprehensive Analytics Dashboard</li>
+                            <li class="flex items-center gap-3 text-white/90 text-sm sm:text-base"><i class="fas fa-check-circle text-accent"></i>Strategic Quarterly Reviews</li>
                         </ul>
                     </div>
                 </div>
@@ -1054,275 +499,103 @@
     </section>
     </main>
 
-    <!-- Footer - LOGO ONLY VERSION -->
-    <footer class="py-12 text-white w-full m-0 p-0" style="background-color: #1e293b;">
-        <div class="w-full py-12 px-4 sm:px-6">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                    <div class="sm:col-span-2 lg:col-span-1 text-left">
-                        <!-- Footer Logo Only - MODIFIED -->
-                        <div class="logo-display mb-6 justify-start">
-                            {% if website_settings.website_logo_file %}
-                                <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}"
-                                    alt="{{ website_settings.website_name }}"
-                                    class="h-10 w-auto rounded logo-image" />
-                            {% elif website_settings.website_icon %}
-                                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center logo-icon">
-                                    <i class="{{ website_settings.website_icon }} text-primary text-xl"></i>
-                                </div>
-                            {% endif %}
-                        </div>
-                        <!-- <p class="text-gray-400 mb-6 text-sm sm:text-base text-center sm:text-left">
-                            {{ website_settings.website_tagline or "Enterprise SEO analytics platform for data-driven organizations. Unlock insights, improve digital presence." }}
-                        </p> -->
-                        <div class="flex space-x-4 justify-start">
-                            <!-- <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                                <i class="fab fa-twitter"></i>
-                            </a> -->
-                            <a href="https://www.facebook.com/profile.php?id=61584072508577&mibextid=rS40aB7S9Ucbxw6v" target="_blank" class="text-gray-400 hover:text-white transition-colors">
-                                <i class="fab fa-facebook"></i>
-                            </a>
-                            <a href="https://www.linkedin.com/company/seodada/" target="_blank" class="text-gray-400 hover:text-white transition-colors">
-                                <i class="fab fa-linkedin"></i>
-                            </a>
-                            <a href="https://www.instagram.com/seodada1?igsh=cmwxb3VueXVjbnUz" target="_blank" class="text-gray-400 hover:text-white transition-colors">
-                                <i class="fab fa-instagram"></i>
-                            </a>
-                        </div>
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="site-footer py-12 w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <div class="logo-display mb-6">
+                        {% if website_settings.website_logo_file %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ website_settings.website_logo_file) }}" alt="{{ website_settings.website_name }}" class="h-10 w-auto rounded logo-image" />
+                        {% elif website_settings.website_icon %}
+                        <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center"><i class="{{ website_settings.website_icon }} text-white text-xl"></i></div>
+                        {% endif %}
                     </div>
-
-                    <div class="text-left">
-                        <h3 class="text-lg font-bold mb-4">Solutions</h3>
-                        <ul class="space-y-2">
-                            <li><a href="{{ url_for('seo_tools.url_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">URL Analysis</a></li>
-                            <li><a href="{{ url_for('seo_tools.keyword_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Keyword Analysis</a></li>
-                            <li><a href="{{ url_for('seo_tools.image_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Image Analysis</a></li>
-                            <li><a href="{{ url_for('seo_tools.h_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Heading Analysis</a></li>
-                            <li><a href="{{ url_for('seo_tools.meta_search') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Meta Analysis</a></li>
-                            <li><a href="{{ url_for('seo_tools.site_structure') }}" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Sitemap Analysis</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="text-left">
-                        <h3 class="text-lg font-bold mb-4">Resources</h3>
-                        <ul class="space-y-2">
-			    <li><a href="{{ url_for('seo_tools.content_checker') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">SEODADA Content Checker Tool</a></li>
-			    <li><a href="{{ url_for('public.pillar_technical_seo') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Technical SEO Guide</a></li>		
-                            <li><a href="{{ url_for('public.public_blogs') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Blog</a></li>
-                            <li><a href="{{ url_for('public.public_webstories') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Web Stories</a></li>
-                            <li><a href="{{ url_for('public.help_page') }}" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Help Center</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="text-left">
-                        <h3 class="text-lg font-bold mb-4">Company</h3>
-                        <ul class="space-y-2">
-                            <li><a href="/about" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">About Us</a></li>
-                            <li><a href="/pricing" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Pricing</a></li>
-                            <li><a href="/contact" target="_blank" class="text-gray-400 hover:text-white transition-colors text-sm sm:text-base">Contact Us</a></li>
-                        </ul>
+                    <div class="flex gap-4">
+                        <a href="https://www.facebook.com/profile.php?id=61584072508577" target="_blank"><i class="fab fa-facebook text-lg"></i></a>
+                        <a href="https://www.linkedin.com/company/seodada/" target="_blank"><i class="fab fa-linkedin text-lg"></i></a>
+                        <a href="https://www.instagram.com/seodada1" target="_blank"><i class="fab fa-instagram text-lg"></i></a>
                     </div>
                 </div>
-
-                <div class="border-t border-gray-800 mt-8 lg:mt-12 pt-6 lg:pt-8 flex flex-col md:flex-row justify-between items-center text-left">
-                    <p class="text-gray-400 text-sm mb-4 md:mb-0">
-                        &copy; {{ current_year }} SEO Dada. All rights reserved.
-                    </p>
-                    <div class="flex flex-wrap justify-start gap-4">
-                        <a href="/privacy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
-                        <a href="/terms" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
-                        <a href="/cookie-policy" target="_blank" class="text-gray-400 hover:text-white text-sm transition-colors">Cookie & Policy</a>
-                    </div>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-4 text-white/80">Solutions</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('seo_tools.url_search') }}">URL Analysis</a></li>
+                        <li><a href="{{ url_for('seo_tools.keyword_search') }}">Keyword Analysis</a></li>
+                        <li><a href="{{ url_for('seo_tools.image_search') }}">Image Analysis</a></li>
+                        <li><a href="{{ url_for('seo_tools.h_search') }}">Heading Analysis</a></li>
+                        <li><a href="{{ url_for('seo_tools.meta_search') }}">Meta Analysis</a></li>
+                        <li><a href="{{ url_for('seo_tools.site_structure') }}">Sitemap Analysis</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-4 text-white/80">Resources</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{{ url_for('seo_tools.content_checker') }}" target="_blank">Content Checker Tool</a></li>
+                        <li><a href="{{ url_for('public.pillar_technical_seo') }}" target="_blank">Technical SEO Guide</a></li>
+                        <li><a href="{{ url_for('public.public_blogs') }}" target="_blank">Blog</a></li>
+                        <li><a href="{{ url_for('public.public_webstories') }}" target="_blank">Web Stories</a></li>
+                        <li><a href="{{ url_for('public.help_page') }}" target="_blank">Help Center</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-wider mb-4 text-white/80">Company</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/about" target="_blank">About Us</a></li>
+                        <li><a href="/pricing" target="_blank">Pricing</a></li>
+                        <li><a href="/contact" target="_blank">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-white/40 text-sm mb-4 md:mb-0">&copy; {{ current_year }} SEO Dada. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="/privacy" target="_blank" class="text-sm">Privacy Policy</a>
+                    <a href="/terms" target="_blank" class="text-sm">Terms of Service</a>
+                    <a href="/cookie-policy" target="_blank" class="text-sm">Cookie Policy</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- Scroll to top -->
+    <button class="scroll-to-top" id="scrollToTop" aria-label="Scroll to top"><i class="fas fa-arrow-up"></i></button>
 
-    <style>
-        /* Scroll to Top Button */
-        .scroll-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #273879 0%, #0f74b2 100%);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 15px rgba(39, 56, 121, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .scroll-to-top:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(39, 56, 121, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .scroll-to-top {
-                bottom: 20px;
-                right: 20px;
-                width: 45px;
-                height: 45px;
-                font-size: 1.1rem;
-            }
-        }
-    </style>
-
-    <!-- Lightweight JavaScript (no Three.js/GSAP) -->
+    <!-- JavaScript -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Hide loading screen once DOM is ready
-            const pageLoader = document.getElementById('pageLoader');
-            if (pageLoader) {
-                // Small delay to ensure CSS is applied
-                setTimeout(function() {
-                    pageLoader.classList.add('loaded');
-                    // Remove from DOM after animation completes
-                    setTimeout(function() {
-                        pageLoader.remove();
-                    }, 400);
-                }, 100);
-            }
+    document.addEventListener('DOMContentLoaded',function(){
+        // Scroll-to-top
+        var stBtn=document.getElementById('scrollToTop'),ticking=false;
+        window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(function(){stBtn.classList.toggle('visible',window.pageYOffset>300);ticking=false});ticking=true}},{passive:true});
+        stBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'})});
 
-            // Scroll to Top Button
-            const scrollToTopBtn = document.getElementById('scrollToTop');
-            let ticking = false;
+        // Mobile menu
+        var toggle=document.getElementById('mobileMenuToggle'),menu=document.getElementById('mobileMenu'),overlay=document.getElementById('mobileMenuOverlay'),close=document.getElementById('mobileMenuClose'),ham=document.querySelector('.hamburger');
+        function setMenu(open){menu.classList.toggle('active',open);overlay.classList.toggle('active',open);ham.classList.toggle('active',open);document.body.style.overflow=open?'hidden':''}
+        toggle.addEventListener('click',function(){setMenu(true)});
+        close.addEventListener('click',function(){setMenu(false)});
+        overlay.addEventListener('click',function(){setMenu(false)});
+        document.querySelectorAll('.mobile-menu a[href^="#"]').forEach(function(l){l.addEventListener('click',function(){setMenu(false)})});
+        document.addEventListener('keydown',function(e){if(e.key==='Escape'&&menu.classList.contains('active'))setMenu(false)});
 
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    requestAnimationFrame(function() {
-                        scrollToTopBtn.classList.toggle('visible', window.pageYOffset > 300);
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            }, { passive: true });
+        // Mobile services dropdown
+        var svcToggle=document.getElementById('mobileServicesToggle'),svcMenu=document.getElementById('mobileServicesSubmenu'),svcChev=document.getElementById('mobileServicesChevron');
+        if(svcToggle){svcToggle.addEventListener('click',function(e){e.preventDefault();var h=svcMenu.classList.toggle('hidden');svcChev.style.transform=h?'':'rotate(180deg)'});svcMenu.querySelectorAll('a').forEach(function(l){l.addEventListener('click',function(){setMenu(false)})})}
 
-            scrollToTopBtn.addEventListener('click', function() {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
+        // Intersection Observer for animations
+        var obs=new IntersectionObserver(function(entries){entries.forEach(function(entry,i){if(entry.isIntersecting){var d=entry.target.classList.contains('stagger-item')?i*60:0;setTimeout(function(){entry.target.classList.add('active')},d);obs.unobserve(entry.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+        document.querySelectorAll('.fade-in,.stagger-item').forEach(function(el){obs.observe(el)});
 
-            // Mobile Menu
-            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-            const mobileMenu = document.getElementById('mobileMenu');
-            const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
-            const mobileMenuClose = document.getElementById('mobileMenuClose');
-            const hamburger = document.querySelector('.hamburger');
-
-            function toggleMobileMenu(open) {
-                mobileMenu.classList.toggle('active', open);
-                mobileMenuOverlay.classList.toggle('active', open);
-                hamburger.classList.toggle('active', open);
-                document.body.style.overflow = open ? 'hidden' : '';
-            }
-
-            mobileMenuToggle.addEventListener('click', () => toggleMobileMenu(true));
-            mobileMenuClose.addEventListener('click', () => toggleMobileMenu(false));
-            mobileMenuOverlay.addEventListener('click', () => toggleMobileMenu(false));
-
-            document.querySelectorAll('.mobile-menu a[href^="#"]').forEach(link => {
-                link.addEventListener('click', () => toggleMobileMenu(false));
-            });
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                    toggleMobileMenu(false);
-                }
-            });
-
-            // Mobile Services Dropdown
-            const mobileServicesToggle = document.getElementById('mobileServicesToggle');
-            const mobileServicesSubmenu = document.getElementById('mobileServicesSubmenu');
-            const mobileServicesChevron = document.getElementById('mobileServicesChevron');
-
-            if (mobileServicesToggle) {
-                mobileServicesToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const isHidden = mobileServicesSubmenu.classList.toggle('hidden');
-                    mobileServicesChevron.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
-                });
-
-                mobileServicesSubmenu.querySelectorAll('a').forEach(link => {
-                    link.addEventListener('click', () => toggleMobileMenu(false));
-                });
-            }
-
-            // CSS-based Intersection Observer for animations (replaces GSAP ScrollTrigger)
-            const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-
-            const animationObserver = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        // Add delay based on element index for stagger effect
-                        const delay = entry.target.classList.contains('stagger-item') ? index * 80 : 0;
-                        setTimeout(() => {
-                            entry.target.classList.add('active');
-                        }, delay);
-                        animationObserver.unobserve(entry.target);
-                    }
-                });
-            }, observerOptions);
-
-            // Observe all animated elements
-            document.querySelectorAll('.fade-in, .stagger-item').forEach(el => {
-                animationObserver.observe(el);
-            });
-
-            // Smooth scroll for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            });
-        });
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var t=document.querySelector(this.getAttribute('href'));if(t)window.scrollTo({top:t.offsetTop-80,behavior:'smooth'})})});
+    });
     </script>
-    <!-- Bootstrap JS for dropdown - defer loading -->
+    <!-- Bootstrap JS deferred -->
     <script>
-        // Load Bootstrap JS only when user interacts with dropdowns
-        var bootstrapLoaded = false;
-        function loadBootstrap() {
-            if (bootstrapLoaded) return;
-            bootstrapLoaded = true;
-            var s = document.createElement('script');
-            s.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';
-            document.body.appendChild(s);
-        }
-        // Load on user interaction
-        document.querySelectorAll('[data-bs-toggle]').forEach(function(el) {
-            el.addEventListener('click', loadBootstrap, { once: true });
-            el.addEventListener('mouseenter', loadBootstrap, { once: true });
-        });
-        // Also load after 3 seconds as fallback
-        setTimeout(loadBootstrap, 3000);
+    var bsLoaded=false;function loadBS(){if(bsLoaded)return;bsLoaded=true;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js';document.body.appendChild(s)}
+    document.querySelectorAll('[data-bs-toggle]').forEach(function(el){el.addEventListener('click',loadBS,{once:true});el.addEventListener('mouseenter',loadBS,{once:true})});setTimeout(loadBS,3000);
     </script>
 </body>
 </html>
