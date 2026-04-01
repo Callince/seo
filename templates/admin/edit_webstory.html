@@ -1093,6 +1093,7 @@
 
             const formData = new FormData();
             formData.append('upload', file);
+            formData.append('csrf_token', '{{ csrf_token() }}');
 
             fetch('{{ url_for("admin.admin_webstory_upload_image") }}', {
                 method: 'POST',
@@ -1100,7 +1101,8 @@
                 credentials: 'include',
                 headers: {
                     'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token() }}'
                 }
             })
             .then(response => {
