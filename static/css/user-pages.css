@@ -74,6 +74,13 @@
   transform: translateX(200%) skewX(-15deg);
 }
 
+.gradient-header a,
+.gradient-header p,
+.gradient-header span {
+  color: white !important;
+  text-decoration: none !important;
+}
+
 /* ==========================================================================
    Gradient Text
    ========================================================================== */
