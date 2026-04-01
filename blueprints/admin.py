@@ -1459,8 +1459,8 @@ def admin_new_subscribed_user():
     # Get all active users (email confirmed)
     users = User.query.filter_by(email_confirmed=True).all()
 
-    # Get all subscription plans
-    subscriptions = Subscription.query.all()
+    # Get only active (non-archived) subscription plans
+    subscriptions = Subscription.query.filter_by(is_active=True).filter(Subscription.archived_at.is_(None)).all()
 
     return render_template('admin/new_subscribed_user.html',
                           users=users,
