@@ -8,6 +8,10 @@ Allow: /about
 Allow: /contact
 Allow: /pricing
 Allow: /services/
+Allow: /site_structure
+Allow: /meta_search
+Allow: /url_search
+Allow: /h_search
 
 Disallow: /admin/
 Disallow: /login
