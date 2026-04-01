@@ -703,7 +703,7 @@ def generate_token_invoice_pdf(token_purchase):
     invoice_title_style = ParagraphStyle(
         name='InvoiceTitleCustom',
         fontName='Helvetica-Bold',
-        fontSize=16,
+        fontSize=13,
         alignment=TA_RIGHT,
         textColor=brand_color,
         spaceAfter=4
