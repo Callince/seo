@@ -8,41 +8,16 @@ Allow: /about
 Allow: /contact
 Allow: /pricing
 Allow: /services/
-Allow: /help
-Allow: /privacy
-Allow: /terms
-Allow: /cookie-policy
-Allow: /qr-code-scanner
-Allow: /static/
+Allow: /site_structure
+Allow: /meta_search
+Allow: /url_search
+Allow: /h_search
 
 Disallow: /admin/
 Disallow: /login
-Disallow: /signup
 Disallow: /register
 Disallow: /profile
 Disallow: /dashboard
-Disallow: /create
 Disallow: /api/
-Disallow: /preview-qr
-Disallow: /preview-image-display
-Disallow: /r/
-Disallow: /qr/
-Disallow: /set_timezone
-Disallow: /check-email-availability
-Disallow: /check_password
-Disallow: /subscription/checkout
-Disallow: /subscription/payment
-Disallow: /debug/
-Disallow: /batch-export
-Disallow: /receipt/
 
-# Allow Google to access resources needed for rendering
-User-agent: Googlebot
-Allow: /static/
-Allow: /*.css
-Allow: /*.js
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.webp
-
-Sitemap: https://www.qrdada.com/sitemap.xml
+Sitemap: {{ base_url }}/sitemap.xml
