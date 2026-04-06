@@ -4,7 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}SEO Dada{% endblock %}</title>
-    {% block meta %}{% endblock %}
+    {% block meta %}
+    <meta name="description" content="SEO Dada - Enterprise SEO analytics platform. Analyze URLs, keywords, images, headings, meta tags, and sitemaps.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SEO Dada - Enterprise SEO Analytics Platform">
+    <meta property="og:description" content="SEO Dada - Enterprise SEO analytics platform. Analyze URLs, keywords, images, headings, meta tags, and sitemaps.">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="https://seodada.com/static/images/seodada.png">
+    <meta property="og:site_name" content="SEO Dada">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SEO Dada - Enterprise SEO Analytics Platform">
+    <meta name="twitter:description" content="SEO Dada - Enterprise SEO analytics platform. Analyze URLs, keywords, images, headings, meta tags, and sitemaps.">
+    <meta name="twitter:image" content="https://seodada.com/static/images/seodada.png">
+    {% endblock %}
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon.png') }}?v=2">
@@ -523,6 +537,9 @@
     </style>
 
     {% block extra_styles %}{% endblock %}
+
+    {% block head %}{% endblock %}
+    {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-background text-text">
     <!-- Mobile Menu Overlay -->
@@ -783,6 +800,9 @@
                             </a>
                             <a href="https://www.instagram.com/seodada1?igsh=cmwxb3VueXVjbnUz" target="_blank" class="text-gray-400 hover:text-white transition-colors">
                                 <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://youtube.com/@seodada-s4b?si=gSqfFN7AaQZgunLG" target="_blank" class="text-gray-400 hover:text-white transition-colors">
+                                <i class="fab fa-youtube"></i>
                             </a>
                         </div>
                     </div>
